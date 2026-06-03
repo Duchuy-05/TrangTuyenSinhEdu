@@ -1,8 +1,9 @@
 // src/data/mockData.ts
 
 export interface Course {
-    id: number;
+    id: string;
     title: string;
+    target: string;
     image: string;
     shortDesc: string;
     duration: string;
@@ -19,52 +20,55 @@ export interface Course {
 
 export const coursesData: Course[] = [
     {
-        id: 1,
-        title: "Frontend ReactJS Masterclass",
-        image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=800&q=80",
-        shortDesc: "Làm chủ ReactJS từ cơ bản đến nâng cao, xây dựng ứng dụng thực tế với Redux, TypeScript và NextJS.",
-        duration: "12 Tuần",
-        format: "Online qua Zoom + Video xem lại",
-        price: "4.500.000 VNĐ",
+        id: "scratch-tu-duy",
+        title: "Tư Duy Lập Trình Với Scratch",
+        target: "Học sinh Lớp 6 - Lớp 7",
+        image: "https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&w=800&q=80",
+        shortDesc: "Làm quen với tư duy logic, thuật toán cơ bản thông qua việc kéo thả các khối lệnh trực quan. Học sinh tự tạo ra game và hoạt hình của riêng mình.",
+        duration: "8 Tuần",
+        format: "Online qua Zoom (Tối T7, CN)",
+        price: "2.500.000 VNĐ",
         teacher: {
-            name: "Nguyễn Văn A",
+            name: "Cô Nguyễn Mai",
+            title: "Chuyên gia Giáo dục STEM",
+            experience: "5 năm kinh nghiệm dạy trẻ em",
+            company: "EduPro"
+        },
+        syllabus: ["Chương 1: Làm quen với giao diện Scratch", "Chương 2: Biến số và Vòng lặp", "Chương 3: Lập trình game hứng táo", "Chương 4: Lập trình game Flappy Bird", "Chương 5: Trình bày dự án cuối khóa"]
+    },
+    {
+        id: "python-ung-dung",
+        title: "Lập Trình Python Ứng Dụng",
+        target: "Học sinh Lớp 8 - Lớp 9",
+        image: "https://images.unsplash.com/photo-1526379095098-d400fd0bfce8?auto=format&fit=crop&w=800&q=80",
+        shortDesc: "Học ngôn ngữ lập trình phổ biến nhất thế giới. Rèn luyện tư duy giải quyết vấn đề, viết các công cụ tự động hóa và làm quen với AI.",
+        duration: "12 Tuần",
+        format: "Hybrid (Online + 1 buổi Offline/tháng)",
+        price: "3.500.000 VNĐ",
+        teacher: {
+            name: "Thầy Trần Hùng",
+            title: "Kỹ sư Phần mềm",
+            experience: "7 năm kinh nghiệm",
+            company: "FPT Software"
+        },
+        syllabus: ["Chương 1: Cấu trúc dữ liệu trong Python", "Chương 2: Câu lệnh điều kiện & Vòng lặp", "Chương 3: Hàm và Module", "Chương 4: Lập trình tương tác với File", "Chương 5: Xây dựng Chatbot cơ bản"]
+    },
+    {
+        id: "thiet-ke-web",
+        title: "Sáng Tạo Web HTML/CSS/JS",
+        target: "Học sinh Lớp 10 - Lớp 12",
+        image: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=800&q=80",
+        shortDesc: "Trang bị kỹ năng lập trình thực tế, tự tay thiết kế và lập trình một trang web hoàn chỉnh. Xây dựng nền tảng vững chắc cho kỳ thi Đại học ngành IT.",
+        duration: "14 Tuần",
+        format: "Online qua Zoom + Video xem lại",
+        price: "4.000.000 VNĐ",
+        teacher: {
+            name: "Thầy Lê Hoàng",
             title: "Senior Frontend Engineer",
             experience: "8 năm kinh nghiệm",
             company: "Shopee VN"
         },
-        syllabus: ["Chương 1: React Cơ bản & Hooks", "Chương 2: State Management với Redux Toolkit", "Chương 3: React Router & API Integration", "Chương 4: TypeScript trong React", "Chương 5: Đồ án cuối khóa"]
-    },
-    {
-        id: 2,
-        title: "Backend NodeJS & Microservices",
-        image: "https://images.unsplash.com/photo-1627398225081-000801106d91?auto=format&fit=crop&w=800&q=80",
-        shortDesc: "Xây dựng hệ thống Backend mạnh mẽ, có khả năng mở rộng cao với NodeJS, Express, MongoDB và Docker.",
-        duration: "14 Tuần",
-        format: "Hybrid (Online + Offline)",
-        price: "5.200.000 VNĐ",
-        teacher: {
-            name: "Trần Thị B",
-            title: "Software Architect",
-            experience: "10 năm kinh nghiệm",
-            company: "VNG Corporation"
-        },
-        syllabus: ["Chương 1: NodeJS & Express Foundation", "Chương 2: Database Design (MongoDB/PostgreSQL)", "Chương 3: Authentication & Security", "Chương 4: Docker & Deployment", "Chương 5: Microservices Architecture"]
-    },
-    {
-        id: 3,
-        title: "UI/UX Design Tương Tác",
-        image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80",
-        shortDesc: "Từ tư duy thiết kế đến thực hành với Figma. Tạo ra các sản phẩm số có trải nghiệm người dùng tối ưu.",
-        duration: "10 Tuần",
-        format: "Online linh hoạt",
-        price: "3.800.000 VNĐ",
-        teacher: {
-            name: "Lê Hoàng C",
-            title: "Lead Product Designer",
-            experience: "6 năm kinh nghiệm",
-            company: "MoMo"
-        },
-        syllabus: ["Chương 1: Nguyên lý UI/UX", "Chương 2: User Research & Persona", "Chương 3: Wireframe & Prototyping", "Chương 4: Master Figma & Design System", "Chương 5: Portfolio Review"]
+        syllabus: ["Chương 1: Cấu trúc HTML & Thẻ cơ bản", "Chương 2: Làm đẹp Web với CSS", "Chương 3: Bố cục Flexbox & Grid", "Chương 4: Thêm tương tác với JavaScript", "Chương 5: Triển khai Website lên Internet"]
     }
 ];
 

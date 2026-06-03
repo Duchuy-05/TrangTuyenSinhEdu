@@ -1,4 +1,7 @@
+// src/components/Navbar.tsx
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { coursesData } from '../data/mockData';
 
 const Navbar: React.FC = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -12,13 +15,25 @@ const Navbar: React.FC = () => {
     return (
         <nav className={`navbar ${scrolled ? 'shadow-md' : ''}`}>
             <div className="container nav-content">
-                <a href="/" className="logo">Trí Anh<span> Education</span></a>
+                <Link to="/" className="logo">Trí Anh<span> Education</span></Link>
                 <ul className="nav-links">
-                    <li><a href="#home">Trang chủ</a></li>
-                    <li><a href="#about">Giới thiệu</a></li>
-                    <li><a href="#courses">Khóa học ▾</a></li>
-                    <li><a href="#blog">Blog</a></li>
-                    <li><a href="#contact">Liên hệ</a></li>
+                    <li><Link to="/">Trang chủ</Link></li>
+                    <li><a href="/#about">Giới thiệu</a></li>
+
+                    {/* Dropdown Menu */}
+                    <li className="nav-dropdown">
+                        <span className="dropdown-trigger">Khóa học ▾</span>
+                        <ul className="dropdown-menu">
+                            {coursesData.map((course) => (
+                                <li key={course.id}>
+                                    <Link to={`/khoa-hoc/${course.id}`}>{course.title}</Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </li>
+
+                    <li><a href="/#blog">Blog</a></li>
+                    <li><a href="/#contact">Liên hệ</a></li>
                 </ul>
                 <button className="btn btn-primary">Đăng ký học ngay</button>
             </div>

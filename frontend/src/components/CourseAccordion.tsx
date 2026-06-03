@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Thêm Link của React Router
 import { coursesData } from '../data/mockData';
+import { Clock, Laptop, Book } from 'lucide-react';
 
 const CourseAccordion: React.FC = () => {
-    const [activeId, setActiveId] = useState<number | null>(1); // Mặc định mở tab đầu tiên
+    const [activeId, setActiveId] = useState<string | null>(coursesData[0]?.id || null);
 
-    const toggleAccordion = (id: number) => {
+    const toggleAccordion = (id: string) => {
         setActiveId(activeId === id ? null : id);
     };
 
@@ -23,13 +25,12 @@ const CourseAccordion: React.FC = () => {
                                 <span className="icon">▼</span>
                             </div>
 
-                            {/* Magic wrapper for smooth transition */}
+                            {/* Nội dung khi xổ xuống */}
                             <div className="accordion-content-grid">
                                 <div className="accordion-content-inner">
                                     <div className="course-detail">
                                         <div className="course-image">
                                             <img src={course.image} alt={course.title} />
-
                                             <div className="teacher-mini" style={{ marginTop: '20px' }}>
                                                 <div>
                                                     <h5>Giảng viên: {course.teacher.name}</h5>
@@ -44,20 +45,17 @@ const CourseAccordion: React.FC = () => {
                                             <p className="desc">{course.shortDesc}</p>
 
                                             <div className="course-meta">
-                                                <span className="meta-badge">⏱ {course.duration}</span>
-                                                <span className="meta-badge">💻 {course.format}</span>
+                                                <span className="meta-badge"><Clock size={13} height={10} /> {course.duration}</span>
+                                                <span className="meta-badge"><Laptop size={13} height={10} /> {course.format}</span>
+                                                <span className="meta-badge" style={{ background: '#fef3c7', color: '#b45309' }}><Book size={13} height={10} /> {course.target}</span>
                                             </div>
 
-                                            <h4>Nội dung đào tạo</h4>
-                                            <ul className="course-syllabus">
-                                                {course.syllabus.map((item, index) => (
-                                                    <li key={index}>{item}</li>
-                                                ))}
-                                            </ul>
-
-                                            <div className="course-price-cta">
+                                            <div className="course-price-cta" style={{ marginTop: '30px' }}>
                                                 <div className="price">{course.price}</div>
-                                                <button className="btn btn-primary">Đăng ký ngay</button>
+                                                {/* NÚT BẤM CHUYỂN SANG TRANG CHI TIẾT */}
+                                                <Link to={`/khoa-hoc/${course.id}`} className="btn btn-primary">
+                                                    Xem chi tiết & Đăng ký
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>

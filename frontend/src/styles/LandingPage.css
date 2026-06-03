@@ -133,7 +133,7 @@ ul {
 /* Hero */
 .hero {
     padding: 150px 0 100px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #84312e 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, #ff9996 100%);
     color: var(--bg-white);
 }
 
@@ -543,5 +543,77 @@ ul {
 
     .course-price-cta button {
         width: 100%;
+    }
+}
+
+/* --- DROP DOWN NAVBAR --- */
+.nav-dropdown {
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown-trigger {
+    padding: 10px 0;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.nav-dropdown:hover .dropdown-trigger {
+    color: var(--secondary-color);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--bg-white);
+    min-width: 260px;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li {
+    margin: 0;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 12px 20px;
+    color: var(--text-dark);
+    transition: background-color 0.2s;
+    border-bottom: 1px solid var(--bg-light);
+}
+
+.dropdown-menu a:hover {
+    background-color: #f0fdf4;
+    /* Xanh nhạt khi hover */
+    color: var(--secondary-color);
+}
+
+.dropdown-menu li:last-child a {
+    border-bottom: none;
+}
+
+@media (max-width: 992px) {
+    .course-detail-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .registration-box {
+        position: static !important;
     }
 }
