@@ -13,7 +13,7 @@ export class CourseSyllabus {
   id: number;
 
   @Column({ name: 'course_id' })
-  courseId: string;
+  courseId: number;
 
   @Column({ name: 'order_index', type: 'int', default: 0 })
   orderIndex: number;
