@@ -58,17 +58,6 @@ INSERT INTO course_syllabus (course_id, order_index, title, description) VALUES
 (5, 4, 'Authentication & Security', 'JWT, OAuth, Security Best Practices'),
 (5, 5, 'API Development', 'RESTful API, GraphQL basics');
 
--- ========================================
--- INSERT DATA INTO registrations TABLE
--- ========================================
-INSERT INTO registrations (user_id, course_id, contact_name, contact_email, contact_phone, note, status, handled_by, registered_at, contacted_at) VALUES
-(1, 1, 'Nguyễn Văn A', 'nguyena@gmail.com', '0912345678', 'Muốn học React nâng cao', 'confirmed', 'admin1', NOW(), NOW()),
-(2, 2, 'Trần Thị B', 'tranthib@gmail.com', '0923456789', NULL, 'contacted', 'admin2', NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY)),
-(3, 3, 'Lê Văn C', 'levanc@gmail.com', '0934567890', 'Yêu cầu hỗ trợ thanh toán', 'pending', NULL, NOW(), NULL),
-(NULL, 4, 'Hoàng Thị E', 'hoange@gmail.com', '0956789012', 'Đăng ký không tài khoản', 'pending', NULL, NOW(), NULL),
-(1, 5, 'Nguyễn Văn A', 'nguyena@gmail.com', '0912345678', NULL, 'confirmed', 'admin1', NOW(), NOW()),
-(2, 1, 'Trần Thị B', 'tranthib@gmail.com', '0923456789', 'Mong muốn được tư vấn', 'contacted', 'admin1', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
-(NULL, 2, 'Khanh Nguyễn', 'khanh.nguyen@gmail.com', '0967890123', NULL, 'pending', NULL, NOW(), NULL);
 
 -- ========================================
 -- NOTES:
