@@ -710,3 +710,95 @@ ul {
         grid-template-columns: 1fr;
     }
 }
+
+/* --- CSS CHO SLIDER GIẢNG VIÊN --- */
+.slider-wrapper {
+    position: relative;
+    padding: 0 50px;
+    /* Nhường chỗ cho 2 nút bấm ở 2 bên */
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.slider-viewport {
+    overflow: hidden;
+    /* Che đi những giảng viên bị tràn ra ngoài màn hình */
+    width: 100%;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+    /* Hiệu ứng lướt mượt mà */
+}
+
+.slider-slide {
+    flex: 0 0 33.3333%;
+    /* Hiển thị chính xác 3 người (100% / 3) */
+    padding: 0 15px;
+    /* Khoảng cách giữa các card */
+    box-sizing: border-box;
+}
+
+.slider-slide .card {
+    height: 100%;
+    /* Đảm bảo các card dài bằng nhau dù nội dung dài ngắn khác nhau */
+}
+
+/* Nút bấm Slider */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+    transition: var(--transition);
+}
+
+.slider-btn:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.slider-btn:disabled {
+    opacity: 0;
+    /* Ẩn nút đi khi không thể bấm được nữa */
+    cursor: default;
+}
+
+.prev-btn {
+    left: 0;
+}
+
+.next-btn {
+    right: 0;
+}
+
+/* Responsive: Thu nhỏ còn 2 hoặc 1 giảng viên trên thiết bị di động */
+@media (max-width: 992px) {
+    .slider-slide {
+        flex: 0 0 50%;
+        /* Tablet hiển thị 2 người */
+    }
+}
+
+@media (max-width: 768px) {
+    .slider-wrapper {
+        padding: 0 30px;
+    }
+
+    .slider-slide {
+        flex: 0 0 100%;
+        /* Mobile hiển thị 1 người */
+    }
+}
