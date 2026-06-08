@@ -15,20 +15,20 @@ INSERT INTO users (full_name, email, phone, password_hash, avatar_url, role, cre
 -- INSERT DATA INTO teachers TABLE
 -- ========================================
 INSERT INTO teachers (full_name, email, phone, title, experience, company, bio, avatar_url, created_at, updated_at) VALUES
-('Dr. Hoàng Minh Tuấn', 'hoang.tuan@company.com', '0912111111', 'Ph.D', '10 years', 'Tech Company A', 'Chuyên gia về lập trình web và mobile', NULL, NOW(), NOW()),
-('Assoc. Prof. Đỗ Hồng Quân', 'do.quan@company.com', '0912222222', 'Tiến sĩ', '8 years', 'University B', 'Giảng viên về cơ sở dữ liệu', NULL, NOW(), NOW()),
-('Ths. Võ Thị Thanh Hương', 'vo.huong@company.com', '0912333333', 'Thạc sĩ', '5 years', 'Tech Company C', 'Chuyên gia UX/UI Design', NULL, NOW(), NOW()),
-('Mr. Nguyễn Đức Anh', 'nguyen.anh@company.com', '0912444444', 'Kỹ sư', '6 years', 'Tech Company D', 'Chuyên gia DevOps và Cloud', NULL, NOW(), NOW());
+('Dr. Hoàng Minh Tuấn', 'hoang.tuan@company.com', '0912111111', 'Ph.D', '10 years', 'Tech Company A', 'Chuyên gia về lập trình web và mobile', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888833/main-sample.png', NOW(), NOW()),
+('Assoc. Prof. Đỗ Hồng Quân', 'do.quan@company.com', '0912222222', 'Tiến sĩ', '8 years', 'University B', 'Giảng viên về cơ sở dữ liệu', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888833/main-sample.png', NOW(), NOW()),
+('Ths. Võ Thị Thanh Hương', 'vo.huong@company.com', '0912333333', 'Thạc sĩ', '5 years', 'Tech Company C', 'Chuyên gia UX/UI Design', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888833/main-sample.png', NOW(), NOW()),
+('Mr. Nguyễn Đức Anh', 'nguyen.anh@company.com', '0912444444', 'Kỹ sư', '6 years', 'Tech Company D', 'Chuyên gia DevOps và Cloud', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888833/main-sample.png', NOW(), NOW());
 
 -- ========================================
 -- INSERT DATA INTO courses TABLE
 -- ========================================
 INSERT INTO courses (teacher_id, category, title, short_desc, target, image_url, duration, format, price, status, created_at, updated_at) VALUES
-(1, 'Web Development', 'Advanced ReactJS & TypeScript', 'Học React cấp nâng cao với TypeScript', 'Sinh viên CNTT, lập trình viên', NULL, '8 weeks', 'online', 2999000, 'published', NOW(), NOW()),
-(2, 'Database', 'SQL Optimization & Performance Tuning', 'Tối ưu hóa truy vấn SQL', 'DBA, Database Developer', NULL, '6 weeks', 'hybrid', 1999000, 'published', NOW(), NOW()),
-(3, 'Design', 'UI/UX Design Masterclass', 'Thiết kế giao diện người dùng chuyên nghiệp', 'Designer, Product Manager', NULL, '10 weeks', 'offline', 3500000, 'published', NOW(), NOW()),
-(4, 'DevOps', 'Kubernetes & Docker Essentials', 'Container orchestration và deployment', 'DevOps Engineer, Backend Developer', NULL, '8 weeks', 'online', 2500000, 'draft', NOW(), NOW()),
-(1, 'Web Development', 'Node.js Backend Development', 'Xây dựng backend với Node.js', 'Lập trình viên JavaScript', NULL, '12 weeks', 'hybrid', 3999000, 'published', NOW(), NOW());
+(1, 'Web Development', 'Advanced ReactJS & TypeScript', 'Học React cấp nâng cao với TypeScript', 'Sinh viên CNTT, lập trình viên', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '8 weeks', 'online', 2999000, 'published', NOW(), NOW()),
+(2, 'Database', 'SQL Optimization & Performance Tuning', 'Tối ưu hóa truy vấn SQL', 'DBA, Database Developer', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '6 weeks', 'hybrid', 1999000, 'published', NOW(), NOW()),
+(3, 'Design', 'UI/UX Design Masterclass', 'Thiết kế giao diện người dùng chuyên nghiệp', 'Designer, Product Manager', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '10 weeks', 'offline', 3500000, 'published', NOW(), NOW()),
+(4, 'DevOps', 'Kubernetes & Docker Essentials', 'Container orchestration và deployment', 'DevOps Engineer, Backend Developer', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '8 weeks', 'online', 2500000, 'draft', NOW(), NOW()),
+(1, 'Web Development', 'Node.js Backend Development', 'Xây dựng backend với Node.js', 'Lập trình viên JavaScript', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '12 weeks', 'hybrid', 3999000, 'published', NOW(), NOW());
 
 -- ========================================
 -- INSERT DATA INTO course_syllabus TABLE

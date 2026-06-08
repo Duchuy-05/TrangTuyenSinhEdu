@@ -28,7 +28,10 @@ export class TeacherController {
     }
 
     static async createTeacher(request: Request, response: Response) {
-        const teacherData = request.body;
+        const teacherData = {
+            ...request.body,
+            image: request.file?.path
+        };
         try {
             const newTeacher = await TeacherService.createTeacher(teacherData);
             return response.json(successHandler(201, 'Tạo giáo viên thành công', newTeacher));
@@ -40,7 +43,11 @@ export class TeacherController {
 
     static async updateTeacher(request: Request, response: Response) {
         const teacherId = Number(request.params.id);
-        const teacherData = request.body;
+        const teacherData = {
+            ...request.body,
+            image: request.file?.path
+        };
+
         try {
             const updatedTeacher = await TeacherService.updateTeacher(teacherId, teacherData);
             return response.json(successHandler(200, 'Cập nhật giáo viên thành công', updatedTeacher));

@@ -28,7 +28,10 @@ export class CourseController {
     }
 
     static async createCourse( request: Request, response: Response) {
-        const courseData = request.body;
+        const courseData = {
+            ...request.body,
+            image: request.file?.path
+        };
         try {
             const newCourse = await CourseService.createCourse(courseData);
             return response.json(successHandler(201, 'Tạo khóa học thành công', newCourse));
@@ -40,7 +43,10 @@ export class CourseController {
 
     static async updateCourse( request: Request, response: Response) {
         const courseId = Number(request.params.id);
-        const courseData = request.body;
+        const courseData = {
+            ...request.body,
+            image: request.file?.path
+        };
         try {
             const updatedCourse = await CourseService.updateCourse(courseId, courseData);
             return response.json(successHandler(200, 'Cập nhật khóa học thành công', updatedCourse));
