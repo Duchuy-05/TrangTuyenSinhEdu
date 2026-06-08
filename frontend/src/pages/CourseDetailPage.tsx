@@ -1,25 +1,54 @@
-// src/pages/CourseDetailPage.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Clock, Laptop, Book } from 'lucide-react';
-import { coursesData } from '../data/mockData';
-import Navbar from '../components/NavBar';
+import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { courseApi, Course } from '../services/api';
+import { Clock, Laptop } from 'lucide-react';
 
 const CourseDetailPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>(); // Lấy ID từ URL
-    const course = coursesData.find((c) => c.id === id);
+    const { id } = useParams<{ id: string }>();
+    const [course, setCourse] = useState<Course | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    // Cuộn lên đầu trang khi vào trang mới
     useEffect(() => {
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0); // Cuộn lên đầu trang
+
+        const fetchDetail = async () => {
+            if (!id) return;
+            try {
+                setIsLoading(true);
+                const data = await courseApi.getCourseById(id);
+                setCourse(data);
+            } catch (error) {
+                console.error("Lỗi tải chi tiết khóa học:", error);
+                setCourse(null);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchDetail();
     }, [id]);
+
+    if (isLoading) {
+        return (
+            <div className="page-wrapper">
+                <Navbar />
+                <div className="container" style={{ paddingTop: '150px', textAlign: 'center', height: '100vh' }}>
+                    <h2>Đang tải thông tin khóa học...</h2>
+                </div>
+            </div>
+        );
+    }
 
     if (!course) {
         return (
-            <div className="container" style={{ paddingTop: '120px', textAlign: 'center', height: '100vh' }}>
-                <h2>Không tìm thấy khóa học!</h2>
-                <Link to="/" className="btn btn-primary mt-1">Quay về trang chủ</Link>
+            <div className="page-wrapper">
+                <Navbar />
+                <div className="container" style={{ paddingTop: '150px', textAlign: 'center', height: '100vh' }}>
+                    <h2>Không tìm thấy khóa học!</h2>
+                    <Link to="/" className="btn btn-primary mt-1">Quay về trang chủ</Link>
+                </div>
             </div>
         );
     }
@@ -35,7 +64,7 @@ const CourseDetailPage: React.FC = () => {
                         {course.target}
                     </span>
                     <h1 style={{ fontSize: '3rem', margin: '20px 0' }}>{course.title}</h1>
-                    <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto', opacity: 0.9 }}>{course.shortDesc}</p>
+                    <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto', opacity: 0.9 }}>{course.short_desc}</p>
                 </div>
             </section>
 
@@ -44,36 +73,43 @@ const CourseDetailPage: React.FC = () => {
                 <div className="container">
                     <div className="course-detail-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '40px' }}>
 
-                        {/* Cột trái: Thông tin chi tiết */}
+                        {/* Cột trái */}
                         <div className="course-main-content" style={{ background: 'white', padding: '40px', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)' }}>
-                            <img src={course.image} alt={course.title} style={{ width: '100%', borderRadius: 'var(--radius)', marginBottom: '30px' }} />
+                            <img src={course.image_url} alt={course.title} style={{ width: '100%', borderRadius: 'var(--radius)', marginBottom: '30px' }} />
 
                             <h2 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Nội dung chương trình</h2>
                             <ul className="course-syllabus" style={{ marginBottom: '40px' }}>
-                                {course.syllabus.map((item, idx) => (
-                                    <li key={idx} style={{ padding: '15px 0', borderBottom: '1px solid var(--border-color)', fontSize: '1.1rem' }}>
-                                        {item}
+                                {/* Map qua bảng course_syllabus (sắp xếp theo order_index nếu cần) */}
+                                {course.syllabus?.sort((a, b) => a.order_index - b.order_index).map((item) => (
+                                    <li key={item.id} style={{ padding: '15px 0', borderBottom: '1px solid var(--border-color)' }}>
+                                        <strong style={{ fontSize: '1.1rem' }}>{item.title}</strong>
+                                        {item.description && <p style={{ marginTop: '5px', color: 'var(--text-light)' }}>{item.description}</p>}
                                     </li>
                                 ))}
                             </ul>
 
                             <h2 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Giảng viên hướng dẫn</h2>
-                            <div className="teacher-mini" style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'var(--bg-light)', padding: '20px', borderRadius: 'var(--radius)' }}>
-                                <div>
-                                    <h4 style={{ fontSize: '1.2rem' }}>{course.teacher.name}</h4>
-                                    <p style={{ color: 'var(--text-light)' }}>{course.teacher.title} tại {course.teacher.company}</p>
-                                    <p style={{ fontWeight: '500', marginTop: '5px' }}>{course.teacher.experience}</p>
+                            {course.teacher && (
+                                <div className="teacher-mini" style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'var(--bg-light)', padding: '20px', borderRadius: 'var(--radius)' }}>
+                                    <img src={course.teacher.avatar_url} alt={course.teacher.full_name} style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }} />
+                                    <div>
+                                        <h4 style={{ fontSize: '1.2rem' }}>{course.teacher.full_name}</h4>
+                                        <p style={{ color: 'var(--text-light)' }}>{course.teacher.title} tại {course.teacher.company}</p>
+                                        <p style={{ fontWeight: '500', marginTop: '5px' }}>{course.teacher.experience}</p>
+                                        <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>{course.teacher.bio}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
+                        {/* Cột phải: Sidebar (Giữ nguyên form đăng ký của bạn) */}
                         {/* Cột phải: Form Đăng ký */}
                         <div className="course-sidebar">
                             <div className="registration-box" style={{ background: 'white', padding: '30px', borderRadius: 'var(--radius)', position: 'sticky', top: '100px', boxShadow: 'var(--shadow-lg)' }}>
                                 <h3 style={{ fontSize: '1.8rem', color: 'var(--secondary-color)', marginBottom: '10px' }}>{course.price}</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '30px', color: 'var(--text-light)' }}>
-                                    <span><Clock size={15} height={11} color='#dc582b' /> Thời lượng: <strong>{course.duration}</strong></span>
-                                    <span><Laptop size={15} height={11} color='#dc582b' /> Hình thức: <strong>{course.format}</strong></span>
+                                    <span><Clock size={13} height={11} color='#e15f41' /> Thời lượng: <strong>{course.duration}</strong></span>
+                                    <span><Laptop size={13} height={11} color='#e15f41' /> Hình thức: <strong>{course.format}</strong></span>
                                 </div>
 
                                 <h4 style={{ marginBottom: '15px' }}>Đăng ký tư vấn khóa học</h4>
