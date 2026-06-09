@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "../models/DataSource"; // Đường dẫn trỏ tới file DataSource của bạn
-import { User } from "../models/entities/User";
+import { User, UserRole } from "../models/entities/User";
 
 export class AuthController {
   
@@ -31,10 +31,10 @@ export class AuthController {
 
       // Tạo user mới
       const newUser = new User();
-      newUser.name = name;
+      newUser.fullName = name;
       newUser.email = email;
-      newUser.password = hashedPassword;
-      newUser.role = "học sinh"; // mặc định
+      newUser.passwordHash = hashedPassword;
+      newUser.role = UserRole.STUDENT; // mặc định
 
       // Lưu vào Database MySQL
       await userRepository.save(newUser);
@@ -61,7 +61,7 @@ export class AuthController {
       }
 
       // So sánh mật khẩu người dùng nhập với mật khẩu đã hash trong DB
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
       if (!isPasswordValid) {
         return res.status(401).json({ message: "Email hoặc mật khẩu không đúng!" });
       }
@@ -94,7 +94,7 @@ export class AuthController {
         accessToken,
         user: {
           id: user.id,
-          name: user.name,
+          fullName: user.fullName,
           email: user.email,
           role: user.role
         }
