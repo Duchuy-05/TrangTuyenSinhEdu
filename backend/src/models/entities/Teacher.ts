@@ -1,21 +1,15 @@
 import {
   Entity,
   Column,
-  OneToMany,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
-import { Registration } from './Registration';
+import { Course } from './Course';
 
-export enum UserRole {
-  STUDENT = 'student',
-  ADMIN = 'admin',
-}
-
-@Entity('users')
-export class User {
-
+@Entity('teachers')
+export class Teacher {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -28,18 +22,20 @@ export class User {
   @Column({ nullable: true })
   phone: string;
 
-  @Column({ name: 'password_hash' })
-  passwordHash: string;
+  @Column()
+  title: string;
+
+  @Column()
+  experience: string;
+
+  @Column()
+  company: string;
+
+  @Column({ type: 'text', nullable: true })
+  bio: string;
 
   @Column({ name: 'avatar_url', nullable: true })
   avatarUrl: string;
-
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.STUDENT,
-  })
-  role: UserRole;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -47,6 +43,6 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @OneToMany(() => Registration, (registration) => registration.user)
-  registrations: Registration[];
+  @OneToMany(() => Course, (course) => course.teacher)
+  courses: Course[];
 }

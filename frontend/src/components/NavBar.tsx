@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
                     </li>
 
                     <li><a href="/#blog">Blog</a></li>
-                    <li><a href="/#contact">Liên hệ</a></li>
+                    <li><Link to="/lien-he">Liên hệ</Link></li>
                 </ul>
 
                 <div className="nav-actions flex items-center gap-4">

@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
                     <h1>Nâng Tầm Sự Nghiệp Với Các Khóa Học Chất Lượng Cao</h1>
                     <p>Hệ thống đào tạo CNTT thực chiến hàng đầu. Đồng hành cùng bạn trên con đường trở thành chuyên gia công nghệ với giáo trình chuẩn doanh nghiệp.</p>
                     <div className="hero-buttons">
-                        <button className="btn btn-primary">Xem khóa học</button>
+                        <button className="btn btn-secondary">Xem khóa học</button>
                         <button className="btn btn-outline">Tư vấn miễn phí</button>
                     </div>
                 </div>

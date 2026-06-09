@@ -1,11 +1,13 @@
 /* src/styles/LandingPage.css */
 
 :root {
-    --primary-color: #6c6c6e;
+    --primary-color: #e15f41;
     /* Xanh giáo dục sâu */
-    --secondary-color: #dc582b;
+    --secondary-color: #596275;
     /* Cam nổi bật CTA */
-    --secondary-hover: #e7a952;
+    --primary-btn: #f5f6fa;
+    --secondary-btn: #596275;
+    --secondary-hover: #e77f67;
     --text-dark: #1f2937;
     --text-light: #6b7280;
     --bg-light: #f9fafb;
@@ -71,13 +73,23 @@ ul {
 }
 
 .btn-primary {
-    background-color: var(--secondary-color);
-    color: #fff;
+    background-color: var(--primary-color);
+    color: #f5f6fa;
 }
 
 .btn-primary:hover {
     background-color: var(--secondary-hover);
-    transform: translateY(-2px);
+    transform: translateY(-0.5px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background-color: var(--primary-btn);
+    color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-0.5px);
     box-shadow: var(--shadow-md);
 }
 
@@ -637,5 +649,178 @@ ul {
 
     .registration-box {
         position: static !important;
+    }
+}
+
+/* --- CONTACT PAGE --- */
+.contact-section {
+    padding: 40px 0;
+    background: var(--bg-light);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 2fr 2fr;
+    gap: 20px;
+}
+
+.contact-form-card,
+.contact-info-card {
+    background: var(--bg-white);
+    padding: 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-dark);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    /* Hiệu ứng viền phát sáng khi nhập */
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.info-item {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.info-item p {
+    margin-top: 5px;
+    color: var(--text-light);
+}
+
+.highlight-text {
+    color: var(--secondary-color) !important;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+@media (max-width: 992px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- CSS CHO SLIDER GIẢNG VIÊN --- */
+.slider-wrapper {
+    position: relative;
+    padding: 0 50px;
+    /* Nhường chỗ cho 2 nút bấm ở 2 bên */
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.slider-viewport {
+    overflow: hidden;
+    /* Che đi những giảng viên bị tràn ra ngoài màn hình */
+    width: 100%;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+    /* Hiệu ứng lướt mượt mà */
+}
+
+.slider-slide {
+    flex: 0 0 33.3333%;
+    /* Hiển thị chính xác 3 người (100% / 3) */
+    padding: 0 15px;
+    /* Khoảng cách giữa các card */
+    box-sizing: border-box;
+}
+
+.slider-slide .card {
+    height: 100%;
+    /* Đảm bảo các card dài bằng nhau dù nội dung dài ngắn khác nhau */
+}
+
+/* Nút bấm Slider */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
+    transition: var(--transition);
+}
+
+.slider-btn:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.slider-btn:disabled {
+    opacity: 0;
+    /* Ẩn nút đi khi không thể bấm được nữa */
+    cursor: default;
+}
+
+.prev-btn {
+    left: 0;
+}
+
+.next-btn {
+    right: 0;
+}
+
+/* Responsive: Thu nhỏ còn 2 hoặc 1 giảng viên trên thiết bị di động */
+@media (max-width: 992px) {
+    .slider-slide {
+        flex: 0 0 50%;
+        /* Tablet hiển thị 2 người */
+    }
+}
+
+@media (max-width: 768px) {
+    .slider-wrapper {
+        padding: 0 30px;
+    }
+
+    .slider-slide {
+        flex: 0 0 100%;
+        /* Mobile hiển thị 1 người */
     }
 }
