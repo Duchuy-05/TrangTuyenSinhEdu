@@ -21,8 +21,8 @@
 }
 
 * {
-    margin: 0;
-    padding: 0;
+    /* margin: 0;
+    padding: 0; */
     box-sizing: border-box;
     font-family: 'Inter', system-ui, sans-serif;
 }
@@ -96,12 +96,12 @@ ul {
 .btn-outline {
     background-color: transparent;
     border: 2px solid var(--bg-white);
-    color: var(--bg-white);
+    color: var(--bg-black);
 }
 
 .btn-outline:hover {
     background-color: var(--bg-white);
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 /* Navbar */
@@ -140,6 +140,28 @@ ul {
 
 .nav-links a:hover {
     color: var(--secondary-color);
+}
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Khoảng cách giữa các nút */
+}
+/* Container chứa tất cả các nút bên phải */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.auth-group {
+    display: flex;
+    gap: 12px;
+    margin-left: auto; /* Lực đẩy phụ để đảm bảo chúng luôn bám sát lề phải nhất có thể */
+}
+.btn-auth {
+    padding: 6px 20px !important; 
+    font-size: 0.9rem; /* Chữ nhỏ lại một chút cho cân đối với nút */
+    border-radius: 50px;
 }
 
 /* Hero */

@@ -15,6 +15,7 @@ export enum UserRole {
 
 @Entity('users')
 export class User {
+
   @PrimaryGeneratedColumn('increment')
   id: number;
 
