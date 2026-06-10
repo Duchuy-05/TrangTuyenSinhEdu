@@ -31,10 +31,10 @@ const Navbar: React.FC = () => {
     };
 
     // Hàm lấy chữ cái đầu tiên của tên để làm Avatar
-    const getInitial = (name: string) => {
-        if (!name) return 'U';
+    const getInitial = (full_name: string) => {
+        if (!full_name) return 'U';
         // Tách lấy từ cuối cùng (Tên) và lấy chữ cái đầu
-        const nameArray = name.trim().split(' ');
+        const nameArray = full_name.trim().split(' ');
         const lastName = nameArray[nameArray.length - 1];
         return lastName.charAt(0).toUpperCase();
     };
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
                                 {/* Thông tin cá nhân */}
                                 <div className="p-4 border-b border-gray-100 bg-orange-50/50">
                                     <p className="font-bold text-gray-800 truncate">
-                                        {user.name}
+                                        {user.name || user.fullName}
                                     </p>
                                     <p className="text-xs text-gray-500 truncate mt-0.5">
                                         {user.email}
