@@ -15,6 +15,7 @@ const Teachers: React.FC = () => {
             try {
                 setIsLoading(true);
                 const data = await teacherApi.getAllTeachers();
+                console.log(data);
                 setTeachers(data);
             } catch (err) {
                 console.error("Lỗi khi tải danh sách giảng viên:", err);
@@ -71,11 +72,11 @@ const Teachers: React.FC = () => {
                                 <div className="slider-slide" key={teacher.id}>
                                     <div className="card">
                                         <img
-                                            src={teacher.avatar_url || "https://via.placeholder.com/150"}
-                                            alt={teacher.full_name}
+                                            src={teacher.avatarUrl || "https://via.placeholder.com/150"}
+                                            alt={teacher.fullName}
                                             className="card-avatar"
                                         />
-                                        <h4>{teacher.full_name}</h4>
+                                        <h4>{teacher.fullName}</h4>
                                         <p className="role">{teacher.title} @ {teacher.company}</p>
                                         <p className="exp">Kinh nghiệm: {teacher.experience}</p>
                                         <p style={{ marginTop: '10px' }}>{teacher.bio}</p>

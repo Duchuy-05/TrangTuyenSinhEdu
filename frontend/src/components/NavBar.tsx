@@ -4,7 +4,7 @@ import { coursesData } from '../data/mockData';
 
 const Navbar: React.FC = () => {
     const [scrolled, setScrolled] = useState(false);
-    
+
     // quản lý trạng thái người dùng
     const [user, setUser] = useState<any>(null);
     const navigate = useNavigate();
@@ -41,9 +41,9 @@ const Navbar: React.FC = () => {
 
     return (
         <nav className={`navbar ${scrolled ? 'shadow-md bg-white' : ''}`}>
-            <div className="container nav-content flex justify-between items-center">               
+            <div className="container nav-content flex justify-between items-center">
                 <Link to="/" className="logo">Trí Anh<span> Education</span></Link>
-                
+
                 <ul className="nav-links">
                     <li><Link to="/">Trang chủ</Link></li>
                     <li><a href="/#about">Giới thiệu</a></li>
@@ -66,7 +66,7 @@ const Navbar: React.FC = () => {
 
                 <div className="nav-actions flex items-center gap-4">
                     <button className="btn btn-primary">Đăng ký học ngay</button>
-                    
+
                     {/* KHU VỰC HIỂN THỊ TÀI KHOẢN */}
                     {user ? (
                         <div className="relative group cursor-pointer ml-2">
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
 
                             {/* Dropdown Menu của User (Hiển thị khi Hover) */}
                             <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-orange-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden z-50">
-                                
+
                                 {/* Thông tin cá nhân */}
                                 <div className="p-4 border-b border-gray-100 bg-orange-50/50">
                                     <p className="font-bold text-gray-800 truncate">
@@ -87,16 +87,16 @@ const Navbar: React.FC = () => {
                                         {user.email}
                                     </p>
                                 </div>
-                                
+
                                 {/* Các menu chức năng */}
                                 <div className="p-2">
-                                    <Link 
-                                        to="/my-courses" 
+                                    <Link
+                                        to="/my-courses"
                                         className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
                                     >
                                         📚 Khóa học của tôi
                                     </Link>
-                                    <button 
+                                    <button
                                         onClick={handleLogout}
                                         className="w-full text-left px-4 py-2.5 text-sm text-orange-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1"
                                     >

@@ -15,7 +15,7 @@ const CourseAccordion: React.FC = () => {
             try {
                 setIsLoading(true);
                 const data = await courseApi.getAllCourses();
-                console.log("Dữ liệu thật từ API trả về là:", data);
+                //console.log("Dữ liệu thật từ API trả về là:", data);
                 // Chỉ lấy những khóa học đang "active" (nếu có trường status)
                 const activeCourses = data.filter(c => c.status !== 'hidden');
                 setCourses(activeCourses);
@@ -61,10 +61,10 @@ const CourseAccordion: React.FC = () => {
                                     <div className="course-detail">
                                         <div className="course-image">
                                             {/* LƯU Ý: Sửa lại tên biến cho khớp DB (image_url, full_name...) */}
-                                            <img src={course.image_url} alt={course.title} />
+                                            <img src={course.imageUrl} alt={course.title} />
                                             <div className="teacher-mini" style={{ marginTop: '20px' }}>
                                                 <div>
-                                                    <h5>Giảng viên: {course.teacher?.full_name}</h5>
+                                                    <h5>Giảng viên: {course.teacher?.fullName}</h5>
                                                     <p>{course.teacher?.title} tại {course.teacher?.company}</p>
                                                     <p>Kinh nghiệm: {course.teacher?.experience}</p>
                                                 </div>
@@ -73,7 +73,7 @@ const CourseAccordion: React.FC = () => {
 
                                         <div className="course-info">
                                             <h4>Tổng quan khóa học</h4>
-                                            <p className="desc">{course.short_desc}</p>
+                                            <p className="desc">{course.shortDesc}</p>
 
                                             <div className="course-meta">
                                                 <span className="meta-badge"><Clock size={13} height={10} />  {course.duration}</span>

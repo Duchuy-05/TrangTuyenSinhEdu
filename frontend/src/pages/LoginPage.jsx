@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const navigate = useNavigate(); // khai bao bien navigate
   // kiem tra neu da co token thi chuyen huong ve trang chu
   useEffect(() => {
@@ -28,7 +28,7 @@ const LoginPage = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(''); 
+    setErrorMessage('');
     setIsLoading(true);
 
     try {
@@ -36,9 +36,9 @@ const LoginPage = () => {
         email: formData.email,
         password: formData.password
       },
-      {
-        withCredentials: true // Cho phép gửi cookie từ server về client
-      }
+        {
+          withCredentials: true // Cho phép gửi cookie từ server về client
+        }
       );
       localStorage.setItem('accessToken', response.data.accessToken); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Lưu thông tin user vào localStorage
@@ -52,9 +52,9 @@ const LoginPage = () => {
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-orange-50 px-4">
-      
+
       <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_8px_30px_rgb(249,115,22,0.12)] p-10 sm:p-12 transition-all duration-300 hover:shadow-[0_8px_40px_rgb(249,115,22,0.2)] border border-orange-100">
-        
+
         {/* Header: Tăng margin-bottom (mb-12) */}
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-gray-900 mb-3">
@@ -66,7 +66,7 @@ const LoginPage = () => {
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          
+
           {/* gmail */}
           <div>
             <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-3">
@@ -148,9 +148,8 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white transition-all duration-200 cursor-pointer ${
-                isLoading ? 'bg-orange-400 cursor-not-allowed' : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-orange-500/30 transform hover:-translate-y-0.5 active:translate-y-0'
-              }`}
+              className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white transition-all duration-200 cursor-pointer ${isLoading ? 'bg-orange-400 cursor-not-allowed' : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-orange-500/30 transform hover:-translate-y-0.5 active:translate-y-0'
+                }`}
             >
               {isLoading ? 'Signing In...' : 'Sign In'}
             </button>

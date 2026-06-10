@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { courseApi, Course } from '../services/api';
 import { Clock, Laptop } from 'lucide-react';
@@ -64,7 +64,7 @@ const CourseDetailPage: React.FC = () => {
                         {course.target}
                     </span>
                     <h1 style={{ fontSize: '3rem', margin: '20px 0' }}>{course.title}</h1>
-                    <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto', opacity: 0.9 }}>{course.short_desc}</p>
+                    <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto', opacity: 0.9 }}>{course.shortDesc}</p>
                 </div>
             </section>
 
@@ -75,12 +75,12 @@ const CourseDetailPage: React.FC = () => {
 
                         {/* Cột trái */}
                         <div className="course-main-content" style={{ background: 'white', padding: '40px', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)' }}>
-                            <img src={course.image_url} alt={course.title} style={{ width: '100%', borderRadius: 'var(--radius)', marginBottom: '30px' }} />
+                            <img src={course.imageUrl} alt={course.title} style={{ width: '100%', borderRadius: 'var(--radius)', marginBottom: '30px' }} />
 
                             <h2 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Nội dung chương trình</h2>
                             <ul className="course-syllabus" style={{ marginBottom: '40px' }}>
                                 {/* Map qua bảng course_syllabus (sắp xếp theo order_index nếu cần) */}
-                                {course.syllabus?.sort((a, b) => a.order_index - b.order_index).map((item) => (
+                                {course.syllabus?.sort((a, b) => a.orderIndex - b.orderIndex).map((item) => (
                                     <li key={item.id} style={{ padding: '15px 0', borderBottom: '1px solid var(--border-color)' }}>
                                         <strong style={{ fontSize: '1.1rem' }}>{item.title}</strong>
                                         {item.description && <p style={{ marginTop: '5px', color: 'var(--text-light)' }}>{item.description}</p>}
@@ -91,9 +91,9 @@ const CourseDetailPage: React.FC = () => {
                             <h2 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Giảng viên hướng dẫn</h2>
                             {course.teacher && (
                                 <div className="teacher-mini" style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'var(--bg-light)', padding: '20px', borderRadius: 'var(--radius)' }}>
-                                    <img src={course.teacher.avatar_url} alt={course.teacher.full_name} style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }} />
+                                    <img src={course.teacher.avatarUrl} alt={course.teacher.fullName} style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }} />
                                     <div>
-                                        <h4 style={{ fontSize: '1.2rem' }}>{course.teacher.full_name}</h4>
+                                        <h4 style={{ fontSize: '1.2rem' }}>{course.teacher.fullName}</h4>
                                         <p style={{ color: 'var(--text-light)' }}>{course.teacher.title} tại {course.teacher.company}</p>
                                         <p style={{ fontWeight: '500', marginTop: '5px' }}>{course.teacher.experience}</p>
                                         <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>{course.teacher.bio}</p>
