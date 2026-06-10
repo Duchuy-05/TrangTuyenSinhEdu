@@ -5,7 +5,7 @@ import { AppDataSource } from "../models/DataSource"; // Đường dẫn trỏ t
 import { User, UserRole } from "../models/entities/User";
 
 export class AuthController {
-  
+
   // ==============================
   // 1. API REGISTER
   // ==============================
@@ -13,11 +13,11 @@ export class AuthController {
     try {
       const { name, email, password } = req.body;
       const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/; // Mật khẩu tối thiểu 6 ký tự, ít nhất 1 chữ hoa và 1 ký tự đặc biệt
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({ 
-        message: "Mật khẩu phải tối thiểu 6 ký tự, gồm chữ hoa và ký tự đặc biệt!" 
-      });
-    }
+      if (!passwordRegex.test(password)) {
+        return res.status(400).json({
+          message: "Mật khẩu phải tối thiểu 6 ký tự, gồm chữ hoa và ký tự đặc biệt!"
+        });
+      }
       const userRepository = AppDataSource.getRepository(User);
 
       // Kiểm tra xem email đã tồn tại chưa
@@ -68,15 +68,15 @@ export class AuthController {
 
       // Tạo Access Token (15 phút)
       const accessToken = jwt.sign(
-        { id: user.id, role: user.role }, 
-        process.env.ACCESS_TOKEN_SECRET!, 
+        { id: user.id, role: user.role },
+        process.env.ACCESS_TOKEN_SECRET!,
         { expiresIn: "15m" }
       );
 
       // Tạo Refresh Token (7 ngày)
       const refreshToken = jwt.sign(
-        { id: user.id }, 
-        process.env.REFRESH_TOKEN_SECRET!, 
+        { id: user.id },
+        process.env.REFRESH_TOKEN_SECRET!,
         { expiresIn: "7d" }
       );
 
@@ -111,7 +111,7 @@ export class AuthController {
     try {
       // 1. Lấy Refresh Token từ cookie (Yêu cầu phải có cookie-parser)
       const refreshToken = req.cookies.refreshToken;
-      
+
       if (!refreshToken) {
         return res.status(401).json({ message: "Chưa xác thực. Vui lòng đăng nhập lại!" });
       }
@@ -132,15 +132,15 @@ export class AuthController {
 
         // 4. Ký và Cấp phát Access Token mới (15 phút)
         const newAccessToken = jwt.sign(
-          { id: user.id, role: user.role }, 
-          process.env.ACCESS_TOKEN_SECRET!, 
+          { id: user.id, role: user.role },
+          process.env.ACCESS_TOKEN_SECRET!,
           { expiresIn: "15m" }
         );
 
         // 5. Trả Token mới về cho FE
-        return res.status(200).json({ 
-            message: "Cấp lại Token thành công!",
-            accessToken: newAccessToken 
+        return res.status(200).json({
+          message: "Cấp lại Token thành công!",
+          accessToken: newAccessToken
         });
       });
     } catch (error) {

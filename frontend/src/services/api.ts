@@ -2,17 +2,17 @@ import axios from 'axios';
 
 export interface Teacher {
     id: number,
-    full_name: string,
+    fullName: string,
     title: string,
     experience: string;
     company: string;
     bio: string;
-    avatar_url: string;
+    avatarUrl: string;
 }
 
 export interface Syllabus {
     id: number;
-    order_index: number;
+    orderIndex: number;
     title: string;
     description: string;
 }
@@ -21,9 +21,9 @@ export interface Course {
     id: number;
     category: string;
     title: string;
-    short_desc: string;
+    shortDesc: string;
     target: string;
-    image_url: string;
+    imageUrl: string;
     duration: string;
     format: string;
     price: string;
