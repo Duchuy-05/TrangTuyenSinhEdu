@@ -1,13 +1,38 @@
 // src/pages/ContactPage.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { Bold, Mail, MapPin, Phone } from 'lucide-react';
+import { Bold, Link, Mail, MapPin, Phone } from 'lucide-react';
+import { courseApi, Course } from '../services/api';
 
 const ContactPage: React.FC = () => {
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     // Tự động cuộn lên đầu khi vào trang
     useEffect(() => {
         window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                setIsLoading(true);
+                const data = await courseApi.getAllCourses();
+                console.log("Dữ liệu thật từ API trả về là:", data);
+
+                const activeCourses = data.filter(c => c.status !== 'hidden');
+                setCourses(activeCourses);
+
+            } catch (err) {
+                console.error("Lỗi khi tải khóa học:", err);
+                setError("Không thể tải dữ liệu khóa học lúc này.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCourses();
     }, []);
 
     return (
@@ -55,12 +80,13 @@ const ContactPage: React.FC = () => {
                                     <label>Khóa học quan tâm</label>
                                     <select className="form-control">
                                         <option value="">-- Chọn khóa học --</option>
-                                        <option value="scratch">Tư Duy Lập Trình Với Scratch (Lớp 6-7)</option>
-                                        <option value="python">Lập Trình Python Ứng Dụng (Lớp 8-9)</option>
-                                        <option value="web">Sáng Tạo Web HTML/CSS/JS (Lớp 10-12)</option>
-                                        <option value="khac">Khác</option>
+                                        {courses?.map((course) => (
+                                            <option value={course.id}>{course.title}</option>
+                                        ))}
                                     </select>
+
                                 </div>
+
 
                                 <div className="form-group">
                                     <label>Nội dung cần tư vấn *</label>
