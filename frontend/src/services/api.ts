@@ -33,6 +33,15 @@ export interface Course {
     syllabus: Syllabus[];
 }
 
+export interface RegistrationForm {
+    courseId: number;
+    contactName: string;
+    contactEmail: string;
+    contactPhone: string;
+    note?: string;
+    userId?: number
+}
+
 // cau hinh axios
 const apiClient = axios.create({
     baseURL: 'http://localhost:3000/api',
@@ -66,4 +75,12 @@ export const teacherApi = {
         const response = await apiClient.get(`/teachers/${id}`);
         return response.data.data;
     },
+}
+
+
+
+export const registrationApi = {
+    registerForCourse: async (userData: RegistrationForm): Promise<void> => {
+        await apiClient.post(`/registrations`, userData );
+    }
 }

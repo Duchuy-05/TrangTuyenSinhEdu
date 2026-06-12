@@ -2,13 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { courseApi, Course } from '../services/api';
+import { courseApi, Course, registrationApi } from '../services/api';
 import { Clock, Laptop } from 'lucide-react';
+import { RegistrationForm } from '../services/api';
 
 const CourseDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [course, setCourse] = useState<Course | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    const [formData, setFormData] = useState<RegistrationForm>({
+        courseId: Number(id),
+        contactName: '',
+        contactEmail: '',
+        contactPhone: '',
+        note: '',
+    });
+    
+
+    const handleSubmit = async () => {
+        if (!formData.contactName || !formData.contactPhone || !formData.contactEmail) {
+            alert('Vui lòng điền đầy đủ thông tin!');
+            return;
+        }
+
+
+        try {
+            setIsLoading(true);
+            await registrationApi.registerForCourse(formData);
+            alert('Đăng ký thành công!');
+        } catch (error) {
+            alert('Đăng ký thất bại, vui lòng thử lại!');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     useEffect(() => {
         window.scrollTo(0, 0); // Cuộn lên đầu trang
@@ -113,12 +141,39 @@ const CourseDetailPage: React.FC = () => {
                                 </div>
 
                                 <h4 style={{ marginBottom: '15px' }}>Đăng ký tư vấn khóa học</h4>
-                                <form style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                    <input type="text" placeholder="Họ tên phụ huynh/học sinh" style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }} />
-                                    <input type="text" placeholder="Số điện thoại liên hệ" style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }} />
-                                    <input type="email" placeholder="Email" style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }} />
-                                    <button type="button" className="btn btn-primary" style={{ width: '100%', marginTop: '10px' }}>Đăng ký ngay</button>
-                                </form>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                    <input
+                                        type="text"
+                                        placeholder="Họ tên phụ huynh/học sinh"
+                                        value={formData.contactName}
+                                        onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                                        style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Số điện thoại liên hệ"
+                                        value={formData.contactPhone}
+                                        onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                                        style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }}
+                                    />
+                                    <input
+                                        type="email"
+                                        placeholder="Email"
+                                        value={formData.contactEmail}
+                                        onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                                        style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }}
+                                    />
+                                    
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary"
+                                        onClick={handleSubmit}
+                                        disabled={isLoading}
+                                        style={{ width: '100%', marginTop: '10px' }}
+                                    >
+                                        {isLoading ? 'Đang xử lý...' : 'Đăng ký ngay'}
+                                    </button>
+                                </div>
                                 <p style={{ fontSize: '0.85rem', color: 'var(--text-light)', textAlign: 'center', marginTop: '15px' }}>
                                     Hoặc liên hệ Hotline: <strong style={{ color: 'var(--primary-color)' }}>1900 1234</strong>
                                 </p>

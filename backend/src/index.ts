@@ -1,9 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import { AppDataSource } from './models/DataSource';
-import authRoutes from './routers/auth.router';
-import dotenv from 'dotenv';
-dotenv.config();
+import authRoutes from './routers/authRoutes';
+import 'dotenv/config';
 import cookieParser from 'cookie-parser';
 import userRouter from './routers/user.router';
 import teacherRouter from './routers/teacher.router';
@@ -20,12 +19,11 @@ app.use(cors({
 }));
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-
+app.use("/api/auth", authRoutes) // Đăng ký route cho auth
 app.use(express.static('public'))
 app.use(cookieParser());
 app.set('view engine', 'ejs')
 
-app.use("/api/auth", authRoutes) // Đăng ký route cho auth
 app.use("/api", userRouter)
 app.use("/api", teacherRouter)
 app.use("/api", courseRouter)
