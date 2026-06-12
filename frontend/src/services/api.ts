@@ -33,13 +33,30 @@ export interface Course {
     syllabus: Syllabus[];
 }
 
-export interface RegistrationForm {
+export interface Registration {
+    id: number;
+    userId: number;
     courseId: number;
     contactName: string;
     contactEmail: string;
     contactPhone: string;
-    note?: string;
-    userId?: number
+    note: string;
+    status: string; // 'pending', 'contacted', 'paid', 'cancelled'...
+    handledBy: number | null;
+    registeredAt: string;
+    contactedAt: string | null;
+    // Nested Objects
+    course: {
+        id: number;
+        title: string;
+        price: string;
+        imageUrl: string;
+    };
+    user?: { // Có thể null nếu khách vãng lai đăng ký
+        id: number;
+        fullName: string;
+        email: string;
+    };
 }
 
 // cau hinh axios
@@ -63,6 +80,16 @@ export const courseApi = {
         return response.data.data;
     },
 
+    createCourse: async (data: any) => {
+        return await apiClient.post('/courses', data);
+    },
+    updateCourse: async (id: number, data: any) => {
+        return await apiClient.put(`/courses/${id}`, data);
+    },
+    deleteCourse: async (id: number) => {
+        return await apiClient.delete(`/courses/${id}`);
+    }
+
 };
 
 export const teacherApi = {
@@ -75,12 +102,40 @@ export const teacherApi = {
         const response = await apiClient.get(`/teachers/${id}`);
         return response.data.data;
     },
-}
 
-
+    createTeacher: async (data: Partial<Teacher>) => {
+        return await apiClient.post('/teachers', data);
+    },
+    updateTeacher: async (id: number, data: Partial<Teacher>) => {
+        return await apiClient.put(`/teachers/${id}`, data);
+    },
+    deleteTeacher: async (id: number) => {
+        return await apiClient.delete(`/teachers/${id}`);
+    }
+};
 
 export const registrationApi = {
+    getAllRegistrations: async (): Promise<Registration[]> => {
+        const response = await apiClient.get('/registrations');
+        return response.data.data;
+    }
+    
     registerForCourse: async (userData: RegistrationForm): Promise<void> => {
         await apiClient.post(`/registrations`, userData );
     }
-}
+};
+
+export const uploadApi = {
+    uploadImage: async (file: File): Promise<string> => {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await apiClient.post('/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        return response.data.url;
+    }
+};

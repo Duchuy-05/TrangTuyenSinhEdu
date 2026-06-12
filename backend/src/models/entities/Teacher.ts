@@ -16,7 +16,7 @@ export class Teacher {
   @Column({ name: 'full_name' })
   fullName: string;
 
-  @Column({ unique: true })
+  @Column({ nullable: true, unique: true })
   email: string;
 
   @Column({ nullable: true })

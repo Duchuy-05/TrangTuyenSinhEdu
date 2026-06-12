@@ -10,11 +10,12 @@ import courseRouter from './routers/course.router';
 import syllabusRouter from './routers/syllabus.router';
 import registrationRouter from './routers/registration.router';
 
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: 'http://localhost:5173',
     credentials: true // Bật tính năng cho phép trao đổi Cookie giữa FE và BE
 }));
 app.use(express.json())
@@ -31,13 +32,13 @@ app.use("/api", syllabusRouter)
 app.use("/api", registrationRouter)
 
 try {
-    AppDataSource.initialize().then(()=>{
+    AppDataSource.initialize().then(() => {
         console.log("DataSource chay. !")
-    }).catch((err)=>{
+    }).catch((err) => {
         console.error(err)
     })
 } catch (error) { console.error("err:", error) }
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
