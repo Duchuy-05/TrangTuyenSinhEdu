@@ -55,3 +55,4 @@ Thumbs.db
 # If you want to prevent .agents from being committed but keep AI editor autocompletion,
 # please add ".agents/" to the `.git/info/exclude` file instead.
 .agents
+docs
