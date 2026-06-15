@@ -9,6 +9,7 @@ import teacherRouter from './routers/teacher.router';
 import courseRouter from './routers/course.router';
 import syllabusRouter from './routers/syllabus.router';
 import registrationRouter from './routers/registration.router';
+import postRouter from './routers/post.router';
 
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(express.static('public'))
 app.use(cookieParser());
 app.set('view engine', 'ejs')
 
+app.use("/api", postRouter)
 app.use("/api", userRouter)
 app.use("/api", teacherRouter)
 app.use("/api", courseRouter)
