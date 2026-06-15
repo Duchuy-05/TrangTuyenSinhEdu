@@ -29,8 +29,8 @@ const Footer: React.FC = () => {
                         <h4>Liên hệ</h4>
                         <ul>
                             <li>Hotline: 1900 1234</li>
-                            <li>Email: contact@edupro.vn</li>
-                            <li>Địa chỉ: Tòa nhà Tech, Q1, TP.HCM</li>
+                            <li>Email: devedu121@gmail.com</li>
+                            <li>Địa chỉ: Số 100 ngõ 1 phố Phạm Tuấn Tài, Phường Nghĩa Đô, Thành Phố Hà Nội</li>
                         </ul>
                     </div>
                 </div>

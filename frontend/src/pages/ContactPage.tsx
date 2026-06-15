@@ -1,13 +1,60 @@
 // src/pages/ContactPage.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
-import { Bold, Mail, MapPin, Phone } from 'lucide-react';
+import { Bold, Link, Mail, MapPin, Phone } from 'lucide-react';
+import { courseApi, Course, RegistrationForm, registrationApi } from '../services/api';
 
 const ContactPage: React.FC = () => {
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+    const [formData, setFormData] = useState<RegistrationForm>({
+        courseId: '' as unknown as number,
+        contactName: '',
+        contactEmail: '',
+        contactPhone: '',
+        note: '',
+    });
+
+    const handleSubmit = async () => {
+            if (!formData.contactName || !formData.contactPhone || !formData.contactEmail) {
+                alert('Vui lòng điền đầy đủ thông tin!');
+                return;
+            }
+    
+            try {
+                setIsLoading(true);
+                await registrationApi.registerForCourse(formData);
+                alert('Đăng ký thành công!');
+            } catch (error) {
+                alert('Đăng ký thất bại, vui lòng thử lại!');
+            } finally {
+                setIsLoading(false);
+            }
+        };
     // Tự động cuộn lên đầu khi vào trang
     useEffect(() => {
         window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                setIsLoading(true);
+                const data = await courseApi.getAllCourses();
+                const activeCourses = data.filter(c => c.status !== 'hidden');
+                setCourses(activeCourses);
+
+            } catch (err) {
+                console.error("Lỗi khi tải khóa học:", err);
+                setError("Không thể tải dữ liệu khóa học lúc này.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCourses();
     }, []);
 
     return (
@@ -37,37 +84,47 @@ const ContactPage: React.FC = () => {
                             <form onSubmit={(e) => e.preventDefault()}>
                                 <div className="form-group">
                                     <label>Họ và tên *</label>
-                                    <input type="text" className="form-control" placeholder="Nhập họ và tên của bạn" required />
+                                    <input type="text" className="form-control" value={formData.contactName}
+                                        onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+                                        placeholder="Nhập họ và tên của bạn" required />
                                 </div>
 
                                 <div className="form-grid-2">
                                     <div className="form-group">
                                         <label>Số điện thoại *</label>
-                                        <input type="tel" className="form-control" placeholder="09xx xxx xxx" required />
+                                        <input type="tel" className="form-control" value={formData.contactPhone}
+                                            onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                                            placeholder="09xx xxx xxx" required />
                                     </div>
                                     <div className="form-group">
                                         <label>Email liên hệ</label>
-                                        <input type="email" className="form-control" placeholder="email@example.com" />
+                                        <input type="email" className="form-control" value={formData.contactEmail}
+                                            onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                                            placeholder="email@example.com" />
                                     </div>
                                 </div>
 
                                 <div className="form-group">
                                     <label>Khóa học quan tâm</label>
-                                    <select className="form-control">
+                                    <select className="form-control" value={formData.courseId}
+                                        onChange={(e) => setFormData({ ...formData, courseId: Number(e.target.value) })}>
                                         <option value="">-- Chọn khóa học --</option>
-                                        <option value="scratch">Tư Duy Lập Trình Với Scratch (Lớp 6-7)</option>
-                                        <option value="python">Lập Trình Python Ứng Dụng (Lớp 8-9)</option>
-                                        <option value="web">Sáng Tạo Web HTML/CSS/JS (Lớp 10-12)</option>
-                                        <option value="khac">Khác</option>
+                                        {courses?.map((course) => (
+                                            <option value={course.id}>{course.title}</option>
+                                        ))}
                                     </select>
+
                                 </div>
+
 
                                 <div className="form-group">
                                     <label>Nội dung cần tư vấn *</label>
-                                    <textarea className="form-control" rows={4} placeholder="Nhập nội dung câu hỏi của bạn..." required></textarea>
+                                    <textarea className="form-control" value={formData.note}
+                                        onChange={(e) => setFormData({ ...formData, note: e.target.value })}
+                                        rows={4} placeholder="Nhập nội dung câu hỏi của bạn..." required></textarea>
                                 </div>
 
-                                <button type="submit" className="btn btn-primary" style={{ width: '100%', fontSize: '1.1rem', padding: '15px' }}>
+                                <button type="submit" onClick={handleSubmit} className="btn btn-primary" style={{ width: '100%', fontSize: '1.1rem', padding: '15px' }}>
                                     Gửi thông tin liên hệ
                                 </button>
                             </form>
@@ -80,7 +137,7 @@ const ContactPage: React.FC = () => {
 
                                 <div className="info-item">
                                     <strong><MapPin size={13} /> Trụ sở chính (Học Offline):</strong>
-                                    <p>Tòa nhà Tech Tower, Số 1 Đường Cầu Giấy, Láng Thượng, Đống Đa, Hà Nội.</p>
+                                    <p>Số 100 ngõ 1 phố Phạm Tuấn Tài, Phường Nghĩa Đô, Thành Phố Hà Nội</p>
                                 </div>
                                 <div className="info-item">
                                     <strong><Phone size={13} /> Hotline hỗ trợ:</strong>
@@ -88,7 +145,7 @@ const ContactPage: React.FC = () => {
                                 </div>
                                 <div className="info-item">
                                     <strong><Mail size={13} /> Email:</strong>
-                                    <p>lienhe@edupro.vn</p>
+                                    <p>devedu121@gmail.com</p>
                                 </div>
                             </div>
 

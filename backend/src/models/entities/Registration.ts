@@ -25,7 +25,7 @@ export class Registration {
   userId: number;
 
   @Column({ name: 'course_id' })
-  courseId: string;
+  courseId: number;
 
   // Thông tin liên hệ tại thời điểm đăng  (có thể khác với thông tin trong bảng users)
   @Column({ name: 'contact_name' })

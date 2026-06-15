@@ -67,4 +67,21 @@ export class TeacherController {
             return response.json(errorHandler(500, 'Lỗi khi xóa giáo viên'));
         }
     }
+
+    public static async uploadImage(req: Request, res: Response): Promise<Response> {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ message: "Vui lòng chọn một file ảnh!" });
+            }
+
+            return res.json({ url: req.file.path });
+        } catch (error: any) {
+            console.error("Lỗi tại TeacherController.uploadImage:", error);
+
+            return res.status(500).json({
+                message: "Lỗi hệ thống khi tải ảnh lên Cloudinary",
+                error: error.message
+            });
+        }
+    }
 }

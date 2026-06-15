@@ -76,9 +76,9 @@ const CourseAccordion: React.FC = () => {
                                             <p className="desc">{course.shortDesc}</p>
 
                                             <div className="course-meta">
-                                                <span className="meta-badge"><Clock size={13} height={10} />  {course.duration}</span>
-                                                <span className="meta-badge"><Laptop size={13} height={10} /> {course.format}</span>
-                                                <span className="meta-badge" style={{ background: '#fef3c7', color: '#b45309' }}><Book size={13} height={10} /> {course.target}</span>
+                                                <span className="meta-badge"><Clock size={10} height={10} />  {course.duration}</span>
+                                                <span className="meta-badge"><Laptop size={10} height={10} /> {course.format}</span>
+                                                <span className="meta-badge" style={{ background: '#fef3c7', color: '#b45309' }}><Book size={10} height={10} /> {course.target}</span>
                                             </div>
 
                                             <div className="course-price-cta" style={{ marginTop: '30px' }}>

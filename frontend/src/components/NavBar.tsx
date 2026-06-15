@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { coursesData } from '../data/mockData';
+import { courseApi } from '../services/api';
+import { Course } from '../services/api';
 
 const Navbar: React.FC = () => {
     const [scrolled, setScrolled] = useState(false);
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     // quản lý trạng thái người dùng
     const [user, setUser] = useState<any>(null);
@@ -21,6 +25,26 @@ const Navbar: React.FC = () => {
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    useEffect(() => {
+            const fetchCourses = async () => {
+                try {
+                    setIsLoading(true);
+                    const data = await courseApi.getAllCourses();
+
+                    const activeCourses = data.filter(c => c.status !== 'hidden');
+                    setCourses(activeCourses);
+                    
+                } catch (err) {
+                    console.error("Lỗi khi tải khóa học:", err);
+                    setError("Không thể tải dữ liệu khóa học lúc này.");
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+    
+            fetchCourses();
+        }, []);
 
     // xử lý đăng xuất
     const handleLogout = () => {
@@ -52,7 +76,7 @@ const Navbar: React.FC = () => {
                     <li className="nav-dropdown">
                         <span className="dropdown-trigger">Khóa học ▾</span>
                         <ul className="dropdown-menu">
-                            {coursesData?.map((course) => (
+                            {courses?.map((course) => (
                                 <li key={course.id}>
                                     <Link to={`/khoa-hoc/${course.id}`}>{course.title}</Link>
                                 </li>

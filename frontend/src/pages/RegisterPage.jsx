@@ -5,7 +5,7 @@ import '../styles/RegisterPage.css'; // Import file CSS vừa tạo
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    name: '', 
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -13,7 +13,8 @@ const RegisterPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
+  // States xử lý logic
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,8 +26,9 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(''); 
-    
+    setErrorMessage('');
+
+    // 1. Validate Mật khẩu (Tối thiểu 6 ký tự, 1 chữ hoa, 1 ký tự đặc biệt)
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/;
     if (!passwordRegex.test(formData.password)) {
       setErrorMessage('Mật khẩu phải tối thiểu 6 ký tự, gồm chữ hoa và ký tự đặc biệt!');
@@ -41,13 +43,13 @@ const RegisterPage = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
-        name: formData.name, 
+        name: formData.name,
         email: formData.email,
         password: formData.password
       });
 
       navigate('/verify-email', { state: { email: formData.email } });
-      
+
     } catch (error) {
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.message);
@@ -62,7 +64,7 @@ const RegisterPage = () => {
   return (
     <div className="register-container">
       <div className="register-card">
-        
+
         <div className="register-header">
           <h1 className="register-title">Create Your Account</h1>
         </div>
