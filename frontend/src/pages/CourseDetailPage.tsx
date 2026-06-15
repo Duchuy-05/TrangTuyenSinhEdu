@@ -129,7 +129,6 @@ const CourseDetailPage: React.FC = () => {
                             )}
                         </div>
 
-                        {/* Cột phải: Sidebar (Giữ nguyên form đăng ký của bạn) */}
                         {/* Cột phải: Form Đăng ký */}
                         <div className="course-sidebar">
                             <div className="registration-box" style={{ background: 'white', padding: '30px', borderRadius: 'var(--radius)', position: 'sticky', top: '100px', boxShadow: 'var(--shadow-lg)' }}>
