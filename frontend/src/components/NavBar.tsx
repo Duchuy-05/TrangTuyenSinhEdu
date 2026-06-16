@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
                         </ul>
                     </li>
 
-                    <li><a href="/#blog">Blog</a></li>
+                    <li><Link to="/posts">Tin tức</Link></li>
                     <li><Link to="/lien-he">Liên hệ</Link></li>
                 </ul>
 
@@ -122,7 +122,7 @@ const Navbar: React.FC = () => {
                                     </Link>
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full text-left px-4 py-2.5 text-sm text-orange-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1"
+                                        className="w-full text-left px-4 py-2.5 text-sm text-orange-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1 cursor-pointer"
                                     >
                                         Đăng xuất
                                     </button>

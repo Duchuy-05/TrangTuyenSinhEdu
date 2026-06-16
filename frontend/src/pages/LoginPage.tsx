@@ -21,14 +21,14 @@ const LoginPage = () => {
     }
   }, [navigate]);
 
-  const handleChange = (e) => {
+  const handleChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage('');
     setIsLoading(true);
@@ -46,7 +46,7 @@ const LoginPage = () => {
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Lưu thông tin user vào localStorage
       alert(response.data.message || 'Đăng nhập thành công!');
       navigate("/");
-    } catch (error) {
+    } catch (error : any) {
       setErrorMessage(error.response?.data?.message || 'Lỗi kết nối server. Vui lòng thử lại sau.');
     } finally {
       setIsLoading(false);

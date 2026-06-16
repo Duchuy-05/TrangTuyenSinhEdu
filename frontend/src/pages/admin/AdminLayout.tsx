@@ -29,6 +29,9 @@ const AdminLayout: React.FC = () => {
                     <NavLink to="/admin/registrations" className={({ isActive }) => isActive ? "admin-nav-item active" : "admin-nav-item"}>
                         <Phone size={20} /> Đơn đăng ký / Liên hệ
                     </NavLink>
+                    <NavLink to="/admin/posts" className={({ isActive }) => isActive ? "admin-nav-item active" : "admin-nav-item"}>
+                        <BookOpen size={20} /> Quản lý Bài viết
+                    </NavLink>
                 </nav>
             </aside>
 

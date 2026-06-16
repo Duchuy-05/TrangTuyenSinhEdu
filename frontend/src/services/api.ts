@@ -67,6 +67,19 @@ export interface Registration {
     };
 }
 
+export interface Post {
+  id: number;
+  title: string;
+  slug: string;
+  thumbnailUrl: string;
+  shortDesc: string;
+  content: string;
+  authorName: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // cau hinh axios
 const apiClient = axios.create({
     baseURL: 'http://localhost:3000/api',
@@ -147,3 +160,35 @@ export const uploadApi = {
         return response.data.url;
     }
 };
+
+export const postApi = {
+  getAllPosts: async (): Promise<Post[]> => {
+    const response = await apiClient.get('/posts');
+    return response.data.data;
+  },
+
+  getAllPublishedPosts: async (): Promise<Post[]> => {
+    const response = await apiClient.get('/posts/published');
+    return response.data.data;
+  },
+
+  getPostBySlug: async (slug: string): Promise<Post> => {
+    const response = await apiClient.get(`/posts/${slug}`);
+    return response.data.data;
+  },
+
+  createPost: async (data: FormData) => {
+    return await apiClient.post('/posts', data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  updatePost: async (id: number, data: FormData) => {
+    return await apiClient.put(`/posts/${id}`, data, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  deletePost: async (id: number) => {
+    return await apiClient.delete(`/posts/${id}`);
+  },
+};
+

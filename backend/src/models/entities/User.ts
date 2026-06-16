@@ -11,6 +11,7 @@ import { Registration } from './Registration';
 export enum UserRole {
   STUDENT = 'student',
   ADMIN = 'admin',
+  TEACHER = 'teacher',
 }
 
 @Entity('users')

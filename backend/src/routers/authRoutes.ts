@@ -9,4 +9,5 @@ router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
 // Làm mới token
 router.get('/refresh', AuthController.refreshToken);
+
 export default router;

@@ -12,6 +12,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminTeachers from './pages/admin/AdminTeachers';
 import AdminCourses from './pages/admin/AdminCourses';
 import AdminRegistrations from './pages/admin/AdminRegistrations';
+import AdminPosts from './pages/admin/AdminPost';
 import VerifyEmail from './pages/VerifyEmail';
 import StudentLayout from './layouts/StudentLayout';
 import MyCoursesPage from './pages/student/MyCoursesPage';
@@ -20,6 +21,8 @@ import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
 import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
 import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
 import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
+import PostList from './pages/Post/PostList';
+import PostDetail from './pages/Post/PostDetail';
 import './styles/LandingPage.css';
 function App() {
   return (
@@ -42,6 +45,9 @@ function App() {
         {/* Trang liên hệ */}
         <Route path="/lien-he" element={<ContactPage />} />
 
+        <Route path="/posts" element={<PostList />} />
+        <Route path="/posts/:slug" element={<PostDetail />} />
+
         <Route path="/admin" element={<AdminLayout />}>
           {/* Tự động điều hướng /admin sang /admin/dashboard (Tùy chọn) */}
           <Route index element={<AdminDashboard />} />
@@ -55,10 +61,8 @@ function App() {
 
           <Route path="registrations" element={<AdminRegistrations />} />
 
-          {/* Sau này bạn sẽ tạo thêm:
-      <Route path="courses" element={<AdminCourses />} />
-      <Route path="teachers" element={<AdminTeachers />} />
-      */}
+          <Route path="posts" element={<AdminPosts />} />
+
         </Route>
         {/* Trang xác thực email */}
         <Route path="/verify-email" element={<VerifyEmail />} />
