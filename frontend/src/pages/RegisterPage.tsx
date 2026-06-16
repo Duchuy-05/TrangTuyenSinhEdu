@@ -131,8 +131,7 @@ const RegisterPage = () => {
                 )}
               </button>
             </div>
-          </div>
-
+          <p className="password-hint">Mật khẩu phải tối thiểu 6 ký tự, gồm chữ hoa và ký tự đặc biệt!</p>          </div>
           <div className="form-group">
             <label className="form-label">Confirm Password</label>
             <div className="input-wrapper has-icon">

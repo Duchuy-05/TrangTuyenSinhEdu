@@ -19,7 +19,7 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Lấy email từ RegisterPage truyền sang. Nếu không có thì đá về trang Register.
+  // Lấy email từ RegisterPage truyền sang. Nếu không có thì trả về trang Register.
   const email = location.state?.email;
 
   useEffect(() => {
