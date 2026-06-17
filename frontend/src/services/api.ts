@@ -96,8 +96,13 @@ export const courseApi = {
     },
     deleteCourse: async (id: number) => {
         return await apiClient.delete(`/courses/${id}`);
-    }
-
+    },
+    updateCourseSyllabus: async (courseId: number, data: { syllabus: any[] }) => {
+        return await apiClient.put(`/courses/${courseId}/syllabus`, data);
+    },
+    createCourseSyllabus: async (courseId: number, data: { syllabus: any[] }) => {
+        return await apiClient.post(`/courses/${courseId}/syllabi/bulk`, data);
+    },
 };
 
 export const teacherApi = {
@@ -127,9 +132,9 @@ export const registrationApi = {
         const response = await apiClient.get('/registrations');
         return response.data.data;
     },
-    
+
     registerForCourse: async (userData: RegistrationForm): Promise<void> => {
-        await apiClient.post(`/registrations`, userData );
+        await apiClient.post(`/registrations`, userData);
     }
 };
 
@@ -147,3 +152,4 @@ export const uploadApi = {
         return response.data.url;
     }
 };
+
