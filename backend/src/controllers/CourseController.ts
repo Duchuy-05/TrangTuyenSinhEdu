@@ -3,7 +3,7 @@ import { CourseService } from '../services/CourseService';
 import { successHandler, errorHandler } from '../utils/responseHandler';
 
 export class CourseController {
-    static async getAllCourses( request: Request, response: Response) {
+    static async getAllCourses(request: Request, response: Response) {
         try {
             const courses = await CourseService.getAllCourses();
             return response.json(successHandler(200, 'Lấy danh sách khóa học thành công', courses));
@@ -13,7 +13,7 @@ export class CourseController {
         }
     }
 
-    static async getCourseById( request: Request, response: Response) {
+    static async getCourseById(request: Request, response: Response) {
         const courseId = Number(request.params.id);
         try {
             const course = await CourseService.getCourseById(courseId);
@@ -27,7 +27,7 @@ export class CourseController {
         }
     }
 
-    static async createCourse( request: Request, response: Response) {
+    static async createCourse(request: Request, response: Response) {
         const courseData = {
             ...request.body,
             image: request.file?.path
@@ -41,7 +41,7 @@ export class CourseController {
         }
     }
 
-    static async updateCourse( request: Request, response: Response) {
+    static async updateCourse(request: Request, response: Response) {
         const courseId = Number(request.params.id);
         const courseData = {
             ...request.body,

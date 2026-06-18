@@ -9,7 +9,7 @@ import { Post } from "./entities/Post";
 export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
-    port: 3306,
+    port: 3307,
     username: "root",
     password: "123456",
     database: "trangtuyensinh_db",

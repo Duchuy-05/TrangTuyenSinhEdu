@@ -68,16 +68,16 @@ export interface Registration {
 }
 
 export interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  thumbnailUrl: string;
-  shortDesc: string;
-  content: string;
-  authorName: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
+    id: number;
+    title: string;
+    slug: string;
+    thumbnailUrl: string;
+    shortDesc: string;
+    content: string;
+    authorName: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 // cau hinh axios
@@ -109,8 +109,13 @@ export const courseApi = {
     },
     deleteCourse: async (id: number) => {
         return await apiClient.delete(`/courses/${id}`);
-    }
-
+    },
+    updateCourseSyllabus: async (courseId: number, data: { syllabus: any[] }) => {
+        return await apiClient.put(`/courses/${courseId}/syllabus`, data);
+    },
+    createCourseSyllabus: async (courseId: number, data: { syllabus: any[] }) => {
+        return await apiClient.post(`/courses/${courseId}/syllabi/bulk`, data);
+    },
 };
 
 export const teacherApi = {
@@ -140,9 +145,9 @@ export const registrationApi = {
         const response = await apiClient.get('/registrations');
         return response.data.data;
     },
-    
+
     registerForCourse: async (userData: RegistrationForm): Promise<void> => {
-        await apiClient.post(`/registrations`, userData );
+        await apiClient.post(`/registrations`, userData);
     }
 };
 
@@ -162,33 +167,33 @@ export const uploadApi = {
 };
 
 export const postApi = {
-  getAllPosts: async (): Promise<Post[]> => {
-    const response = await apiClient.get('/posts');
-    return response.data.data;
-  },
+    getAllPosts: async (): Promise<Post[]> => {
+        const response = await apiClient.get('/posts');
+        return response.data.data;
+    },
 
-  getAllPublishedPosts: async (): Promise<Post[]> => {
-    const response = await apiClient.get('/posts/published');
-    return response.data.data;
-  },
+    getAllPublishedPosts: async (): Promise<Post[]> => {
+        const response = await apiClient.get('/posts/published');
+        return response.data.data;
+    },
 
-  getPostBySlug: async (slug: string): Promise<Post> => {
-    const response = await apiClient.get(`/posts/${slug}`);
-    return response.data.data;
-  },
+    getPostBySlug: async (slug: string): Promise<Post> => {
+        const response = await apiClient.get(`/posts/${slug}`);
+        return response.data.data;
+    },
 
-  createPost: async (data: FormData) => {
-    return await apiClient.post('/posts', data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-  },
-  updatePost: async (id: number, data: FormData) => {
-    return await apiClient.put(`/posts/${id}`, data, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-  },
-  deletePost: async (id: number) => {
-    return await apiClient.delete(`/posts/${id}`);
-  },
+    createPost: async (data: FormData) => {
+        return await apiClient.post('/posts', data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
+    updatePost: async (id: number, data: FormData) => {
+        return await apiClient.put(`/posts/${id}`, data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+    },
+    deletePost: async (id: number) => {
+        return await apiClient.delete(`/posts/${id}`);
+    },
 };
 
