@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import CourseDetailPage from './pages/CourseDetailPage'; // Import trang mới
+import CourseDetailPage from './pages/CourseDetailPage'; 
 import ScratchCoursePage from './pages/ScratchCoursePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -12,7 +12,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminTeachers from './pages/admin/AdminTeachers';
 import AdminCourses from './pages/admin/AdminCourses';
 import AdminRegistrations from './pages/admin/AdminRegistrations';
-import AdminPosts from './pages/admin/AdminPost';
+import AdminPost from './pages/admin/AdminPost';
 import VerifyEmail from './pages/VerifyEmail';
 import StudentLayout from './layouts/StudentLayout';
 import MyCoursesPage from './pages/student/MyCoursesPage';
@@ -22,6 +22,7 @@ import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassP
 import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
 import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import PostList from './pages/Post/PostList';
+import CreatePost from './pages/admin/CreatePost';
 import PostDetail from './pages/Post/PostDetail';
 import './styles/LandingPage.css';
 import RequireRole from './components/Requirerole';
@@ -49,6 +50,8 @@ function App() {
         <Route path="/posts" element={<PostList />} />
         <Route path="/posts/:slug" element={<PostDetail />} />
 
+        <Route path="/hehe" element={<CreatePost />} />
+
         <Route path="/admin" element={<AdminLayout />}>
           {/* Tự động điều hướng /admin sang /admin/dashboard (Tùy chọn) */}
           <Route index element={<AdminDashboard />} />
@@ -62,7 +65,9 @@ function App() {
 
           <Route path="registrations" element={<AdminRegistrations />} />
 
-          <Route path="posts" element={<AdminPosts />} />
+          <Route path="posts" element={<AdminPost />} />
+
+          <Route path="posts/create" element={<CreatePost />} />
 
         </Route>
         {/* Trang xác thực email */}

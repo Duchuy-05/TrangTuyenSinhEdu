@@ -1,218 +1,89 @@
-import { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill-new';
-import 'react-quill-new/dist/quill.snow.css';
-import { postApi } from '../../services/api';
-import './AdminPost.css';
+import { postApi, Post } from '../../services/api';
 
-const TOOLBAR_OPTIONS = [
-  [{ header: [1, 2, 3, false] }],
-  ['bold', 'italic', 'underline', 'strike'],
-  [{ color: [] }, { background: [] }],
-  [{ list: 'ordered' }, { list: 'bullet' }],
-  [{ indent: '-1' }, { indent: '+1' }],
-  ['blockquote', 'code-block'],
-  ['link', 'image'],
-  ['clean'],
-];
+const AdminPost: React.FC = () => {
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
-const CreatePost = () => {
-  const navigate = useNavigate();
-  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+    const fetchPosts = async () => {
+        setIsLoading(true);
+        try {
+            const data = await postApi.getAllPosts();
+            setPosts(data);
+        } catch (error) {
+            console.error("Lỗi:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const [form, setForm] = useState({
-    title: '',
-    shortDesc: '',
-    authorName: '',
-    status: 'draft',
-  });
-  const [content, setContent] = useState('');
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-  const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
+    useEffect(() => { fetchPosts(); }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    const handleAdd = () => {
+        navigate('/admin/posts/create');
+    };
 
-  const handleThumbnail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setThumbnailFile(file);
-    setThumbnailPreview(URL.createObjectURL(file));
-  };
+    const handleDelete = async (id: number) => {
+        if (window.confirm("Bạn có chắc chắn muốn xóa bài viết này không?")) {
+            try {
+                await postApi.deletePost(id);
+                alert("Đã xóa thành công!");
+                fetchPosts();
+            } catch (error) {
+                alert("Không thể xóa bài viết này!");
+            }
+        }
+    };
 
-  const handleSubmit = async (status: 'draft' | 'published') => {
-    if (!form.title.trim()) {
-      setError('Vui lòng nhập tiêu đề bài viết');
-      return;
-    }
-    if (!content.trim() || content === '<p><br></p>') {
-      setError('Vui lòng nhập nội dung bài viết');
-      return;
-    }
-
-    setError('');
-    setSubmitting(true);
-
-    try {
-      const formData = new FormData();
-      formData.append('title', form.title);
-      formData.append('shortDesc', form.shortDesc);
-      formData.append('authorName', form.authorName);
-      formData.append('content', content);
-      formData.append('status', status);
-      if (thumbnailFile) {
-        formData.append('thumbnail', thumbnailFile);
-      }
-
-      await postApi.createPost(formData);
-      navigate('/blog');
-    } catch (err) {
-      setError('Có lỗi xảy ra khi tạo bài viết. Vui lòng thử lại.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="create-post-page">
-      <div className="create-post-container">
-
-        {/* Page Header */}
-        <div className="create-post-header">
-          <h1>Tạo bài viết mới</h1>
-          <div className="create-post-actions">
-            <button
-              className="btn-draft"
-              onClick={() => handleSubmit('draft')}
-              disabled={submitting}
-            >
-              Lưu nháp
-            </button>
-            <button
-              className="btn-publish"
-              onClick={() => handleSubmit('published')}
-              disabled={submitting}
-            >
-              {submitting ? 'Đang đăng...' : 'Đăng bài'}
-            </button>
-          </div>
-        </div>
-
-        {error && <div className="create-post-error">{error}</div>}
-
-        <div className="create-post-body">
-
-          {/* Left — Main content */}
-          <div className="create-post-main">
-            <div className="form-group">
-              <input
-                type="text"
-                name="title"
-                placeholder="Tiêu đề bài viết..."
-                value={form.title}
-                onChange={handleChange}
-                className="input-title"
-              />
-            </div>
-
-            <div className="form-group">
-              <textarea
-                name="shortDesc"
-                placeholder="Mô tả ngắn (hiển thị ở trang danh sách)..."
-                value={form.shortDesc}
-                onChange={handleChange}
-                className="input-short-desc"
-                rows={3}
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Nội dung</label>
-              <ReactQuill
-                theme="snow"
-                value={content}
-                onChange={setContent}
-                modules={{ toolbar: TOOLBAR_OPTIONS }}
-                placeholder="Viết nội dung bài viết tại đây..."
-                className="quill-editor"
-              />
-            </div>
-          </div>
-
-          {/* Right — Sidebar */}
-          <div className="create-post-sidebar">
-
-            {/* Thumbnail */}
-            <div className="sidebar-card">
-              <h3>Ảnh thumbnail</h3>
-              <div
-                className="thumbnail-upload"
-                onClick={() => thumbnailInputRef.current?.click()}
-              >
-                {thumbnailPreview ? (
-                  <img src={thumbnailPreview} alt="preview" className="thumbnail-preview" />
-                ) : (
-                  <div className="thumbnail-placeholder">
-                    <span>🖼</span>
-                    <p>Nhấn để chọn ảnh</p>
-                  </div>
-                )}
-              </div>
-              <input
-                ref={thumbnailInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleThumbnail}
-                style={{ display: 'none' }}
-              />
-              {thumbnailPreview && (
-                <button
-                  className="btn-remove-thumbnail"
-                  onClick={() => {
-                    setThumbnailFile(null);
-                    setThumbnailPreview('');
-                  }}
-                >
-                  Xóa ảnh
+    return (
+        <div>
+            <div className="page-header-actions">
+                <h2 className="admin-page-title">Quản lý Bài viết</h2>
+                <button className="btn btn-icon btn-add" onClick={handleAdd}>
+                    <Plus size={18} /> Thêm Bài viết
                 </button>
-              )}
             </div>
 
-            {/* Author */}
-            <div className="sidebar-card">
-              <h3>Tác giả</h3>
-              <input
-                type="text"
-                name="authorName"
-                placeholder="Tên tác giả..."
-                value={form.authorName}
-                onChange={handleChange}
-                className="input-default"
-              />
+            <div className="table-card">
+                <table className="admin-table">
+                    <thead>
+                        <tr><th>ID</th><th>Tiêu đề</th><th>Tác giả</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr>
+                    </thead>
+                    <tbody>
+                        {isLoading ? <tr><td colSpan={6} style={{ textAlign: 'center' }}>Đang tải...</td></tr> :
+                            posts.map(post => (
+                                <tr key={post.id}>
+                                    <td>#{post.id}</td>
+                                    <td><strong>{post.title}</strong></td>
+                                    <td>{post.authorName}</td>
+                                    <td>
+                                        <span style={{
+                                            padding: '4px 12px',
+                                            borderRadius: '4px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: '500',
+                                            backgroundColor: post.status === 'published' ? '#dcfce7' : '#fef3c7',
+                                            color: post.status === 'published' ? '#15803d' : '#92400e'
+                                        }}>
+                                            {post.status === 'published' ? 'Đã đăng' : 'Nháp'}
+                                        </span>
+                                    </td>
+                                    <td>{new Date(post.createdAt).toLocaleDateString('vi-VN')}</td>
+                                    <td>
+                                        <div className="action-buttons">
+                                            <button className="btn-delete" onClick={() => handleDelete(post.id)}><Trash2 size={16} /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
             </div>
-
-            {/* Status */}
-            <div className="sidebar-card">
-              <h3>Trạng thái</h3>
-              <select
-                name="status"
-                value={form.status}
-                onChange={handleChange}
-                className="input-default"
-              >
-                <option value="draft">Nháp</option>
-                <option value="published">Đã đăng</option>
-              </select>
-            </div>
-
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default CreatePost;
+export default AdminPost;
