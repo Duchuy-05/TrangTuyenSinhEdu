@@ -1,16 +1,37 @@
 import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     Search, Bell, MessageSquare, Menu, X,
     LayoutDashboard, BookOpen, Presentation, Users,
     FileText, CheckSquare, Award, DollarSign, Settings
 } from 'lucide-react';
-import { mockInstructorData } from '../data/mockInstructorData';
-
 const InstructorLayout: React.FC = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const { user } = mockInstructorData;
+
+    const userStr = localStorage.getItem('user');
+    let user: any = null;
+    try {
+        user = userStr ? JSON.parse(userStr) : null;
+    } catch {
+        user = null;
+    }
+    // xử lý đăng xuất
+    const handleLogout = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
+        navigate('/login');
+    };
+
+    // Hàm lấy chữ cái đầu tiên của tên để làm Avatar
+    const getInitial = (full_name: string) => {
+        if (!full_name) return 'U';
+        // Tách lấy từ cuối cùng (Tên) và lấy chữ cái đầu
+        const nameArray = full_name.trim().split(' ');
+        const lastName = nameArray[nameArray.length - 1];
+        return lastName.charAt(0).toUpperCase();
+    };
 
     const navItems = [
         { name: 'Tổng quan', path: '/instructor', icon: <LayoutDashboard size={20} /> },
@@ -31,14 +52,14 @@ const InstructorLayout: React.FC = () => {
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+                    className="fixed inset-0 bg-black bg-opacity-50 z-[10000] lg:hidden"
                     onClick={toggleSidebar}
                 ></div>
             )}
 
             {/* Left Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 left-0 z-30 w-[260px] bg-white border-r border-[#E5E7EB] transform transition-transform duration-300 ease-in-out flex flex-col
+                className={`fixed lg:static inset-y-0 left-0 z-[10001] w-[260px] bg-white border-r border-[#E5E7EB] transform transition-transform duration-300 ease-in-out flex flex-col
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 `}
             >
@@ -90,7 +111,7 @@ const InstructorLayout: React.FC = () => {
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
                 {/* Top Navigation Bar */}
-                <header className="h-[72px] bg-white border-b border-[#E5E7EB] flex items-center justify-between px-4 lg:px-8 z-10 sticky top-0">
+                <header className="h-[72px] bg-white border-b border-[#E5E7EB] flex items-center justify-between px-4 lg:px-8 z-[9999] sticky top-0">
 
                     {/* Left: Mobile Menu & Logo */}
                     <div className="flex items-center gap-4">
@@ -128,18 +149,52 @@ const InstructorLayout: React.FC = () => {
                             </button>
                         </div>
 
-                        {/* User Avatar & Info */}
-                        <div className="pl-2 sm:pl-4 flex items-center cursor-pointer group">
-                            <div className="hidden lg:block text-right mr-3">
-                                <p className="text-sm font-bold text-[#1F2937]">{user.name}</p>
-                                <p className="text-xs text-gray-500">Hồ sơ giảng viên</p>
+                    {/* KHU VỰC HIỂN THỊ TÀI KHOẢN */}
+                    {user ? (
+                        <div className="relative group cursor-pointer ml-2">
+                            {/* Nút Avatar tròn */}
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-white hover:shadow-lg transition-shadow">
+                                {getInitial(user.name || user.fullName)}
                             </div>
-                            <img
-                                src={user.avatar}
-                                alt={user.name}
-                                className="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-[#E5664B] transition-all object-cover"
-                            />
+
+                            {/* Vùng đệm vô hình nối liền avatar và menu - tránh mất hover khi rê chuột xuống */}
+                            <div className="absolute right-0 top-full w-56 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-[100]">
+                                {/* Dropdown Menu của User (Hiển thị khi Hover) */}
+                                <div className="bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden">
+
+                                    {/* Thông tin cá nhân */}
+                                    <div className="p-4 border-b border-gray-100 bg-orange-50/50">
+                                        <p className="font-bold text-gray-800 truncate">
+                                            {user.name || user.fullName}
+                                        </p>
+                                        <p className="text-xs text-gray-500 truncate mt-0.5">
+                                            {user.email}
+                                        </p>
+                                    </div>
+
+                                    {/* Các menu chức năng */}
+                                    <div className="p-2">
+                                        <Link
+                                            to="/change-password"
+                                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
+                                        >
+                                            Đổi mật khẩu
+                                        </Link>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left px-4 py-2.5 text-sm text-orange-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1 cursor-pointer"
+                                        >
+                                            Đăng xuất
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    ) : (
+                        <div className="auth-group">
+                            <Link to="/login" className="btn btn-outline btn-auth">Đăng nhập</Link>
+                        </div>
+                    )}
                     </div>
                 </header>
 

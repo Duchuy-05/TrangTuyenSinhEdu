@@ -24,6 +24,7 @@ import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import PostList from './pages/Post/PostList';
 import PostDetail from './pages/Post/PostDetail';
 import './styles/LandingPage.css';
+import RequireRole from './components/Requirerole';
 function App() {
   return (
     <BrowserRouter>
@@ -76,12 +77,12 @@ function App() {
         {/* Các route dành cho Học viên (Student Dashboard) */}
         <Route element={<StudentLayout />}>
           {/* Dashboard học viên / My Courses */}
-          <Route path="/my-courses" element={<MyCoursesPage />} />
+        <Route path="/my-courses" element={<MyCoursesPage />} />
           {/* Các trang sau sẽ được phát triển sau */}
         </Route>
 
         {/* Các route dành cho Giảng viên (Instructor Dashboard) */}
-        <Route element={<InstructorLayout />}>
+        <Route element={<RequireRole allowedRoles={['teacher']}><InstructorLayout /></RequireRole>}>
           <Route path="/instructor" element={<InstructorDashboardPage />} />
           <Route path="/instructor/my-class" element={<InstructorClassesPage />} />
           <Route path="/my-class/create" element={<InstructorCreateClassPage />} />
