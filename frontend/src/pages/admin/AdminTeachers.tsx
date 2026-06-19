@@ -7,6 +7,11 @@ const AdminTeachers: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const LIMIT = 10;
+
     // Modal States
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -14,11 +19,13 @@ const AdminTeachers: React.FC = () => {
         fullName: '', title: '', experience: '', company: '', bio: '', avatarUrl: ''
     });
 
-    const fetchTeachers = async () => {
+    const fetchTeachers = async (page: number) => {
         setIsLoading(true);
         try {
-            const data = await teacherApi.getAllTeachers();
-            setTeachers(data);
+            const data = await teacherApi.getTeachersPaginated(page, LIMIT);
+            setTeachers(data.data);
+            setTotalPages(data.totalPages);
+            setTotal(data.total);
         } catch (error) {
             console.error("Lỗi:", error);
         } finally {
@@ -26,7 +33,7 @@ const AdminTeachers: React.FC = () => {
         }
     };
 
-    useEffect(() => { fetchTeachers(); }, []);
+    useEffect(() => { fetchTeachers(currentPage); }, [currentPage]);
 
     // Mở Form Thêm Mới
     const handleAdd = () => {
@@ -54,7 +61,7 @@ const AdminTeachers: React.FC = () => {
                 alert("Thêm mới thành công!");
             }
             setIsModalOpen(false);
-            fetchTeachers(); // Tải lại danh sách
+            fetchTeachers(currentPage);
         } catch (error) {
             alert("Có lỗi xảy ra, vui lòng thử lại!");
         }
@@ -66,7 +73,7 @@ const AdminTeachers: React.FC = () => {
             try {
                 await teacherApi.deleteTeacher(id);
                 alert("Đã xóa thành công!");
-                fetchTeachers();
+                fetchTeachers(currentPage);
             } catch (error) {
                 alert("Không thể xóa giảng viên này!");
             }
@@ -127,6 +134,38 @@ const AdminTeachers: React.FC = () => {
                             ))}
                     </tbody>
                 </table>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderTop: '1px solid var(--admin-border)' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                        Tổng {total} giảng viên
+                    </span>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                        >
+                            ← Trước
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === page ? 'var(--admin-primary)' : '#fff', color: currentPage === page ? '#fff' : 'inherit', cursor: 'pointer' }}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                        >
+                            Tiếp →
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* POPUP MODAL */}

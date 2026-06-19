@@ -14,13 +14,6 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminRegistrations from './pages/admin/AdminRegistrations';
 import AdminPost from './pages/admin/AdminPost';
 import VerifyEmail from './pages/VerifyEmail';
-import StudentLayout from './layouts/StudentLayout';
-import MyCoursesPage from './pages/student/MyCoursesPage';
-import InstructorLayout from './layouts/InstructorLayout';
-import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
-import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
-import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
-import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import PostList from './pages/Post/PostList';
 import CreatePost from './pages/admin/CreatePost';
 import PostDetail from './pages/Post/PostDetail';
@@ -72,26 +65,6 @@ function App() {
         {/* Trang xác thực email */}
         <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {/* Các route dành cho Admin */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="registrations" element={<AdminRegistrations />} />
-        </Route>
-
-        {/* Các route dành cho Học viên (Student Dashboard) */}
-        <Route element={<StudentLayout />}>
-          {/* Dashboard học viên / My Courses */}
-          <Route path="/my-courses" element={<MyCoursesPage />} />
-          {/* Các trang sau sẽ được phát triển sau */}
-        </Route>
-
-        {/* Các route dành cho Giảng viên (Instructor Dashboard) */}
-        <Route element={<InstructorLayout />}>
-          <Route path="/instructor" element={<InstructorDashboardPage />} />
-          <Route path="/instructor/my-class" element={<InstructorClassesPage />} />
-          <Route path="/my-class/create" element={<InstructorCreateClassPage />} />
-          <Route path="/instructor/students" element={<InstructorStudentsPage />} />
-        </Route>
       </Routes>
     </BrowserRouter>
   );

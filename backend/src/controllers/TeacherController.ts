@@ -3,12 +3,24 @@ import { TeacherService } from '../services/TeacherService';
 import { successHandler, errorHandler } from '../utils/responseHandler';
 
 export class TeacherController {
+    static async getAllTeachersPagniation(request: Request, response: Response) {
+        const page = Number(request.query.page) || 1;
+        const limit = Number(request.query.limit) || 10;
+
+        try {
+            const teachers = await TeacherService.getAllTeachersPagniation(page, limit);
+            return response.json(successHandler(200, 'Lấy danh sách giáo viên thành công', teachers));
+        }
+        catch (error) {
+            return response.json(errorHandler(500, 'Lỗi khi lấy danh sách giáo viên'));
+        }
+    }
+    
     static async getAllTeachers(request: Request, response: Response) {
         try {
             const teachers = await TeacherService.getAllTeachers();
             return response.json(successHandler(200, 'Lấy danh sách giáo viên thành công', teachers));
-        }
-        catch (error) {
+        } catch (error) {
             return response.json(errorHandler(500, 'Lỗi khi lấy danh sách giáo viên'));
         }
     }

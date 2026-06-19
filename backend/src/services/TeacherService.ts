@@ -4,9 +4,27 @@ import { Teacher } from "../models/entities/Teacher";
 export class TeacherService {
     private static teacherRepository = AppDataSource.getRepository(Teacher);
 
+    static async getAllTeachersPagniation(page: number = 1, limit: number = 10) {
+        const [teachers, total] = await this.teacherRepository.findAndCount({
+            relations: { courses: true },
+            order: { createdAt: 'DESC' },
+            take: limit,
+            skip: (page - 1) * limit,
+        });
+
+        return {
+            data: teachers,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    }
+
     static async getAllTeachers() {
         return this.teacherRepository.find({
             relations: { courses: true },
+            order: { createdAt: 'DESC' },
         });
     }
 

@@ -3,12 +3,24 @@ import { CourseService } from '../services/CourseService';
 import { successHandler, errorHandler } from '../utils/responseHandler';
 
 export class CourseController {
+    static async getAllCoursesPagniation(request: Request, response: Response) {
+        const page = Number(request.query.page) || 1;
+        const limit = Number(request.query.limit) || 10;
+
+        try {
+            const courses = await CourseService.getAllCoursesPagniation(page, limit);
+            return response.json(successHandler(200, 'Lấy danh sách khóa học thành công', courses));
+        }
+        catch (error) {
+            return response.json(errorHandler(500, 'Lỗi khi lấy danh sách khóa học'));
+        }
+    }
+
     static async getAllCourses(request: Request, response: Response) {
         try {
             const courses = await CourseService.getAllCourses();
             return response.json(successHandler(200, 'Lấy danh sách khóa học thành công', courses));
-        }
-        catch (error) {
+        } catch (error) {
             return response.json(errorHandler(500, 'Lỗi khi lấy danh sách khóa học'));
         }
     }

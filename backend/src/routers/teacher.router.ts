@@ -5,6 +5,7 @@ import { upload } from '../middlerwares/upload.middleware';
 const teacherRouter: Router = Router();
 
 teacherRouter.get('/teachers', TeacherController.getAllTeachers)
+teacherRouter.get('/teachers/pagination', TeacherController.getAllTeachersPagniation)
 teacherRouter.get('/teachers/:id', TeacherController.getTeacherById)
 teacherRouter.post('/teachers', TeacherController.createTeacher)
 teacherRouter.delete('/teachers/:id', TeacherController.deleteTeacher)
