@@ -64,7 +64,8 @@ export class TeacherController {
             return response.json(successHandler(200, 'Xóa giáo viên thành công'));
         }
         catch (error) {
-            return response.json(errorHandler(500, 'Lỗi khi xóa giáo viên'));
+            console.error('Lỗi khi xóa giáo viên:', error);
+            return response.status(500).json(errorHandler(500, 'Lỗi khi xóa giáo viên. Có thể do giảng viên này đang có khóa học liên kết.'));
         }
     }
 

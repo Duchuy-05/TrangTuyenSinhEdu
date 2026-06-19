@@ -22,9 +22,7 @@ export class TeacherService {
         newTeacher.fullName = teacherData.fullName;
         newTeacher.email = teacherData.email;
         newTeacher.phone = teacherData.phone;
-        newTeacher.title = teacherData.title;
-        newTeacher.experience = teacherData.experience;
-        newTeacher.company = teacherData.company;
+        newTeacher.specialization = teacherData.specialization;
         newTeacher.bio = teacherData.bio;
         newTeacher.avatarUrl = teacherData.avatarUrl;
         return this.teacherRepository.save(newTeacher);
@@ -38,9 +36,7 @@ export class TeacherService {
         teacher.fullName = teacherData.fullName ?? teacher.fullName;
         teacher.email = teacherData.email ?? teacher.email;
         teacher.phone = teacherData.phone ?? teacher.phone;
-        teacher.title = teacherData.title ?? teacher.title;
-        teacher.experience = teacherData.experience ?? teacher.experience;
-        teacher.company = teacherData.company ?? teacher.company;
+        teacher.specialization = teacherData.specialization ?? teacher.specialization;
         teacher.bio = teacherData.bio ?? teacher.bio;
         teacher.avatarUrl = teacherData.avatarUrl ?? teacher.avatarUrl;
         return this.teacherRepository.save(teacher);

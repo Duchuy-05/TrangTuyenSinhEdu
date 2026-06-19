@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export interface Teacher {
-    id: number,
-    fullName: string,
-    title: string,
-    experience: string;
-    company: string;
+    id: number;
+    fullName: string;
+    email: string;
+    phone: string;
+    specialization: string;
     bio: string;
-    avatarUrl: string;
+    avatarUrl?: string;
 }
 
 export interface Syllabus {

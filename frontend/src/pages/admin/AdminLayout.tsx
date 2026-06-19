@@ -7,7 +7,8 @@ const AdminLayout: React.FC = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Thêm logic xóa token ở đây sau này
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
         navigate('/login');
     };
 
@@ -33,6 +34,11 @@ const AdminLayout: React.FC = () => {
                         <BookOpen size={20} /> Quản lý Bài viết
                     </NavLink>
                 </nav>
+                <div className="admin-sidebar-footer">
+                    <button onClick={handleLogout} className="admin-logout-btn">
+                        <LogOut size={20} /> Đăng xuất
+                    </button>
+                </div>
             </aside>
 
             {/* Cột phải: Khung nội dung */}
@@ -50,9 +56,6 @@ const AdminLayout: React.FC = () => {
                             <img src="https://i.pravatar.cc/150?img=11" alt="Admin Avatar" />
                             <span>Admin Đào Tạo</span>
                         </div>
-                        <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', marginLeft: '10px' }} title="Đăng xuất">
-                            <LogOut size={20} />
-                        </button>
                     </div>
                 </header>
 

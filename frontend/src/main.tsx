@@ -24,6 +24,7 @@ import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import PostList from './pages/Post/PostList';
 import CreatePost from './pages/admin/CreatePost';
 import PostDetail from './pages/Post/PostDetail';
+import ProtectedRoute from './components/ProtectedRoute';
 import './styles/LandingPage.css';
 function App() {
   return (
@@ -51,7 +52,11 @@ function App() {
 
         <Route path="/hehe" element={<CreatePost />} />
 
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminLayout />
+          </ProtectedRoute>
+        }>
           {/* Tự động điều hướng /admin sang /admin/dashboard (Tùy chọn) */}
           <Route index element={<AdminDashboard />} />
 
@@ -72,21 +77,25 @@ function App() {
         {/* Trang xác thực email */}
         <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {/* Các route dành cho Admin */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="registrations" element={<AdminRegistrations />} />
-        </Route>
+
 
         {/* Các route dành cho Học viên (Student Dashboard) */}
-        <Route element={<StudentLayout />}>
+        <Route element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentLayout />
+          </ProtectedRoute>
+        }>
           {/* Dashboard học viên / My Courses */}
           <Route path="/my-courses" element={<MyCoursesPage />} />
           {/* Các trang sau sẽ được phát triển sau */}
         </Route>
 
         {/* Các route dành cho Giảng viên (Instructor Dashboard) */}
-        <Route element={<InstructorLayout />}>
+        <Route element={
+          <ProtectedRoute allowedRoles={['teacher']}>
+            <InstructorLayout />
+          </ProtectedRoute>
+        }>
           <Route path="/instructor" element={<InstructorDashboardPage />} />
           <Route path="/instructor/my-class" element={<InstructorClassesPage />} />
           <Route path="/my-class/create" element={<InstructorCreateClassPage />} />
