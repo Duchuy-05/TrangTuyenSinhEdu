@@ -6,20 +6,28 @@ const AdminRegistrations: React.FC = () => {
     const [registrations, setRegistrations] = useState<Registration[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const LIMIT = 10;
+
     useEffect(() => {
-        const fetchRegistrations = async () => {
-            try {
-                const data = await registrationApi.getAllRegistrations();
-                setRegistrations(data);
-                console.log(data);
-            } catch (error) {
-                console.error("Lỗi API:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchRegistrations();
-    }, []);
+        fetchRegistrations(currentPage);
+    }, [currentPage]);
+
+    const fetchRegistrations = async (page: number) => {
+        setIsLoading(true);
+        try {
+            const result = await registrationApi.getAllRegistrations(page, LIMIT);
+            setRegistrations(result.data);
+            setTotalPages(result.totalPages);
+            setTotal(result.total);
+        } catch (error) {
+            console.error('Lỗi API:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Hàm phụ trợ: Format ngày tháng
     const formatDate = (dateString: string) => {
@@ -37,10 +45,10 @@ const AdminRegistrations: React.FC = () => {
                 return <span className="status-badge" style={{ background: '#fef3c7', color: '#d97706' }}>Chờ xử lý</span>;
             case 'contacted':
                 return <span className="status-badge" style={{ background: '#e0f2fe', color: '#0284c7' }}>Đã tư vấn</span>;
-            case 'paid':
-                return <span className="status-badge status-paid">Đã thanh toán</span>;
+            case 'confirmed':
+                return <span className="status-badge status-paid">Đã chốt</span>;
             default:
-                return <span className="status-badge" style={{ background: '#f1f5f9', color: '#475569' }}>{status}</span>;
+                return <span className="status-badge" style={{ background: '#f1f5f9', color: '#475569' }}>Đã hủy</span>;
         }
     };
 
@@ -134,6 +142,38 @@ const AdminRegistrations: React.FC = () => {
                         )}
                     </tbody>
                 </table>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderTop: '1px solid var(--admin-border)' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                        Tổng {total} đơn đăng ký
+                    </span>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                        >
+                            ← Trước
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === page ? 'var(--admin-primary)' : '#fff', color: currentPage === page ? '#fff' : 'inherit', cursor: 'pointer' }}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                        >
+                            Tiếp →
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

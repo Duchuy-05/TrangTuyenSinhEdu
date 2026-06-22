@@ -10,23 +10,30 @@ const AdminCourses: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const LIMIT = 10;
+
     const [step, setStep] = useState<1 | 2>(1);
 
     const [formData, setFormData] = useState<any>({
-        id: null, // Lưu ID sau khi tạo thành công ở Bước 1
+        id: null,
         teacherId: '', category: '', title: '', shortDesc: '', target: '',
         imageUrl: '', duration: '', format: 'online', price: '', status: 'published',
         syllabus: []
     });
 
-    const fetchData = async () => {
+    const fetchData = async (page: number) => {
         setIsLoading(true);
         try {
             const [courseData, teacherData] = await Promise.all([
-                courseApi.getAllCourses(),
+                courseApi.getCoursesPaginated(page, LIMIT),
                 teacherApi.getAllTeachers()
             ]);
-            setCourses(courseData);
+            setCourses(courseData.data);
+            setTotalPages(courseData.totalPages);
+            setTotal(courseData.total);
             setTeachers(teacherData);
         } catch (error) {
             console.error("Lỗi:", error);
@@ -35,7 +42,7 @@ const AdminCourses: React.FC = () => {
         }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(currentPage); }, [currentPage]);
 
     const handleAdd = () => {
         setIsEditing(false);
@@ -151,8 +158,8 @@ const AdminCourses: React.FC = () => {
 
             alert(isEditing ? "Cập nhật khóa học và lộ trình thành công!" : "Thêm khóa học và lộ trình thành công!");
 
-            setIsModalOpen(false); // Đóng form
-            fetchData(); // Reset lại bảng
+            setIsModalOpen(false);
+            fetchData(currentPage);
         } catch (error) {
             alert("Lỗi khi lưu lộ trình học!");
             console.error(error);
@@ -164,7 +171,7 @@ const AdminCourses: React.FC = () => {
             try {
                 await courseApi.deleteCourse(id);
                 alert("Xóa thành công!");
-                fetchData();
+                fetchData(currentPage);
             } catch (error) {
                 alert("Không thể xóa khóa học này!");
             }
@@ -215,6 +222,38 @@ const AdminCourses: React.FC = () => {
                             ))}
                     </tbody>
                 </table>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderTop: '1px solid var(--admin-border)' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                        Tổng {total} khóa học
+                    </span>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                        >
+                            ← Trước
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === page ? 'var(--admin-primary)' : '#fff', color: currentPage === page ? '#fff' : 'inherit', cursor: 'pointer' }}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                        >
+                            Tiếp →
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* POPUP MODAL MULTI-STEP WIZARD */}

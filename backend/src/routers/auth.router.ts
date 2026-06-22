@@ -1,15 +1,15 @@
 import { Router }   from "express";
 import { AuthController } from "../controllers/AuthControllers";
 
-const router = Router();
+const authRouter = Router();
 
 // Đăng ký tài khoản
-router.post("/register", AuthController.register);
+authRouter.post("/register", AuthController.register);
 // Đăng nhập
-router.post("/login", AuthController.login);
+authRouter.post("/login", AuthController.login);
 // Làm mới token
-router.get('/refresh', AuthController.refreshToken);
+authRouter.get('/refresh', AuthController.refreshToken);
 // Xác thực email
-router.post("/verify-otp", AuthController.verifyOtp);
+authRouter.post("/verify-otp", AuthController.verifyOtp);
 
-export default router;
+export default authRouter;

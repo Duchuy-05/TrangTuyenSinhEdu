@@ -4,7 +4,7 @@ import { upload } from '../middlerwares/upload.middleware';
 const postRouter: Router = Router();
 
 
-postRouter.get('/posts', PostController.getAllPost);
+postRouter.get('/posts', PostController.getAllPostPagniation);
 postRouter.get('/posts/published', PostController.getAllPulishedPost);
 postRouter.get('/posts/:slug', PostController.getBySlug);
 

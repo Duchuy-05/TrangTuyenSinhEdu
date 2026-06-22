@@ -14,17 +14,17 @@ import AdminCourses from './pages/admin/AdminCourses';
 import AdminRegistrations from './pages/admin/AdminRegistrations';
 import AdminPost from './pages/admin/AdminPost';
 import VerifyEmail from './pages/VerifyEmail';
-import StudentLayout from './layouts/StudentLayout';
-import MyCoursesPage from './pages/student/MyCoursesPage';
-import InstructorLayout from './layouts/InstructorLayout';
-import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
-import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
-import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
-import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import PostList from './pages/Post/PostList';
 import CreatePost from './pages/admin/CreatePost';
 import PostDetail from './pages/Post/PostDetail';
+import StudentLayout from './layouts/StudentLayout';
+import MyCoursesPage from './pages/student/MyCoursesPage';
+import InstructorLayout from './layouts/InstructorLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
+import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
+import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
+import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import './styles/LandingPage.css';
 function App() {
   return (

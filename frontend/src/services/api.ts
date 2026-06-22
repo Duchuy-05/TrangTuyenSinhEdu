@@ -95,6 +95,14 @@ export const courseApi = {
         return response.data.data;
     },
 
+    // Lấy danh sách khóa học với phân trang
+    getCoursesPaginated: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/courses/pagination', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
+    },
+
     // Lấy chi tiết 1 khóa học (cho trang chi tiết)
     getCourseById: async (id: string | number): Promise<Course> => {
         const response = await apiClient.get(`/courses/${id}`);
@@ -122,6 +130,13 @@ export const teacherApi = {
     getAllTeachers: async (): Promise<Teacher[]> => {
         const response = await apiClient.get('/teachers');
         return response.data.data
+    },  
+
+    getTeachersPaginated: async (page = 1, limit = 10, search = '') => {
+        const response = await apiClient.get('/teachers/pagination', {
+            params: { page, limit, search }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     getTeacherById: async (id: string | number): Promise<Teacher> => {
@@ -141,9 +156,11 @@ export const teacherApi = {
 };
 
 export const registrationApi = {
-    getAllRegistrations: async (): Promise<Registration[]> => {
-        const response = await apiClient.get('/registrations');
-        return response.data.data;
+    getAllRegistrations: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/registrations', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     registerForCourse: async (userData: RegistrationForm): Promise<void> => {
@@ -172,9 +189,23 @@ export const postApi = {
         return response.data.data;
     },
 
+    getAllPostsPaginated: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/posts', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
+    },
+
     getAllPublishedPosts: async (): Promise<Post[]> => {
         const response = await apiClient.get('/posts/published');
         return response.data.data;
+    },
+
+    getAllPublishedPostsPaginated: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/posts/published', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     getPostBySlug: async (slug: string): Promise<Post> => {
