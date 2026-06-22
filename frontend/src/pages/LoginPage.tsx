@@ -16,8 +16,17 @@ const LoginPage = () => {
   // kiem tra neu da co token thi chuyen huong ve trang chu
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
-      navigate('/'); 
+    const userStr = localStorage.getItem('user');
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user.role === 'admin') navigate('/admin');
+        else if (user.role === 'teacher') navigate('/instructor');
+        else if (user.role === 'student') navigate('/my-courses');
+        else navigate('/');
+      } catch {
+        navigate('/');
+      }
     }
   }, [navigate]);
 
@@ -45,7 +54,11 @@ const LoginPage = () => {
       localStorage.setItem('accessToken', response.data.accessToken); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Lưu thông tin user vào localStorage
       alert(response.data.message || 'Đăng nhập thành công!');
-      navigate("/");
+      const userRole = response.data.user?.role;
+      if (userRole === 'admin') navigate('/admin');
+      else if (userRole === 'teacher') navigate('/instructor');
+      else if (userRole === 'student') navigate('/my-courses');
+      else navigate('/');
     } catch (error : any) {
       setErrorMessage(error.response?.data?.message || 'Lỗi kết nối server. Vui lòng thử lại sau.');
     } finally {

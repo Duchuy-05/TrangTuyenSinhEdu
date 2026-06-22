@@ -1,83 +1,40 @@
-export const mockAdminData = {
-    stats: {
-        totalStudents: 1250,
-        newRegistrations: 48,
-        activeCourses: 12,
-        estimatedRevenue: "350.000.000 VNĐ"
+import { Teacher } from '../services/api';
+
+export const mockTeachers: Teacher[] = [
+    {
+        id: 1,
+        fullName: 'Nguyễn Văn A',
+        email: 'nguyenvana@example.com',
+        phone: '0901234567',
+        specialization: 'Giảng viên Scratch & Python',
+        bio: 'Thạc sĩ Khoa học Máy tính. Có nhiều kinh nghiệm giảng dạy lập trình cho trẻ em và người mới bắt đầu.',
+        avatarUrl: 'https://i.pravatar.cc/150?img=11'
     },
-    registrations: [
-        {
-            id: "REG-001",
-            parentName: "Nguyễn Văn A",
-            studentName: "Nguyễn Văn B",
-            phone: "0901234567",
-            email: "nguyenvana@example.com",
-            course: "Tư Duy Lập Trình Với Scratch",
-            date: "2024-05-20",
-            status: "pending" // pending, contacted, success, rejected
-        },
-        {
-            id: "REG-002",
-            parentName: "Trần Thị C",
-            studentName: "Lê C",
-            phone: "0987654321",
-            email: "tranthic@example.com",
-            course: "Lập trình Web với ReactJS",
-            date: "2024-05-19",
-            status: "contacted"
-        },
-        {
-            id: "REG-003",
-            parentName: "Phạm Văn D",
-            studentName: "Phạm D",
-            phone: "0912345678",
-            email: "phamvand@example.com",
-            course: "Lập trình Python cho trẻ em",
-            date: "2024-05-18",
-            status: "success"
-        },
-        {
-            id: "REG-004",
-            parentName: "Hoàng Thị E",
-            studentName: "Vũ E",
-            phone: "0934567890",
-            email: "hoangthie@example.com",
-            course: "Tư Duy Lập Trình Với Scratch",
-            date: "2024-05-18",
-            status: "pending"
-        },
-        {
-            id: "REG-005",
-            parentName: "Đỗ Văn F",
-            studentName: "Đỗ F",
-            phone: "0945678901",
-            email: "dovanf@example.com",
-            course: "Lập trình C++ Cơ bản",
-            date: "2024-05-17",
-            status: "rejected"
-        }
-    ],
-    courses: [
-        {
-            id: "C-001",
-            title: "Tư Duy Lập Trình Với Scratch",
-            category: "Trẻ em",
-            students: 120,
-            status: "active"
-        },
-        {
-            id: "C-002",
-            title: "Lập trình Web với ReactJS",
-            category: "Người lớn",
-            students: 350,
-            status: "active"
-        },
-        {
-            id: "C-003",
-            title: "Lập trình Python cho trẻ em",
-            category: "Trẻ em",
-            students: 85,
-            status: "draft"
-        }
-    ]
-};
+    {
+        id: 2,
+        fullName: 'Trần Thị B',
+        email: 'tranthib@example.com',
+        phone: '0987654321',
+        specialization: 'Senior Frontend Developer',
+        bio: 'Chuyên gia về ReactJS, VueJS và UI/UX Design. Thường xuyên chia sẻ kiến thức tại các hội thảo công nghệ lớn.',
+        avatarUrl: 'https://i.pravatar.cc/150?img=5'
+    },
+    {
+        id: 3,
+        fullName: 'Lê Hoàng C',
+        email: 'lehoangc@example.com',
+        phone: '0912345678',
+        specialization: 'Chuyên gia Data Science',
+        bio: 'Nghiên cứu sinh ngành AI. Giảng viên thỉnh giảng tại Đại học Bách Khoa Hà Nội.',
+        avatarUrl: 'https://i.pravatar.cc/150?img=68'
+    },
+    {
+        id: 4,
+        fullName: 'Phạm Minh D',
+        email: 'phamminhd@example.com',
+        phone: '0934567890',
+        specialization: 'Software Architect',
+        bio: 'Tác giả của nhiều khóa học System Design nổi tiếng. Đam mê xây dựng các hệ thống chịu tải cao.',
+        avatarUrl: 'https://i.pravatar.cc/150?img=33'
+    }
+];

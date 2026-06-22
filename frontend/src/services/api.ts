@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export interface Teacher {
-    id: number,
-    fullName: string,
-    title: string,
-    experience: string;
-    company: string;
+    id: number;
+    fullName: string;
+    email: string;
+    phone: string;
+    specialization: string;
     bio: string;
-    avatarUrl: string;
+    avatarUrl?: string;
 }
 
 export interface Syllabus {
@@ -132,9 +132,9 @@ export const teacherApi = {
         return response.data.data
     },  
 
-    getTeachersPaginated: async (page = 1, limit = 10) => {
+    getTeachersPaginated: async (page = 1, limit = 10, search = '') => {
         const response = await apiClient.get('/teachers/pagination', {
-            params: { page, limit }
+            params: { page, limit, search }
         });
         return response.data.data; // { data, total, page, limit, totalPages }
     },
