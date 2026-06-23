@@ -3,8 +3,10 @@ import { PostService } from '../services/PostService';
 import { successHandler, errorHandler } from '../utils/responseHandler';
 
 export class PostController {
-  // GET /posts — danh sách bài published (dành cho frontend)
   static async getAllPulishedPost(request: Request, response: Response) {
+    const page = Number(request.query.page) || 1;
+    const limit = Number(request.query.limit) || 10;
+
     try {
       const posts = await PostService.getAllPublishedPost();
       return response.json(successHandler(200, 'Lấy danh sách bài viết thành công', posts));
@@ -12,11 +14,15 @@ export class PostController {
       return response.json(errorHandler(500, 'Lỗi khi lấy danh sách bài viết'));
     }
   }
+  
 
   // GET /posts/admin — danh sách tất cả bài (dành cho admin)
-  static async getAllPost(request: Request, response: Response) {
+  static async getAllPostPagniation(request: Request, response: Response) {
+    const page = Number(request.query.page) || 1;
+    const limit = Number(request.query.limit) || 10;
+
     try {
-      const posts = await PostService.getAllPost();
+      const posts = await PostService.getAllPostPagniation(page, limit);
       return response.json(successHandler(200, 'Lấy danh sách bài viết thành công', posts));
     } catch (error) {
       return response.json(errorHandler(500, 'Lỗi khi lấy danh sách bài viết'));

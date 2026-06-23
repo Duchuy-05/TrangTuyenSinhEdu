@@ -6,13 +6,19 @@ import { postApi, Post } from '../../services/api';
 const AdminPost: React.FC = () => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const LIMIT = 10;
     const navigate = useNavigate();
 
-    const fetchPosts = async () => {
+    const fetchPosts = async (page: number) => {
         setIsLoading(true);
         try {
-            const data = await postApi.getAllPosts();
-            setPosts(data);
+            const data = await postApi.getAllPostsPaginated(page, LIMIT);
+            setPosts(data.data);
+            setTotalPages(data.totalPages);
+            setTotal(data.total);
         } catch (error) {
             console.error("Lỗi:", error);
         } finally {
@@ -20,7 +26,7 @@ const AdminPost: React.FC = () => {
         }
     };
 
-    useEffect(() => { fetchPosts(); }, []);
+    useEffect(() => { fetchPosts(currentPage); }, [currentPage]);
 
     const handleAdd = () => {
         navigate('/admin/posts/create');
@@ -31,7 +37,7 @@ const AdminPost: React.FC = () => {
             try {
                 await postApi.deletePost(id);
                 alert("Đã xóa thành công!");
-                fetchPosts();
+                fetchPosts(currentPage);
             } catch (error) {
                 alert("Không thể xóa bài viết này!");
             }
@@ -81,6 +87,38 @@ const AdminPost: React.FC = () => {
                             ))}
                     </tbody>
                 </table>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderTop: '1px solid var(--admin-border)' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                        Tổng {total} bài viết
+                    </span>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                        >
+                            ← Trước
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === page ? 'var(--admin-primary)' : '#fff', color: currentPage === page ? '#fff' : 'inherit', cursor: 'pointer' }}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                        >
+                            Tiếp →
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );

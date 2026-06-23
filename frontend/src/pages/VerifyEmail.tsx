@@ -67,6 +67,7 @@ const VerifyEmail = () => {
       navigate('/login'); // Thành công thì về trang Đăng nhập
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
+      console.log('Error response:', axiosError.response);
       setErrorMessage(axiosError.response?.data?.message || 'Mã xác nhận không hợp lệ hoặc đã hết hạn.');
     } finally {
       setIsLoading(false);

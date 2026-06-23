@@ -4,8 +4,11 @@ import { successHandler, errorHandler } from '../utils/responseHandler';
 
 export class RegistrationController {
     static async getAllRegistrations(request: Request, response: Response) {
+        const page = Number(request.query.page) || 1;
+        const limit = Number(request.query.limit) || 10;
+
         try {
-            const registrations = await RegistrationService.getAllRegistrations();
+            const registrations = await RegistrationService.getAllRegistrations(page, limit);
             return response.json(successHandler(200, 'Lấy danh sách đăng ký thành công', registrations));
         } catch (error) {
             return response.json(errorHandler(500, 'Lỗi khi lấy danh sách đăng ký'));

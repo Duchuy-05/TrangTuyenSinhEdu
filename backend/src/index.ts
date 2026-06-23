@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import { AppDataSource } from './models/DataSource';
-import authRoutes from './routers/auth.router';
+
 import 'dotenv/config';
+import authRoutes from './routers/auth.router';
 import cookieParser from 'cookie-parser';
 import userRouter from './routers/user.router';
 import teacherRouter from './routers/teacher.router';

@@ -5,6 +5,7 @@ import { verifyToken, isAdmin } from '../middlerwares/auth.middleware';
 const teacherRouter: Router = Router();
 
 teacherRouter.get('/teachers', TeacherController.getAllTeachers);
+teacherRouter.get('/teachers/pagination', TeacherController.getAllTeachersPagniation)
 teacherRouter.get('/teachers/:id', TeacherController.getTeacherById);
 
 teacherRouter.post('/teachers', verifyToken, isAdmin, TeacherController.createTeacher);
