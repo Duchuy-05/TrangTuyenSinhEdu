@@ -200,10 +200,109 @@ ul {
     gap: 15px;
 }
 
-.hero-image img {
+
+/* ==========================================================================
+   HERO BANNER SLIDER (ISOLATED STYLE)
+   ========================================================================== */
+
+.hero-section {
     width: 100%;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
+}
+
+.hero-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    /* Giấu cấu trúc ảnh tràn */
+}
+
+/* Đường ray trượt banner */
+.hero-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Item banner đơn lẻ */
+.hero-slide-item {
+    min-width: 100%;
+    height: 600px;
+    flex-shrink: 0;
+}
+
+.hero-slide-item img {
+    padding-top: 100px;
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- NÚT ĐIỀU HƯỚNG CỦA HERO BANNER (ĐÃ ĐỔI TÊN ĐỂ TRÁNH XUNG ĐỘT) --- */
+.hero-ctrl-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333333;
+    cursor: pointer;
+    z-index: 20;
+    /* Đảm bảo nổi lên trên track */
+    transition: all 0.3s ease;
+    opacity: 0;
+    /* Chỉ hiện khi hover vào khung ảnh banner */
+}
+
+.hero-container:hover .hero-ctrl-btn {
+    opacity: 1;
+}
+
+.hero-ctrl-btn:hover {
+    background: #ffffff;
+    color: #e1251b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hero-ctrl-prev {
+    left: 20px;
+}
+
+.hero-ctrl-next {
+    right: 20px;
+}
+
+/* --- DẤU CHẤM CHỈ BÁO BANNER (DOTS) --- */
+.hero-indicator-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 20;
+}
+
+.hero-dot-item {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Khi chấm dot được kích hoạt */
+.hero-dot-item.is-active {
+    width: 24px;
+    border-radius: 10px;
+    background: #e1251b;
 }
 
 /* About/Stats */
