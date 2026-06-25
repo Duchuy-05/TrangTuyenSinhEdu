@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import CourseDetailPage from './pages/CourseDetailPage'; 
+import CourseDetailPage from './pages/CourseDetailPage';
 import ScratchCoursePage from './pages/ScratchCoursePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -25,6 +25,12 @@ import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage'
 import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
 import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
 import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
+import StudentDashboard from './pages/student/StudentDashboard';
+import StudentCoursesDetailPage from './pages/student/StudentCoursesDetailPage';
+import StudentOrdersCourses from './pages/student/StudentOrdersCourses';
+import StudentSetting from './pages/student/StudentSetting';
+import StudentClasses from './pages/student/StudentClasses';
+import StudentContactInstructor from './pages/student/StudentContactInstructor';
 import './styles/LandingPage.css';
 function App() {
   return (
@@ -87,8 +93,14 @@ function App() {
         }>
           {/* Dashboard học viên / My Courses */}
           <Route path="/my-courses" element={<MyCoursesPage />} />
-          {/* Các trang sau sẽ được phát triển sau */}
+          <Route path="/my-courses/:id" element={<StudentCoursesDetailPage />} />
+          <Route path="/dashboard" element={<StudentDashboard />} />
+          <Route path="/orders" element={<StudentOrdersCourses />} />
+          <Route path="/settings" element={<StudentSetting />} />
+          <Route path="/classes" element={<StudentClasses />} />
+          <Route path="/ask-teacher" element={<StudentContactInstructor />} />
         </Route>
+        {/* Các trang sau sẽ được phát triển sau */}
 
         {/* Các route dành cho Giảng viên (Instructor Dashboard) */}
         <Route element={

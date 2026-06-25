@@ -1,0 +1,339 @@
+import React, { useState } from 'react';
+import { 
+    School, Users, Activity, GraduationCap, 
+    Search, ChevronDown, Calendar, Clock, 
+    CheckCircle, PlayCircle, Send, User, MessageCircle
+} from 'lucide-react';
+
+// --- MOCK DATA ---
+const mockData = {
+    statistics: {
+        total: 4,
+        active: 2,
+        upcoming: 1,
+        completed: 1
+    },
+    classes: [
+        {
+            id: 'cls1',
+            className: 'K14 - ReactJS Master',
+            courseName: 'ReactJS Từ Cơ Bản Đến Nâng Cao',
+            thumbnail: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80&w=800',
+            status: 'Đang học',
+            progress: 65,
+            schedule: 'Thứ 2 - Thứ 4 | 19:30 - 21:30',
+            instructor: { name: 'Thầy Tuấn Anh', avatar: 'https://ui-avatars.com/api/?name=Tuan+Anh&background=1F2937&color=fff' }
+        },
+        {
+            id: 'cls2',
+            className: 'K08 - Backend NodeJS',
+            courseName: 'Xây dựng API với Node.js & Express',
+            thumbnail: 'https://images.unsplash.com/photo-1627398240411-bdc58c150ee9?auto=format&fit=crop&q=80&w=800',
+            status: 'Đang học',
+            progress: 30,
+            schedule: 'Thứ 3 - Thứ 5 | 19:30 - 21:30',
+            instructor: { name: 'Cô Thanh Xuân', avatar: 'https://ui-avatars.com/api/?name=Thanh+Xuan&background=1F2937&color=fff' }
+        },
+        {
+            id: 'cls3',
+            className: 'K20 - Tiếng Anh Giao Tiếp',
+            courseName: 'Tiếng Anh Thực Chiến Đi Làm',
+            thumbnail: 'https://images.unsplash.com/photo-1546410531-ea4cea477149?auto=format&fit=crop&q=80&w=800',
+            status: 'Sắp khai giảng',
+            progress: 0,
+            schedule: 'Thứ 7 - CN | 09:00 - 11:00',
+            instructor: { name: 'Mr. John Doe', avatar: 'https://ui-avatars.com/api/?name=John+Doe&background=1F2937&color=fff' }
+        },
+        {
+            id: 'cls4',
+            className: 'K05 - Cấu trúc dữ liệu',
+            courseName: 'CTDL & Giải thuật cơ bản',
+            thumbnail: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&q=80&w=800',
+            status: 'Đã kết thúc',
+            progress: 100,
+            schedule: 'Thứ 2 - Thứ 4 | 18:00 - 20:00',
+            instructor: { name: 'Thầy Tuấn Anh', avatar: 'https://ui-avatars.com/api/?name=Tuan+Anh&background=1F2937&color=fff' }
+        }
+    ],
+    upcomingSessions: [
+        { id: 1, className: 'K14 - ReactJS Master', topic: 'Buổi 12: Context API & Redux', time: 'Hôm nay, 19:30' },
+        { id: 2, className: 'K08 - Backend NodeJS', topic: 'Buổi 05: Kết nối MongoDB', time: 'Ngày mai, 19:30' },
+    ],
+    chatHistory: [
+        { id: 1, sender: 'instructor', name: 'Thầy Tuấn Anh', time: '10:00', message: 'Chào cả lớp, tối nay chúng ta sẽ học về Redux nhé. Các em nhớ cài đặt thư viện trước khi vào học.' },
+        { id: 2, sender: 'student', name: 'Tôi', time: '10:15', message: 'Thầy ơi, mình dùng Redux Toolkit hay Redux Core ạ?' },
+        { id: 3, sender: 'instructor', name: 'Thầy Tuấn Anh', time: '10:20', message: 'Chúng ta sẽ học thẳng lên Redux Toolkit luôn cho thực tế em nhé!' },
+        { id: 4, sender: 'student', name: 'Tôi', time: '10:25', message: 'Dạ vâng, em cảm ơn thầy.' },
+    ]
+};
+
+const StudentClasses: React.FC = () => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [chatInput, setChatInput] = useState('');
+    const [messages, setMessages] = useState(mockData.chatHistory);
+
+    const statCards = [
+        { title: 'Tổng lớp học', value: mockData.statistics.total, icon: <School size={24} />, bg: 'bg-gray-100', color: 'text-gray-700' },
+        { title: 'Đang hoạt động', value: mockData.statistics.active, icon: <Activity size={24} />, bg: 'bg-blue-50', color: 'text-blue-600' },
+        { title: 'Sắp khai giảng', value: mockData.statistics.upcoming, icon: <Clock size={24} />, bg: 'bg-amber-50', color: 'text-amber-600' },
+        { title: 'Hoàn thành', value: mockData.statistics.completed, icon: <GraduationCap size={24} />, bg: 'bg-emerald-50', color: 'text-emerald-600' },
+    ];
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'Đang học': return 'bg-blue-100 text-blue-700';
+            case 'Sắp khai giảng': return 'bg-amber-100 text-amber-700';
+            case 'Đã kết thúc': return 'bg-emerald-100 text-emerald-700';
+            default: return 'bg-gray-100 text-gray-700';
+        }
+    };
+
+    const filteredClasses = mockData.classes.filter(c => 
+        c.className.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        c.courseName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const handleSendMessage = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!chatInput.trim()) return;
+        
+        const newMessage = {
+            id: Date.now(),
+            sender: 'student',
+            name: 'Tôi',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            message: chatInput
+        };
+        
+        setMessages([...messages, newMessage]);
+        setChatInput('');
+    };
+
+    return (
+        <div className="p-4 lg:p-8 max-w-7xl mx-auto space-y-8 bg-[#F5F7FA] min-h-screen">
+            
+            {/* Header Section */}
+            <div>
+                <h1 className="text-2xl lg:text-3xl font-bold text-[#1F2937]">Lớp học của tôi</h1>
+                <p className="text-gray-500 mt-2 text-sm lg:text-base">Theo dõi lịch học, tham gia lớp trực tuyến và trao đổi cùng giảng viên.</p>
+            </div>
+
+            {/* Statistics Overview */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {statCards.map((stat, idx) => (
+                    <div key={idx} className="bg-white rounded-2xl p-5 shadow-sm border border-[#E5E7EB] flex flex-col justify-center gap-3 hover:-translate-y-1 transition-transform duration-300">
+                        <div className="flex justify-between items-start">
+                            <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
+                                {stat.icon}
+                            </div>
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-[#1F2937] leading-tight">{stat.value}</h3>
+                            <p className="text-sm text-gray-500 font-medium mt-1">{stat.title}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Toolbar */}
+            <div className="bg-white p-4 rounded-xl shadow-sm border border-[#E5E7EB] flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+                <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <button className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                        Trạng thái: Tất cả <ChevronDown size={16} />
+                    </button>
+                    <button className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-lg text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                        Sắp xếp: Mới nhất <ChevronDown size={16} />
+                    </button>
+                </div>
+
+                <div className="relative w-full md:w-80 group">
+                    <input 
+                        type="text" 
+                        placeholder="Tìm theo tên lớp hoặc khóa học..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 border border-[#E5E7EB] rounded-xl text-sm bg-gray-50 focus:bg-white focus:outline-none focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all"
+                    />
+                    <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-[#E5664B]" />
+                </div>
+            </div>
+
+            {/* Class Grid */}
+            {filteredClasses.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredClasses.map((cls) => (
+                        <div key={cls.id} className="bg-white rounded-[16px] shadow-sm hover:shadow-xl border border-[#E5E7EB] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col">
+                            {/* Thumbnail */}
+                            <div className="relative aspect-video overflow-hidden">
+                                <img 
+                                    src={cls.thumbnail} 
+                                    alt={cls.className} 
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                                <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-bold backdrop-blur-md bg-white/95 ${getStatusBadge(cls.status).split(' ')[1]}`}>
+                                    {cls.status}
+                                </span>
+                            </div>
+
+                            {/* Content */}
+                            <div className="p-5 flex flex-col flex-1">
+                                <h3 className="font-bold text-[#1F2937] text-lg mb-1 leading-snug group-hover:text-[#E5664B] transition-colors">
+                                    {cls.className}
+                                </h3>
+                                <p className="text-sm text-gray-500 mb-4 line-clamp-1">{cls.courseName}</p>
+                                
+                                <div className="flex items-center gap-2 mb-4">
+                                    <img src={cls.instructor.avatar} alt={cls.instructor.name} className="w-6 h-6 rounded-full" />
+                                    <span className="text-sm text-gray-700 font-medium">{cls.instructor.name}</span>
+                                </div>
+
+                                {/* Schedule */}
+                                <div className="flex items-start gap-3 mb-5 text-sm text-gray-600 bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
+                                    <Calendar size={18} className="text-[#E5664B] mt-0.5 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-medium text-gray-800">{cls.schedule.split(' | ')[0]}</p>
+                                        <p className="text-[#E5664B] font-bold mt-0.5">{cls.schedule.split(' | ')[1]}</p>
+                                    </div>
+                                </div>
+
+                                {/* Progress */}
+                                <div className="mt-auto mb-6">
+                                    <div className="flex justify-between items-center mb-1.5">
+                                        <span className="text-xs font-medium text-gray-500">Tiến độ của bạn</span>
+                                        <span className="text-xs font-bold text-[#E5664B]">{cls.progress}%</span>
+                                    </div>
+                                    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                        <div 
+                                            className="bg-[#E5664B] h-1.5 rounded-full transition-all duration-1000 ease-out"
+                                            style={{ width: `${cls.progress}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+
+                                {/* Quick Actions */}
+                                <div className="flex gap-2 border-t border-gray-100 pt-5">
+                                    <button className="flex-1 bg-[#E5664B] hover:bg-[#d6553a] text-white font-medium py-2.5 px-3 rounded-xl text-sm transition-all hover:shadow-lg flex items-center justify-center gap-2">
+                                        <PlayCircle size={18} /> Vào lớp
+                                    </button>
+                                    <button className="bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center">
+                                        Tài liệu
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] p-12 flex flex-col items-center justify-center text-center">
+                    <div className="w-24 h-24 mb-6 bg-gray-50 rounded-full flex items-center justify-center">
+                        <School size={40} className="text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#1F2937] mb-2">Không tìm thấy lớp học</h3>
+                    <p className="text-gray-500 mb-6">Hãy thử tìm kiếm với một từ khóa khác.</p>
+                </div>
+            )}
+
+            {/* Bottom Widgets Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                
+                {/* 1. Lịch học sắp tới */}
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB] flex flex-col h-[450px]">
+                    <h3 className="text-lg font-bold text-[#1F2937] mb-4 flex items-center gap-2">
+                        <Clock size={20} className="text-[#E5664B]" /> Lịch học sắp tới
+                    </h3>
+                    <div className="flex-1 overflow-y-auto pr-2 space-y-4 scrollbar-thin scrollbar-thumb-gray-200">
+                        {mockData.upcomingSessions.map(session => (
+                            <div key={session.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-orange-200 transition-colors group">
+                                <div className="flex justify-between items-start mb-2">
+                                    <span className="text-xs font-bold text-[#E5664B] bg-orange-100 px-2.5 py-1 rounded-md">
+                                        {session.className.split(' - ')[0]}
+                                    </span>
+                                    <span className="text-sm font-bold text-gray-800 flex items-center gap-1.5">
+                                        <Clock size={14} className="text-gray-400" /> {session.time}
+                                    </span>
+                                </div>
+                                <h4 className="font-bold text-gray-800 mb-1">{session.topic}</h4>
+                                <p className="text-sm text-gray-500">{session.className}</p>
+                                <button className="mt-4 w-full py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 group-hover:border-[#E5664B] group-hover:text-[#E5664B] transition-colors">
+                                    Mở Zoom / Meet
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 2. Khung Chat Hội thoại */}
+                <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] flex flex-col h-[450px] overflow-hidden relative">
+                    {/* Chat Header */}
+                    <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between z-10">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                                <MessageCircle size={20} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-gray-800">Thảo luận chung (K14)</h3>
+                                <p className="text-xs text-green-600 font-medium flex items-center gap-1">
+                                    <span className="w-2 h-2 rounded-full bg-green-500"></span> Trực tuyến
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Chat Messages */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 scrollbar-thin scrollbar-thumb-gray-200">
+                        {messages.map(msg => (
+                            <div key={msg.id} className={`flex gap-3 ${msg.sender === 'student' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                {/* Avatar */}
+                                <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden border border-white shadow-sm">
+                                    {msg.sender === 'instructor' 
+                                        ? <img src="https://ui-avatars.com/api/?name=Tuan+Anh&background=1F2937&color=fff" alt="GV" />
+                                        : <User size={16} className="text-gray-500" />
+                                    }
+                                </div>
+                                
+                                {/* Message Bubble */}
+                                <div className={`flex flex-col max-w-[75%] ${msg.sender === 'student' ? 'items-end' : 'items-start'}`}>
+                                    <div className="flex items-baseline gap-2 mb-1">
+                                        <span className="text-xs font-bold text-gray-700">{msg.name}</span>
+                                        <span className="text-[10px] text-gray-400">{msg.time}</span>
+                                    </div>
+                                    <div className={`p-3 rounded-2xl text-sm shadow-sm ${
+                                        msg.sender === 'student' 
+                                            ? 'bg-[#E5664B] text-white rounded-tr-sm' 
+                                            : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm'
+                                    }`}>
+                                        {msg.message}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Chat Input */}
+                    <div className="p-4 bg-white border-t border-gray-100 z-10">
+                        <form onSubmit={handleSendMessage} className="flex gap-2">
+                            <input 
+                                type="text"
+                                value={chatInput}
+                                onChange={(e) => setChatInput(e.target.value)}
+                                placeholder="Nhập tin nhắn..."
+                                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:bg-white focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all"
+                            />
+                            <button 
+                                type="submit" 
+                                disabled={!chatInput.trim()}
+                                className="w-10 h-10 rounded-full bg-[#E5664B] text-white flex items-center justify-center flex-shrink-0 hover:bg-[#d6553a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <Send size={16} className="ml-1" />
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    );
+};
+
+export default StudentClasses;
