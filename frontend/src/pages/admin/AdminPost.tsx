@@ -46,56 +46,63 @@ const AdminPost: React.FC = () => {
 
     return (
         <div>
-            <div className="page-header-actions">
-                <h2 className="admin-page-title">Quản lý Bài viết</h2>
-                <button className="btn btn-icon btn-add" onClick={handleAdd}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 className="text-2xl font-bold text-slate-900">Quản lý Bài viết</h2>
+                <button onClick={handleAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium text-sm whitespace-nowrap">
                     <Plus size={18} /> Thêm Bài viết
                 </button>
             </div>
 
-            <div className="table-card">
-                <table className="admin-table">
-                    <thead>
-                        <tr><th>ID</th><th>Tiêu đề</th><th>Tác giả</th><th>Trạng thái</th><th>Ngày tạo</th><th>Thao tác</th></tr>
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <table className="w-full">
+                    <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Tiêu đề</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Tác giả</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Trạng thái</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Ngày tạo</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Thao tác</th>
+                        </tr>
                     </thead>
-                    <tbody>
-                        {isLoading ? <tr><td colSpan={6} style={{ textAlign: 'center' }}>Đang tải...</td></tr> :
+                    <tbody className="divide-y divide-slate-200">
+                        {isLoading ? (
+                            <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-500">Đang tải...</td></tr>
+                        ) : (
                             posts.map(post => (
-                                <tr key={post.id}>
-                                    <td>#{post.id}</td>
-                                    <td><strong>{post.title}</strong></td>
-                                    <td>{post.authorName}</td>
-                                    <td>
-                                        <span style={{
-                                            padding: '4px 12px',
-                                            borderRadius: '4px',
-                                            fontSize: '0.85rem',
-                                            fontWeight: '500',
-                                            backgroundColor: post.status === 'published' ? '#dcfce7' : '#fef3c7',
-                                            color: post.status === 'published' ? '#15803d' : '#92400e'
-                                        }}>
+                                <tr key={post.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-6 py-4 text-sm text-slate-600">#{post.id}</td>
+                                    <td className="px-6 py-4 text-sm font-semibold text-slate-900">{post.title}</td>
+                                    <td className="px-6 py-4 text-sm text-slate-700">{post.authorName}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
+                                            post.status === 'published'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-amber-100 text-amber-800'
+                                        }`}>
                                             {post.status === 'published' ? 'Đã đăng' : 'Nháp'}
                                         </span>
                                     </td>
-                                    <td>{new Date(post.createdAt).toLocaleDateString('vi-VN')}</td>
-                                    <td>
-                                        <div className="action-buttons">
-                                            <button className="btn-delete" onClick={() => handleDelete(post.id)}><Trash2 size={16} /></button>
+                                    <td className="px-6 py-4 text-sm text-slate-700">{new Date(post.createdAt).toLocaleDateString('vi-VN')}</td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <button onClick={() => handleDelete(post.id)} className="p-2 hover:bg-red-50 text-red-600 rounded transition-colors" title="Xóa"><Trash2 size={16} /></button>
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ))
+                        )}
                     </tbody>
                 </table>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderTop: '1px solid var(--admin-border)' }}>
-                    <span style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-slate-200 bg-slate-50">
+                    <span className="text-sm text-slate-600">
                         Tổng {total} bài viết
                     </span>
-                    <div style={{ display: 'flex', gap: '6px' }}>
+                    <div className="flex items-center gap-2">
                         <button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             ← Trước
                         </button>
@@ -104,7 +111,11 @@ const AdminPost: React.FC = () => {
                             <button
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
-                                style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === page ? 'var(--admin-primary)' : '#fff', color: currentPage === page ? '#fff' : 'inherit', cursor: 'pointer' }}
+                                className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                                    currentPage === page
+                                        ? 'bg-blue-600 text-white'
+                                        : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
+                                }`}
                             >
                                 {page}
                             </button>
@@ -113,7 +124,7 @@ const AdminPost: React.FC = () => {
                         <button
                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages}
-                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             Tiếp →
                         </button>

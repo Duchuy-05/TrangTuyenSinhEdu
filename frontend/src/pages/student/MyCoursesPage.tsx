@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
     PlayCircle, CheckCircle, Award, BookOpen,
     Search, Filter, ChevronDown, Clock, Users, Play
@@ -142,12 +143,12 @@ const MyCoursesPage: React.FC = () => {
 
                                 {/* Actions */}
                                 <div className="flex gap-3">
-                                    <button className="flex-1 bg-[#E5664B] hover:bg-[#d6553a] text-white font-medium py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    <Link to={`/my-courses/${course.id}`} className="flex-1 bg-[#E5664B] hover:bg-[#d6553a] text-white font-medium py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] active:scale-[0.98] text-center">
                                         Tiếp tục học
-                                    </button>
-                                    <button className="bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+                                    </Link>
+                                    <Link to={`/my-courses/${course.id}`} className="bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] active:scale-[0.98] text-center">
                                         Chi tiết
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
