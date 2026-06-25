@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { 
-    Search, Bell, Heart, ShoppingCart, Menu, X, 
-    LayoutDashboard, BookOpen, MonitorPlay, Users, 
-    Award, Wallet, Clock, Settings, LogOut 
+import {
+    Search, Bell, Heart, ShoppingCart, Menu, X,
+    LayoutDashboard, BookOpen, MonitorPlay, Users,
+    Award, Clock, Settings, LogOut, MessageSquare
 } from 'lucide-react';
 
 const StudentLayout: React.FC = () => {
@@ -41,8 +41,7 @@ const StudentLayout: React.FC = () => {
         { name: 'Lớp học', path: '/classes', icon: <MonitorPlay size={20} /> },
         { name: 'Hội viên', path: '/membership', icon: <Users size={20} /> },
         { name: 'Chứng nhận', path: '/certificates', icon: <Award size={20} /> },
-        { name: 'Yêu thích', path: '/wishlist', icon: <Heart size={20} /> },
-        { name: 'Ví của tôi', path: '/wallet', icon: <Wallet size={20} /> },
+        { name: 'Hỏi đáp giáo viên', path: '/ask-teacher', icon: <MessageSquare size={20} /> },
         { name: 'Lịch sử đơn hàng', path: '/orders', icon: <Clock size={20} /> },
         { name: 'Cài đặt tài khoản', path: '/settings', icon: <Settings size={20} /> },
     ];
@@ -51,17 +50,17 @@ const StudentLayout: React.FC = () => {
 
     return (
         <div className="flex h-screen bg-[#F5F7FA] font-sans overflow-hidden">
-            
+
             {/* Mobile Sidebar Overlay */}
             {isSidebarOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
                     onClick={toggleSidebar}
                 ></div>
             )}
 
             {/* Left Sidebar */}
-            <aside 
+            <aside
                 className={`fixed lg:static inset-y-0 left-0 z-30 w-[260px] bg-white border-r border-[#E5E7EB] transform transition-transform duration-300 ease-in-out flex flex-col
                     ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 `}
@@ -81,13 +80,13 @@ const StudentLayout: React.FC = () => {
                         {navItems.map((item) => {
                             const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
                             return (
-                                <Link 
-                                    key={item.path} 
+                                <Link
+                                    key={item.path}
                                     to={item.path}
                                     onClick={() => setIsSidebarOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group relative
-                                        ${isActive 
-                                            ? 'bg-orange-50 text-[#E5664B]' 
+                                        ${isActive
+                                            ? 'bg-orange-50 text-[#E5664B]'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-[#1F2937]'
                                         }`}
                                 >
@@ -106,7 +105,7 @@ const StudentLayout: React.FC = () => {
 
                 {/* Nút Đăng xuất ở đáy Sidebar */}
                 <div className="p-4 border-t border-[#E5E7EB]">
-                    <button 
+                    <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-3 w-full rounded-xl transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-600 font-medium text-sm group"
                     >
@@ -120,27 +119,27 @@ const StudentLayout: React.FC = () => {
 
             {/* Main Content Wrapper */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                
+
                 {/* Top Navigation Bar */}
                 <header className="h-[72px] bg-white border-b border-[#E5E7EB] flex items-center justify-between px-4 lg:px-8 z-10 sticky top-0">
-                    
+
                     {/* Left: Mobile Menu & Logo */}
                     <div className="flex items-center gap-4">
-                        <button 
+                        <button
                             onClick={toggleSidebar}
                             className="p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100 lg:hidden"
                         >
                             <Menu size={24} />
                         </button>
-                        
+
                     </div>
 
                     {/* Center: Search Bar */}
                     <div className="hidden md:flex flex-1 max-w-xl mx-8">
                         <div className="relative w-full group">
-                            <input 
-                                type="text" 
-                                placeholder="Tìm kiếm khóa học, giảng viên..." 
+                            <input
+                                type="text"
+                                placeholder="Tìm kiếm khóa học, giảng viên..."
                                 className="w-full bg-[#F5F7FA] border border-transparent text-[#1F2937] text-sm rounded-full pl-12 pr-4 py-2.5 focus:outline-none focus:border-[#E5664B] focus:bg-white transition-all duration-300"
                             />
                             <Search size={18} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-[#E5664B] transition-colors" />
@@ -174,9 +173,9 @@ const StudentLayout: React.FC = () => {
                                 <p className="text-xs text-gray-500">Hồ sơ cá nhân</p>
                             </div>
                             {user.avatarUrl || user.avatar ? (
-                                <img 
-                                    src={user.avatarUrl || user.avatar} 
-                                    alt={user.name || user.fullName} 
+                                <img
+                                    src={user.avatarUrl || user.avatar}
+                                    alt={user.name || user.fullName}
                                     className="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-[#E5664B] transition-all object-cover"
                                 />
                             ) : (
