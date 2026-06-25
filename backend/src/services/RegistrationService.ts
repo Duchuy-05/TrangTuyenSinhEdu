@@ -1,11 +1,12 @@
 import { AppDataSource } from '../models/DataSource';
-import { Registration } from '../models/entities/Registration';
+import { Registration, RegistrationStatus } from '../models/entities/Registration';
 
 export class RegistrationService {
     private static registrationRepository = AppDataSource.getRepository(Registration);
 
-    static async getAllRegistrations(page: number = 1, limit: number = 10) {
+    static async getAllRegistrations(page: number = 1, limit: number = 10, status?: string) {
         const [registrations, total] = await this.registrationRepository.findAndCount({
+            where: status ? { status : status as RegistrationStatus } : {},
             relations: { user: true, course: true },
             order: { registeredAt: 'DESC' },
             take: limit,

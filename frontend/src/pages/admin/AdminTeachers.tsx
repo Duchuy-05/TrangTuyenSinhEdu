@@ -255,29 +255,33 @@ const AdminTeachers: React.FC = () => {
                         Tổng <span className="font-medium text-slate-900">{total}</span> giảng viên
                     </div>
                     <div className="flex gap-1">
+                        <div style={{ display: 'flex', gap: '6px' }}>
                         <button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            className="px-3 py-1 border border-slate-200 rounded-md bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 text-sm"
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
                         >
-                            Trang trước
+                            ← Trước
                         </button>
+
                         {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                             <button
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
-                                className={`px-3 py-1 border rounded-md text-sm ${currentPage === page ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                                style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === page ? 'var(--admin-primary)' : '#fff', color: currentPage === page ? '#fff' : 'inherit', cursor: 'pointer' }}
                             >
                                 {page}
                             </button>
                         ))}
+
                         <button
                             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-3 py-1 border border-slate-200 rounded-md bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 text-sm"
+                            style={{ padding: '6px 12px', border: '1px solid var(--admin-border)', borderRadius: '6px', background: currentPage === totalPages ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
                         >
-                            Trang sau
+                            Tiếp →
                         </button>
+                    </div>
                     </div>
                 </div>
             </div>

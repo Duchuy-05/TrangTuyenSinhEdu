@@ -6,6 +6,8 @@ const AdminRegistrations: React.FC = () => {
     const [registrations, setRegistrations] = useState<Registration[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [selectedStatus, setSelectedStatus] = useState('all');
+
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [total, setTotal] = useState(0);
@@ -15,10 +17,15 @@ const AdminRegistrations: React.FC = () => {
         fetchRegistrations(currentPage);
     }, [currentPage]);
 
-    const fetchRegistrations = async (page: number) => {
+    useEffect(() => {
+        setCurrentPage(1);
+        fetchRegistrations(1, selectedStatus);
+    }, [selectedStatus]);
+
+    const fetchRegistrations = async (page: number, status: string = 'all') => {
         setIsLoading(true);
         try {
-            const result = await registrationApi.getAllRegistrations(page, LIMIT);
+            const result = await registrationApi.getAllRegistrations(page, LIMIT, status);
             setRegistrations(result.data);
             setTotalPages(result.totalPages);
             setTotal(result.total);
@@ -63,10 +70,17 @@ const AdminRegistrations: React.FC = () => {
                         <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" />
                         <input type="text" placeholder="Tìm tên, SĐT..." className="w-full md:w-48 pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm" />
                     </div>
-                    <select className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm bg-white">
+                    <select
+                        value={selectedStatus}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
+                        style={{ padding: '8px 16px', border: '1px solid var(--admin-border)', borderRadius: '6px', outline: 'none' }}
+                    >
+                    {/* </select><select className="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm bg-white"> */}
                         <option value="all">Tất cả trạng thái</option>
                         <option value="pending">Chờ xử lý</option>
-                        <option value="paid">Đã thanh toán</option>
+                        <option value="contacted">Đã tư vấn</option>
+                        <option value="confirmed">Đã chốt</option>
+                        <option value="cancelled">Đã hủy</option>
                     </select>
                 </div>
             </div>

@@ -156,9 +156,9 @@ export const teacherApi = {
 };
 
 export const registrationApi = {
-    getAllRegistrations: async (page = 1, limit = 10) => {
+    getAllRegistrations: async (page = 1, limit = 10, status = 'all') => {
         const response = await apiClient.get('/registrations', {
-            params: { page, limit }
+            params: { page, limit, ...(status !== 'all' && { status }) }
         });
         return response.data.data; // { data, total, page, limit, totalPages }
     },

@@ -6,9 +6,10 @@ export class RegistrationController {
     static async getAllRegistrations(request: Request, response: Response) {
         const page = Number(request.query.page) || 1;
         const limit = Number(request.query.limit) || 10;
+        const status = request.query.status as string | undefined;
 
         try {
-            const registrations = await RegistrationService.getAllRegistrations(page, limit);
+            const registrations = await RegistrationService.getAllRegistrations(page, limit, status);
             return response.json(successHandler(200, 'Lấy danh sách đăng ký thành công', registrations));
         } catch (error) {
             return response.json(errorHandler(500, 'Lỗi khi lấy danh sách đăng ký'));
