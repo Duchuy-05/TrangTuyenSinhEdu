@@ -21,6 +21,8 @@ import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
 import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
 import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
 import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
+import InstructorCoursesPage from './pages/instructor/InstructorCoursesPage';
+import CourseEditorPage from './pages/instructor/course-builder/CourseEditorPage';
 import PostList from './pages/Post/PostList';
 import CreatePost from './pages/admin/CreatePost';
 import PostDetail from './pages/Post/PostDetail';
@@ -89,6 +91,8 @@ function App() {
         {/* Các route dành cho Giảng viên (Instructor Dashboard) */}
         <Route element={<RequireRole allowedRoles={['teacher']}><InstructorLayout /></RequireRole>}>
           <Route path="/instructor" element={<InstructorDashboardPage />} />
+          <Route path="/instructor/courses" element={<InstructorCoursesPage />} />
+          <Route path="/instructor/course-builder/:courseId" element={<CourseEditorPage />} />
           <Route path="/instructor/my-class" element={<InstructorClassesPage />} />
           <Route path="/my-class/create" element={<InstructorCreateClassPage />} />
           <Route path="/instructor/students" element={<InstructorStudentsPage />} />

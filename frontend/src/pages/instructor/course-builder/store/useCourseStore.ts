@@ -1,23 +1,42 @@
 import { create } from 'zustand';
-import { CourseAPI } from '../../../services/courseApi';
+import { instructorCourseApi } from '../../../../services/api';  
 import Swal from 'sweetalert2';
 
+export interface Lesson {
+  id: string;
+  title: string;
+  isPreview: boolean;
+  blocks?: any[]; 
+}
+
+export interface Unit {
+  id: string;
+  title: string;
+  items: Lesson[];
+}
+
+export interface CourseDetails {
+  title: string;
+  shortDesc: string;
+  price: number | string;
+  imageUrl: string;
+}
+
 interface CourseState {
-  courseDetails: any;
-  courseData: any[]; // Chứa Units và Lessons
-  blocksByLesson: any; // Chứa nội dung (Video, text, quiz)
-  activeLesson: any | null;
+  courseDetails: CourseDetails;
+  courseData: Unit[]; // Chứa Units và Lessons
+  blocksByLesson: Record<string, any>; // Chứa nội dung (Video, text, quiz)
+  activeLesson: Lesson | null;
   isLoading: boolean;
   
   // Actions
   fetchDraftData: (courseId: string) => Promise<void>;
   saveDraft: (courseId: string) => Promise<void>;
-  setActiveLesson: (lesson: any) => void;
-  // ... các hàm addUnit, addLesson tương tự bài cũ nhưng chuyển hết vào đây
+  setActiveLesson: (lesson: Lesson) => void;
 }
 
 export const useCourseStore = create<CourseState>((set, get) => ({
-  courseDetails: { title: '', description: '', price: 0, thumbnail: '' },
+  courseDetails: { title: '', shortDesc: '', price: 0, imageUrl: '' },
   courseData: [],
   blocksByLesson: {},
   activeLesson: null,
@@ -26,10 +45,10 @@ export const useCourseStore = create<CourseState>((set, get) => ({
   fetchDraftData: async (courseId) => {
     set({ isLoading: true });
     try {
-      const response = await CourseAPI.getDraft(courseId);
+      const response = await instructorCourseApi.getDraft(courseId);
       const data = response.data.data;
       set({ 
-        courseDetails: { title: data.title, description: data.description, price: data.price },
+        courseDetails: { title: data.title, shortDesc: data.shortDesc || '', price: data.price, imageUrl: data.imageUrl || '' },
         courseData: data.courseData || [],
         blocksByLesson: data.blocks || {},
       });
@@ -44,7 +63,7 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     const state = get();
     Swal.fire({ title: 'Đang lưu...', didOpen: () => Swal.showLoading() });
     try {
-      await CourseAPI.updateDraft(courseId, {
+      await instructorCourseApi.updateDraft(courseId, {
         ...state.courseDetails,
         courseData: state.courseData,
         blocks: state.blocksByLesson

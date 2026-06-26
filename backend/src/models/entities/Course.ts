@@ -78,7 +78,7 @@ export class Course {
 
   @Column({ type: 'json', nullable: true })
   blocks: any;
-
+  
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
