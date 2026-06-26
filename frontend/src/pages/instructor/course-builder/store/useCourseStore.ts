@@ -29,7 +29,6 @@ interface CourseState {
   activeLesson: Lesson | null;
   isLoading: boolean;
   
-  // Actions
   fetchDraftData: (courseId: string) => Promise<void>;
   saveDraft: (courseId: string) => Promise<void>;
   setActiveLesson: (lesson: Lesson) => void;
