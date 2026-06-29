@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Registration } from './Registration';
+import { ClassEnrollment } from './ClassEnrollment';
 
 export enum UserRole {
   STUDENT = 'student',
@@ -59,4 +60,7 @@ export class User {
 
   @OneToMany(() => Registration, (registration) => registration.user)
   registrations: Registration[];
+
+  @OneToMany(() => ClassEnrollment, (enrollment) => enrollment.user)
+  enrollments: ClassEnrollment[];
 }
