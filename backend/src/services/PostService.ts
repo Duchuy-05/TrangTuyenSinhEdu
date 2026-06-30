@@ -4,20 +4,20 @@ const postRepo = AppDataSource.getRepository(Post);
 
 export class PostService {
   static async getAllPublishedPost() {
-  return postRepo.find({
-    where: { status: PostStatus.PUBLISHED },
-    order: { createdAt: 'DESC' },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      thumbnailUrl: true,
-      shortDesc: true,
-      authorName: true,
-      createdAt: true,
-    },
-  });
-}
+    return postRepo.find({
+      where: { status: PostStatus.PUBLISHED },
+      order: { createdAt: 'DESC' },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        thumbnailUrl: true,
+        shortDesc: true,
+        authorName: true,
+        createdAt: true,
+      },
+    });
+  }
 
   static async getAllPostPagniation(page: number = 1, limit: number = 10) {
     const [posts, total] = await postRepo.findAndCount({

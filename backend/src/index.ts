@@ -12,6 +12,9 @@ import syllabusRouter from './routers/syllabus.router';
 import registrationRouter from './routers/registration.router';
 import postRouter from './routers/post.router';
 import morgan from 'morgan';
+import classRouter from './routers/class.router';
+import scheduleRouter from './routers/schedule.router';
+import classEnrollmentRouter from './routers/classenrollment.router';
 
 
 const app = express();
@@ -30,6 +33,9 @@ app.use("/api/auth", authRoutes) // Đăng ký route cho auth
 app.use(express.static('public'))
 app.set('view engine', 'ejs')
 
+app.use("/api", classRouter)
+app.use("/api", scheduleRouter)
+app.use("/api", classEnrollmentRouter)
 app.use("/api", postRouter)
 app.use("/api", userRouter)
 app.use("/api", teacherRouter)
