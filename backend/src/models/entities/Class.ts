@@ -3,6 +3,7 @@ import { Course } from './Course';
 import { Teacher } from './Teacher';
 import { Schedule } from './Schedule';
 import { ClassEnrollment } from './ClassEnrollment';
+import { Announcement } from './Announcement';
 
 @Entity('classes')
 export class Class {
@@ -43,4 +44,7 @@ export class Class {
 
   @OneToMany(() => ClassEnrollment, (enrollment) => enrollment.class)
   enrollments: ClassEnrollment[];
+
+  @OneToMany(() => Announcement, (announcement) => announcement.class)
+  announcements: Announcement[];
 }

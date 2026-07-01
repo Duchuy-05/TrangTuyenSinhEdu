@@ -3,7 +3,7 @@ import { ClassEnrollmentController } from '../controllers/ClassEnrollmentControl
 
 const classEnrollmentRouter: Router = Router();
 
-classEnrollmentRouter.get('/class-enrollments/my', ClassEnrollmentController.getMyClasses);
+classEnrollmentRouter.get('/class-enrollments/myclasses', ClassEnrollmentController.getMyClasses);
 classEnrollmentRouter.get('/class-enrollments', ClassEnrollmentController.getByClassId);
 
 classEnrollmentRouter.post('/class-enrollments', ClassEnrollmentController.create);

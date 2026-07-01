@@ -5,7 +5,7 @@ import { ILike } from "typeorm";
 export class TeacherService {
     private static teacherRepository = AppDataSource.getRepository(Teacher);
 
-    static async getAllTeachersPagniation(page: number = 1, limit: number = 10, search?: string) {
+    static async getAllTeachersPagination(page: number = 1, limit: number = 10, search?: string) {
         const whereCondition = search ? [
             { fullName: ILike(`%${search}%`) },
             { email: ILike(`%${search}%`) },
@@ -45,13 +45,7 @@ export class TeacherService {
     }
 
     static async createTeacher(teacherData: any) {
-        const newTeacher = new Teacher();
-        newTeacher.fullName = teacherData.fullName;
-        newTeacher.email = teacherData.email;
-        newTeacher.phone = teacherData.phone;
-        newTeacher.specialization = teacherData.specialization;
-        newTeacher.bio = teacherData.bio;
-        newTeacher.avatarUrl = teacherData.avatarUrl;
+        const newTeacher = this.teacherRepository.create(teacherData);
         return this.teacherRepository.save(newTeacher);
     }
 
@@ -60,12 +54,7 @@ export class TeacherService {
         if (!teacher) {
             throw new Error('Teacher not found');
         }
-        teacher.fullName = teacherData.fullName ?? teacher.fullName;
-        teacher.email = teacherData.email ?? teacher.email;
-        teacher.phone = teacherData.phone ?? teacher.phone;
-        teacher.specialization = teacherData.specialization ?? teacher.specialization;
-        teacher.bio = teacherData.bio ?? teacher.bio;
-        teacher.avatarUrl = teacherData.avatarUrl ?? teacher.avatarUrl;
+        Object.assign(teacher, teacherData);
         return this.teacherRepository.save(teacher);
     }
 

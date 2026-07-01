@@ -3,12 +3,12 @@ import { CourseService } from '../services/CourseService';
 import { successHandler, errorHandler } from '../utils/responseHandler';
 
 export class CourseController {
-    static async getAllCoursesPagniation(request: Request, response: Response) {
+    static async getAllCoursesPagination(request: Request, response: Response) {
         const page = Number(request.query.page) || 1;
         const limit = Number(request.query.limit) || 10;
 
         try {
-            const courses = await CourseService.getAllCoursesPagniation(page, limit);
+            const courses = await CourseService.getAllCoursesPagination(page, limit);
             return response.json(successHandler(200, 'Lấy danh sách khóa học thành công', courses));
         }
         catch (error) {
