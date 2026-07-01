@@ -22,6 +22,8 @@ import MyCoursesPage from './pages/student/MyCoursesPage';
 import InstructorLayout from './layouts/InstructorLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import InstructorDashboardPage from './pages/instructor/InstructorDashboardPage';
+import InstructorCoursesPage from './pages/instructor/InstructorCoursesPage';
+import InstructorCourseDetailPage from './pages/instructor/InstructorCourseDetailPage';
 import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
 import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
 import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
@@ -109,6 +111,8 @@ function App() {
           </ProtectedRoute>
         }>
           <Route path="/instructor" element={<InstructorDashboardPage />} />
+          <Route path="/instructor/courses" element={<InstructorCoursesPage />} />
+          <Route path="/instructor/courses/:id" element={<InstructorCourseDetailPage />} />
           <Route path="/instructor/my-class" element={<InstructorClassesPage />} />
           <Route path="/my-class/create" element={<InstructorCreateClassPage />} />
           <Route path="/instructor/students" element={<InstructorStudentsPage />} />

@@ -37,7 +37,7 @@ const InstructorLayout: React.FC = () => {
 
     const navItems = [
         { name: 'Tổng quan', path: '/instructor', icon: <LayoutDashboard size={20} /> },
-        { name: 'Khóa học của tôi', path: '/instructor/courses', icon: <BookOpen size={20} /> },
+        { name: 'Danh sách khóa học', path: '/instructor/courses', icon: <BookOpen size={20} /> },
         { name: 'Quản lý lớp học', path: '/instructor/my-class', icon: <Presentation size={20} /> },
         { name: 'Học viên', path: '/instructor/students', icon: <Users size={20} /> },
         { name: 'Bài tập', path: '/instructor/assignments', icon: <FileText size={20} /> },
