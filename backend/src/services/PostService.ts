@@ -19,7 +19,7 @@ export class PostService {
     });
   }
 
-  static async getAllPostPagniation(page: number = 1, limit: number = 10) {
+  static async getAllPostPagination(page: number = 1, limit: number = 10) {
     const [posts, total] = await postRepo.findAndCount({
       order: { createdAt: 'DESC' },
       select: {

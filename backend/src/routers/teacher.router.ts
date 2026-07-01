@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { TeacherController } from '../controllers/TeacherController';
-import { upload } from '../middlerwares/upload.middleware';
-import { verifyToken, isAdmin } from '../middlerwares/auth.middleware';
+import { upload } from '../middlewares/upload.middleware';
+import { verifyToken, isAdmin } from '../middlewares/auth.middleware';
 const teacherRouter: Router = Router();
 
 teacherRouter.get('/teachers', TeacherController.getAllTeachers);
-teacherRouter.get('/teachers/pagination', TeacherController.getAllTeachersPagniation)
+teacherRouter.get('/teachers/pagination', TeacherController.getAllTeachersPagination)
 teacherRouter.get('/teachers/:id', TeacherController.getTeacherById);
 
 teacherRouter.post('/teachers', verifyToken, isAdmin, TeacherController.createTeacher);

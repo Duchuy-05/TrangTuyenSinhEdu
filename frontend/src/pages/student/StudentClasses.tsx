@@ -4,7 +4,7 @@ import {
     Search, ChevronDown, Calendar, Clock,
     CheckCircle, PlayCircle, Send, User, MessageCircle
 } from 'lucide-react';
-import { Class, classApi } from '../../services/class.api';
+import { ClassSchedule, Enrollment, classApi } from '../../services/class.api';
 
 // --- MOCK DATA ---
 const mockData = {
@@ -75,14 +75,27 @@ const StudentClasses: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [chatInput, setChatInput] = useState('');
     const [messages, setMessages] = useState(mockData.chatHistory);
-    const [myClasses, setMyClasses] = useState<Class[]>([]);
+    const [myClasses, setMyClasses] = useState<Enrollment[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [classSchedules, setClassSchedules] = useState<
+        Record<number, ClassSchedule[]>
+    >({});
 
     useEffect(() => {
         const fetchClasses = async () => {
             try {
                 setIsLoading(true);
-                const data = await classApi.getMyClasses();
+
+                setIsLoading(true);
+
+                const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+                if (!user.id) {
+                    console.error("User ID not found");
+                    return;
+                }
+
+                const data = await classApi.getMyClasses(user.id);
                 setMyClasses(data);
             } catch (err) {
                 console.error("Lỗi khi tải lớp học:", err);
@@ -94,26 +107,130 @@ const StudentClasses: React.FC = () => {
         fetchClasses();
     }, []);
 
+    useEffect(() => {
+        if (myClasses.length === 0) return;
+
+        const fetchSchedules = async () => {
+            const scheduleMap: Record<number, ClassSchedule[]> = {};
+
+            await Promise.all(
+                myClasses.map(async ({ class: cls }) => {
+                    try {
+                        const schedules = await classApi.getClassSchedule(cls.id); 
+                        scheduleMap[cls.id] = schedules;
+                    } catch (err) {
+                        console.error(`Lỗi khi tải lịch lớp ${cls.id}:`, err);
+                        scheduleMap[cls.id] = [];
+                    }
+                })
+            );
+
+            setClassSchedules(scheduleMap);
+        };
+
+        fetchSchedules();
+    }, [myClasses]);
+
+    const formatDate = (date: string) =>
+        new Date(date).toLocaleDateString("vi-VN", {
+            weekday: "long",
+            day: "2-digit",
+            month: "2-digit",
+        });
+
+    const formatTime = (date: string) =>
+        new Date(date).toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+
+    const getProgress = (status: string) => {
+        switch (status) {
+            case "completed":
+                return 100;
+            case "ongoing":
+                return 50;
+            case "upcoming":
+            default:
+                return 0;
+        }
+    };
+
+    const statistics = {
+        total: myClasses.length,
+        active: myClasses.filter(c => c.class.status === "ongoing").length,
+        upcoming: myClasses.filter(c => c.class.status === "upcoming").length,
+        completed: myClasses.filter(c => c.class.status === "completed").length,
+    };
+
     const statCards = [
-        { title: 'Tổng lớp học', value: mockData.statistics.total, icon: <School size={24} />, bg: 'bg-gray-100', color: 'text-gray-700' },
-        { title: 'Đang hoạt động', value: mockData.statistics.active, icon: <Activity size={24} />, bg: 'bg-blue-50', color: 'text-blue-600' },
-        { title: 'Sắp khai giảng', value: mockData.statistics.upcoming, icon: <Clock size={24} />, bg: 'bg-amber-50', color: 'text-amber-600' },
-        { title: 'Hoàn thành', value: mockData.statistics.completed, icon: <GraduationCap size={24} />, bg: 'bg-emerald-50', color: 'text-emerald-600' },
+        {
+            title: "Tổng lớp học",
+            value: statistics.total,
+            icon: <School size={24} />,
+            bg: "bg-gray-100",
+            color: "text-gray-700",
+        },
+        {
+            title: "Đang hoạt động",
+            value: statistics.active,
+            icon: <Activity size={24} />,
+            bg: "bg-blue-50",
+            color: "text-blue-600",
+        },
+        {
+            title: "Sắp khai giảng",
+            value: statistics.upcoming,
+            icon: <Clock size={24} />,
+            bg: "bg-amber-50",
+            color: "text-amber-600",
+        },
+        {
+            title: "Hoàn thành",
+            value: statistics.completed,
+            icon: <GraduationCap size={24} />,
+            bg: "bg-emerald-50",
+            color: "text-emerald-600",
+        },
     ];
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case 'Đang học': return 'bg-blue-100 text-blue-700';
-            case 'Sắp khai giảng': return 'bg-amber-100 text-amber-700';
-            case 'Đã kết thúc': return 'bg-emerald-100 text-emerald-700';
-            default: return 'bg-gray-100 text-gray-700';
+            case "ongoing":
+                return "bg-blue-100 text-blue-700";
+
+            case "upcoming":
+                return "bg-amber-100 text-amber-700";
+
+            case "completed":
+                return "bg-emerald-100 text-emerald-700";
+
+            default:
+                return "bg-gray-100 text-gray-700";
         }
     };
 
-    const filteredClasses = mockData.classes.filter(c =>
-        c.className.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.courseName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const getStatusText = (status: string) => {
+        switch (status) {
+            case "ongoing":
+                return "Đang học";
+            case "upcoming":
+                return "Sắp khai giảng";
+            case "completed":
+                return "Đã kết thúc";
+            default:
+                return status;
+        }
+    };
+
+    const filteredClasses = myClasses.filter((item) => {
+        const keyword = searchTerm.toLowerCase();
+
+        return (
+            item.class.className.toLowerCase().includes(keyword) ||
+            item.class.course.title.toLowerCase().includes(keyword)
+        );
+    });
 
     const handleSendMessage = (e: React.FormEvent) => {
         e.preventDefault();
@@ -184,68 +301,130 @@ const StudentClasses: React.FC = () => {
 
             {/* Class Grid */}
             {filteredClasses.length > 0 ? (
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredClasses.map((cls) => (
-                        <div key={cls.id} className="bg-white rounded-[16px] shadow-sm hover:shadow-xl border border-[#E5E7EB] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col">
-                            {/* Thumbnail */}
-                            <div className="relative aspect-video overflow-hidden">
-                                <img
-                                    src={cls.thumbnail}
-                                    alt={cls.className}
-                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                                <span className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-bold backdrop-blur-md bg-white/95 ${getStatusBadge(cls.status).split(' ')[1]}`}>
-                                    {cls.status}
-                                </span>
+                    {filteredClasses.map(({ class: cls }) => {
+                        const schedules = classSchedules[cls.id] || [];
+                        console.log(`${cls.className} : `, schedules);
+
+                        const nextSession =
+                            schedules.find((s) => s.status === "ongoing") ??
+                            schedules.find((s) => s.status === "upcoming");
+
+                        return (
+                            <div
+                                key={cls.id}
+                                className="bg-white rounded-[16px] shadow-sm hover:shadow-xl border border-[#E5E7EB] overflow-hidden hover:-translate-y-1.5 transition-all duration-300 group flex flex-col"
+                            >
+                                {/* Thumbnail */}
+                                <div className="relative aspect-video overflow-hidden">
+                                    <img
+                                        src={cls.course.imageUrl}
+                                        alt={cls.className}
+                                        className="w-full h-full object-cover"
+                                    />
+
+                                    <span
+                                        className={`absolute top-3 right-3 px-2.5 py-1 rounded-md text-xs font-bold backdrop-blur-md bg-white/95 ${getStatusBadge(cls.status).split(" ")[1]
+                                            }`}
+                                    >
+                                        {getStatusText(cls.status)}
+                                    </span>
+                                </div>
+
+                                {/* Content */}
+                                <div className="p-5 flex flex-col flex-1">
+                                    <h3 className="font-bold text-[#1F2937] text-lg mb-1 leading-snug group-hover:text-[#E5664B] transition-colors">
+                                        {cls.className}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-500 mb-4 line-clamp-1">
+                                        {cls.course.title}
+                                    </p>
+
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <img
+                                            src={cls.teacher.avatarUrl}
+                                            alt={cls.teacher.fullName}
+                                            className="w-6 h-6 rounded-full"
+                                        />
+                                        <span className="text-sm text-gray-700 font-medium">
+                                            {cls.teacher.fullName}
+                                        </span>
+                                    </div>
+
+                                    {/* Schedule */}
+                                    <div className="flex items-start gap-3 mb-5 text-sm bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
+                                        <Calendar
+                                            size={18}
+                                            className="text-[#E5664B] mt-0.5 flex-shrink-0"
+                                        />
+
+                                        <div className="flex-1">
+                                            {nextSession ? (
+                                                <>
+                                                    <p className="font-semibold text-gray-800">
+                                                        {nextSession.sessionTitle}
+                                                    </p>
+
+                                                    <p className="text-gray-500 mt-1">
+                                                        {formatDate(nextSession.startTime)}
+                                                    </p>
+
+                                                    <p className="font-bold text-[#E5664B]">
+                                                        {formatTime(nextSession.startTime)} -{" "}
+                                                        {formatTime(nextSession.endTime)}
+                                                    </p>
+
+                                                    <p className="text-xs text-gray-500 mt-1">
+                                                        {nextSession.location}
+                                                    </p>
+                                                </>
+                                            ) : (
+                                                <p className="text-gray-500">
+                                                    Chưa có lịch học
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Progress */}
+                                    <div className="mt-auto mb-6">
+                                        <div className="flex justify-between items-center mb-1.5">
+                                            <span className="text-xs font-medium text-gray-500">
+                                                Tiến độ của bạn
+                                            </span>
+
+                                            <span className="text-xs font-bold text-[#E5664B]">
+                                                {getProgress(cls.status)}%
+                                            </span>
+                                        </div>
+
+                                        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                            <div
+                                                className="bg-[#E5664B] h-1.5 rounded-full transition-all duration-1000 ease-out"
+                                                style={{
+                                                    width: `${getProgress(cls.status)}%`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Quick Actions */}
+                                    <div className="flex gap-2 border-t border-gray-100 pt-5">
+                                        <button className="flex-1 bg-[#E5664B] hover:bg-[#d6553a] text-white font-medium py-2.5 px-3 rounded-xl text-sm transition-all hover:shadow-lg flex items-center justify-center gap-2">
+                                            <PlayCircle size={18} />
+                                            Vào lớp
+                                        </button>
+
+                                        <button className="bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center">
+                                            Tài liệu
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-
-                            {/* Content */}
-                            <div className="p-5 flex flex-col flex-1">
-                                <h3 className="font-bold text-[#1F2937] text-lg mb-1 leading-snug group-hover:text-[#E5664B] transition-colors">
-                                    {cls.className}
-                                </h3>
-                                <p className="text-sm text-gray-500 mb-4 line-clamp-1">{cls.courseName}</p>
-
-                                <div className="flex items-center gap-2 mb-4">
-                                    <img src={cls.instructor.avatar} alt={cls.instructor.name} className="w-6 h-6 rounded-full" />
-                                    <span className="text-sm text-gray-700 font-medium">{cls.instructor.name}</span>
-                                </div>
-
-                                {/* Schedule */}
-                                <div className="flex items-start gap-3 mb-5 text-sm text-gray-600 bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
-                                    <Calendar size={18} className="text-[#E5664B] mt-0.5 flex-shrink-0" />
-                                    <div>
-                                        <p className="font-medium text-gray-800">{cls.schedule.split(' | ')[0]}</p>
-                                        <p className="text-[#E5664B] font-bold mt-0.5">{cls.schedule.split(' | ')[1]}</p>
-                                    </div>
-                                </div>
-
-                                {/* Progress */}
-                                <div className="mt-auto mb-6">
-                                    <div className="flex justify-between items-center mb-1.5">
-                                        <span className="text-xs font-medium text-gray-500">Tiến độ của bạn</span>
-                                        <span className="text-xs font-bold text-[#E5664B]">{cls.progress}%</span>
-                                    </div>
-                                    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                        <div
-                                            className="bg-[#E5664B] h-1.5 rounded-full transition-all duration-1000 ease-out"
-                                            style={{ width: `${cls.progress}%` }}
-                                        ></div>
-                                    </div>
-                                </div>
-
-                                {/* Quick Actions */}
-                                <div className="flex gap-2 border-t border-gray-100 pt-5">
-                                    <button className="flex-1 bg-[#E5664B] hover:bg-[#d6553a] text-white font-medium py-2.5 px-3 rounded-xl text-sm transition-all hover:shadow-lg flex items-center justify-center gap-2">
-                                        <PlayCircle size={18} /> Vào lớp
-                                    </button>
-                                    <button className="bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-xl text-sm transition-all flex items-center justify-center">
-                                        Tài liệu
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] p-12 flex flex-col items-center justify-center text-center">
@@ -322,8 +501,8 @@ const StudentClasses: React.FC = () => {
                                         <span className="text-[10px] text-gray-400">{msg.time}</span>
                                     </div>
                                     <div className={`p-3 rounded-2xl text-sm shadow-sm ${msg.sender === 'student'
-                                            ? 'bg-[#E5664B] text-white rounded-tr-sm'
-                                            : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm'
+                                        ? 'bg-[#E5664B] text-white rounded-tr-sm'
+                                        : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm'
                                         }`}>
                                         {msg.message}
                                     </div>

@@ -34,14 +34,26 @@ export interface Enrollment {
     };
 }
 
+export interface ClassSchedule {
+    id: number;
+    classId: number;
+    sessionTitle: string;
+    sessionNumber: number;
+    startTime: string;
+    endTime: string;
+    location: string;
+    status: "upcoming" | "ongoing" | "completed";
+}
+
 export const classApi = {
-    getMyClasses : async (): Promise<Enrollment[]> => {
-        const response = await apiClient.get('/class-enrollments/myclasses');
+    getMyClasses : async (userId: number): Promise<Enrollment[]> => {
+        const response = await apiClient.get(`/class-enrollments/myclasses?userId=${userId}`);
         return response.data.data;
     },
 
-    getClassSchedule: async (classId: number): Promise<any> => {
+    getClassSchedule: async (classId: number): Promise<ClassSchedule[]> => {
         const response = await apiClient.get(`/schedules?classId=${classId}`);
         return response.data.data;
     }
+
 }

@@ -46,10 +46,7 @@ export class CourseSyllabusService {
         if (!syllabus) {
             throw new Error('Course syllabus not found');
         }
-        syllabus.courseId = syllabusData.courseId ?? syllabus.courseId;
-        syllabus.orderIndex = syllabusData.orderIndex ?? syllabus.orderIndex;
-        syllabus.title = syllabusData.title ?? syllabus.title;
-        syllabus.description = syllabusData.description ?? syllabus.description;
+        Object.assign(syllabus, syllabusData);
         return this.courseSyllabusRepository.save(syllabus);
     }
 
