@@ -24,7 +24,7 @@ courseRouter.post('/courses/:courseGroupId/publish', verifyToken, CourseControll
 
 courseRouter.get('/courses', CourseController.getAllCourses);
 courseRouter.post('/courses', upload.single('image'), CourseController.createCourse);
-// (NẾU CÓ DÒNG NÀY PHẢI ĐỂ Ở ĐÁY CÙNG) API lấy chi tiết 1 khóa học bằng ID
+// API lấy chi tiết 1 khóa học bằng ID 
 courseRouter.get('/courses/:id', CourseController.getCourseById);
 courseRouter.put('/courses/:id', upload.single('image'), CourseController.updateCourse);
 

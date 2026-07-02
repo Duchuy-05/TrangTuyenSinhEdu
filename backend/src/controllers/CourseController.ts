@@ -5,12 +5,24 @@ import { successHandler, errorHandler } from '../utils/responseHandler';
 import { AppDataSource } from '../models/DataSource';
 import { Teacher } from '../models/entities/Teacher';
 export class CourseController {
+    static async getAllCoursesPagniation(request: Request, response: Response) {
+        const page = Number(request.query.page) || 1;
+        const limit = Number(request.query.limit) || 10;
+
+        try {
+            const courses = await CourseService.getAllCoursesPagniation(page, limit);
+            return response.json(successHandler(200, 'Lấy danh sách khóa học thành công', courses));
+        }
+        catch (error) {
+            return response.json(errorHandler(500, 'Lỗi khi lấy danh sách khóa học'));
+        }
+    }
+
     static async getAllCourses(request: Request, response: Response) {
         try {
             const courses = await CourseService.getAllCourses();
             return response.json(successHandler(200, 'Lấy danh sách khóa học thành công', courses));
-        }
-        catch (error) {
+        } catch (error) {
             return response.json(errorHandler(500, 'Lỗi khi lấy danh sách khóa học'));
         }
     }
@@ -72,61 +84,47 @@ export class CourseController {
     // Khởi tạo khóa học cho Giảng viên
     // 1. Tạo bản nháp mới
     static async createDraft(request: Request, response: Response) {
-    try {
-        const { title } = request.body;
-        
-        // 1. Lấy thông tin user đang đăng nhập từ Token (được Middleware verifyToken gắn vào)
-        const currentUser = (request as any).user;
+        try {
+            const { title } = request.body;
+            
+            // 1. Nhận thông tin user từ Token (do Middleware verifyToken gán sang)
+            const currentUser = (request as any).user;
 
-        // Nếu không có thông tin user
-        if (!currentUser) {
-            return response.json(errorHandler(401, 'Vui lòng đăng nhập để thực hiện chức năng này!'));
+            if (!currentUser) {
+                return response.json(errorHandler(401, 'Vui lòng đăng nhập để thực hiện chức năng này!'));
+            }
+
+            // 2. Kiểm tra phân quyền hợp lệ
+            if (currentUser.role !== 'teacher' && currentUser.role !== 'admin') {
+                return response.json(errorHandler(403, 'Bạn không có quyền! Chỉ Giảng viên mới được phép tạo khóa học.'));
+            }
+
+            if (!title) {
+                return response.json(errorHandler(400, 'Tên khóa học không được để trống!'));
+            }
+
+            // 3. ĐẨY HẾT LOGIC CHO SERVICE: Lấy hoặc tạo hồ sơ Giảng viên
+            const teacherProfile = await CourseServiceGV.getOrCreateTeacherProfile(
+                Number(currentUser.id), 
+                currentUser.fullName
+            );
+
+            // 4. ĐẨY HẾT LOGIC CHO SERVICE: Tạo bản nháp khóa học bằng ID Giảng viên vừa lấy được
+            const newDraft = await CourseServiceGV.createDraft(title, teacherProfile.id);
+            
+            // 5. Trả phản hồi về cho Client (Frontend / Postman)
+            return response.json(successHandler(201, 'Khởi tạo bản nháp thành công!', newDraft));
+
+        } catch (error: any) {
+            console.error("Lỗi Controller createDraft: ", error);
+            return response.json(errorHandler(500, error.message || 'Lỗi hệ thống khi tạo bản nháp'));
         }
-
-        // 2. CHECK ROLE: Chỉ cho phép 'teacher' hoặc 'admin' tạo khóa học
-        if (currentUser.role !== 'teacher' && currentUser.role !== 'admin') {
-            return response.json(errorHandler(403, 'Bạn không có quyền! Chỉ Giảng viên mới được phép tạo khóa học.'));
-        }
-
-        if (!title) {
-            return response.json(errorHandler(400, 'Tên khóa học không được để trống!'));
-        }
-
-        const teacherRepository = AppDataSource.getRepository(Teacher);
-        let realTeacherId: number;
-
-        // Tìm hồ sơ Giảng viên khớp với User ID đang đăng nhập
-        let teacherProfile = await teacherRepository.findOne({ 
-            where: { id: Number(currentUser.id) } 
-        });
-        if (!teacherProfile) {
-            console.log(`[Auto-Fix] Đang tự động tạo hồ sơ Giảng viên cho User ID: ${currentUser.id}`);
-            const newTeacher = teacherRepository.create({
-                id: Number(currentUser.id), // Đồng bộ ID với User
-                fullName: currentUser.fullName || 'Giảng viên mới',
-                title: 'Giảng viên',
-                bio: 'Thông tin đang cập nhật...'
-            });
-            teacherProfile = await teacherRepository.save(newTeacher);
-        }
-
-        // Đã có hồ sơ chuẩn, lấy ID để gán vào khóa học
-        realTeacherId = teacherProfile.id;
-
-        // 4. Khởi tạo bản nháp khóa học qua Service
-        const newDraft = await CourseServiceGV.createDraft(title, realTeacherId);
-        
-        return response.json(successHandler(201, 'Khởi tạo bản nháp thành công!', newDraft));
-
-    } catch (error: any) {
-        console.error("Lỗi tạo bản nháp: ", error);
-        return response.json(errorHandler(500, error.message || 'Lỗi hệ thống khi tạo bản nháp'));
     }
-}
+
     // 2. Lấy chi tiết bản nháp đổ vào UI Builder kéo thả
     static async getDraft(request: Request, response: Response) {
         try {
-            const courseGroupId = request.params.courseGroupId as string; // Lấy mã nhóm từ URL params
+            const courseGroupId = request.params.id as string; // Lấy courseGroupId từ URL params
             const teacherId = (request as any).user?.id || request.body.teacherId || 1;
 
             const draft = await CourseServiceGV.getDraft(courseGroupId, Number(teacherId));
@@ -139,7 +137,7 @@ export class CourseController {
     // 3. Lưu/Cập nhật cấu trúc JSON liên tục khi kéo thả
     static async updateDraft(request: Request, response: Response) {
         try {
-            const courseGroupId = request.params.courseGroupId as string;
+            const courseGroupId = request.params.id as string;
             const teacherId = (request as any).user?.id || request.body.teacherId || 1;
             const courseDataInput = request.body; // Toàn bộ mảng JSON cấu trúc Units/Lessons/Blocks gửi từ FE lên
 
@@ -153,7 +151,7 @@ export class CourseController {
     // publish từ bản nháp thành công
     static async publishCourse(request: Request, response: Response) {
         try {
-            const courseGroupId  = request.params.courseGroupId as string;
+            const courseGroupId = request.params.id as string;
             const teacherId = (request as any).user?.id || request.body.teacherId || 1;
 
             const published = await CourseServiceGV.publishCourse(courseGroupId, Number(teacherId));

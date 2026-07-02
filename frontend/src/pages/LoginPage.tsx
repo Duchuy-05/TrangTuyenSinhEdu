@@ -16,22 +16,15 @@ const LoginPage = () => {
   // kiem tra neu da co token thi chuyen huong ve trang chu
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    if (token) {
-      const userStr = localStorage.getItem('user');
-      let storeUser: any = null;
+    const userStr = localStorage.getItem('user');
+    if (token && userStr) {
       try {
-        storeUser = userStr ? JSON.parse(userStr) : null;
+        const user = JSON.parse(userStr);
+        if (user.role === 'admin') navigate('/admin');
+        else if (user.role === 'teacher') navigate('/instructor');
+        else if (user.role === 'student') navigate('/my-courses');
+        else navigate('/');
       } catch {
-        storeUser = null;
-      }
-      // nếu role admin thì chuyển đến admin
-      if (storeUser?.role === 'admin') {
-        navigate('/admin');
-      // nếu role teacher thì chuyển đến instructor
-      } else if (storeUser?.role === 'teacher') {  
-        navigate('/instructor');
-      // nếu role student thì chuyển đến trang chủ
-      } else {
         navigate('/');
       }
     }
@@ -61,17 +54,11 @@ const LoginPage = () => {
       localStorage.setItem('accessToken', response.data.accessToken); // Lưu token vào localStorage
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Lưu thông tin user vào localStorage
       alert(response.data.message || 'Đăng nhập thành công!');
-      const role = response.data.user?.role;
-      // viết đường dẫn chuyển hướng đến admin nếu role admin
-      if (role === 'admin') {
-        navigate('/admin');
-      // đường dẫn đến teacher
-      } else if (role === 'teacher') {
-        navigate('/instructor');
-      // đường dẫn đến student
-      } else {
-        navigate('/');
-      }
+      const userRole = response.data.user?.role;
+      if (userRole === 'admin') navigate('/admin');
+      else if (userRole === 'teacher') navigate('/instructor');
+      else if (userRole === 'student') navigate('/my-courses');
+      else navigate('/');
     } catch (error : any) {
       setErrorMessage(error.response?.data?.message || 'Lỗi kết nối server. Vui lòng thử lại sau.');
     } finally {

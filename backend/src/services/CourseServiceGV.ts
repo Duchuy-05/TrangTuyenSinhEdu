@@ -2,14 +2,17 @@ import { count } from "node:console";
 import { AppDataSource } from "../models/DataSource";
 import { Course, CourseStatus } from "../models/entities/Course";
 import { v4 as uuidv4 } from 'uuid'; // Thư viện tạo chuỗi ID ngẫu nhiên
+import { Teacher } from "../models/entities/Teacher";
 
 export class CourseServiceGV {
     private static courseRepository = AppDataSource.getRepository(Course);
+    private static teacherRepository = AppDataSource.getRepository(Teacher);
 
     // =========================================================
     // HỌC VIÊN
     // =========================================================
     // Lấy chi tiết khóa học cho học viên
+    
     static async getCourseById(courseGroupId: string) {
         return this.courseRepository
             .createQueryBuilder('course')
@@ -35,10 +38,27 @@ export class CourseServiceGV {
         // BE có thể trả về hết, FE sẽ tự gộp, hoặc BE gộp luôn tại đây cho nhẹ tải
         return allCourses; 
     }
+    static async getOrCreateTeacherProfile(userId: number, fullName?: string): Promise<Teacher> {
+        let teacherProfile = await this.teacherRepository.findOneBy({ id: userId });
+
+        if (!teacherProfile) {
+            console.log(`[Auto-Fix Service] Đang tự động tạo hồ sơ Giảng viên cho User ID: ${userId}`);
+            
+            const newTeacherData: Partial<Teacher> = {
+                id: userId,
+                fullName: fullName || 'Giảng viên mới',
+                bio: 'Thông tin đang cập nhật...'
+            };
+
+            const newTeacher = this.teacherRepository.create(newTeacherData);
+            teacherProfile = await this.teacherRepository.save(newTeacher);
+        }
+
+        return teacherProfile;
+    }
 
     // tạo bản nháp mới
     static async createDraft(title: string, teacherId: number) {
-        // Sử dụng courseRepository.create() để code ngắn gọn và chuẩn TypeORM hơn
         const newDraft = this.courseRepository.create({
             courseGroupId: uuidv4(), // Cấp 1 thẻ ID chung cho cả gia đình khóa học này
             title: title,

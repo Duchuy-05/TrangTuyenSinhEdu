@@ -6,10 +6,28 @@ export class CourseService {
 
     static async getAllCourses(){
         return this.courseRepository.find({
-            relations: {registrations: true, teacher: true, syllabus: true}
+            relations: {registrations: true, teacher: true, syllabus: true},
+            order: { createdAt: 'DESC' },
         });
     }
-        
+
+    static async getAllCoursesPagniation(page: number = 1, limit: number = 10) {
+        const [courses, total] = await this.courseRepository.findAndCount({
+            relations: { registrations: true, teacher: true, syllabus: true },
+            order: { createdAt: 'DESC' },
+            take: limit,
+            skip: (page - 1) * limit,
+        });
+
+        return {
+            data: courses,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit),
+        };
+    }
+
     static async getCourseById(id: number) {
         return this.courseRepository
             .createQueryBuilder('course')

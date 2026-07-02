@@ -10,23 +10,30 @@ const AdminCourses: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [total, setTotal] = useState(0);
+    const LIMIT = 10;
+
     const [step, setStep] = useState<1 | 2>(1);
 
     const [formData, setFormData] = useState<any>({
-        id: null, // Lưu ID sau khi tạo thành công ở Bước 1
+        id: null,
         teacherId: '', category: '', title: '', shortDesc: '', target: '',
         imageUrl: '', duration: '', format: 'online', price: '', status: 'published',
         syllabus: []
     });
 
-    const fetchData = async () => {
+    const fetchData = async (page: number) => {
         setIsLoading(true);
         try {
             const [courseData, teacherData] = await Promise.all([
-                courseApi.getAllCourses(),
+                courseApi.getCoursesPaginated(page, LIMIT),
                 teacherApi.getAllTeachers()
             ]);
-            setCourses(courseData);
+            setCourses(courseData.data);
+            setTotalPages(courseData.totalPages);
+            setTotal(courseData.total);
             setTeachers(teacherData);
         } catch (error) {
             console.error("Lỗi:", error);
@@ -35,7 +42,7 @@ const AdminCourses: React.FC = () => {
         }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(currentPage); }, [currentPage]);
 
     const handleAdd = () => {
         setIsEditing(false);
@@ -151,8 +158,8 @@ const AdminCourses: React.FC = () => {
 
             alert(isEditing ? "Cập nhật khóa học và lộ trình thành công!" : "Thêm khóa học và lộ trình thành công!");
 
-            setIsModalOpen(false); // Đóng form
-            fetchData(); // Reset lại bảng
+            setIsModalOpen(false);
+            fetchData(currentPage);
         } catch (error) {
             alert("Lỗi khi lưu lộ trình học!");
             console.error(error);
@@ -164,7 +171,7 @@ const AdminCourses: React.FC = () => {
             try {
                 await courseApi.deleteCourse(id);
                 alert("Xóa thành công!");
-                fetchData();
+                fetchData(currentPage);
             } catch (error) {
                 alert("Không thể xóa khóa học này!");
             }
@@ -173,149 +180,217 @@ const AdminCourses: React.FC = () => {
 
     return (
         <div>
-            <div className="page-header-actions">
-                <h2 className="admin-page-title">Quản lý Khóa học</h2>
-                <button className="btn btn-icon btn-add" onClick={handleAdd}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 className="text-2xl font-bold text-slate-900">Quản lý Khóa học</h2>
+                <button onClick={handleAdd} className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium text-sm whitespace-nowrap">
                     <Plus size={18} /> Thêm Khóa học
                 </button>
             </div>
 
-            <div className="table-card">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 {/* Bảng danh sách khóa học */}
-                <table className="admin-table">
-                    <thead>
-                        <tr><th>ID</th><th>Khóa học</th><th>Giảng viên</th><th>Học phí</th><th>Trạng thái</th><th>Thao tác</th></tr>
+                <table className="w-full">
+                    <thead className="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Khóa học</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Giảng viên</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Học phí</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Trạng thái</th>
+                            <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Thao tác</th>
+                        </tr>
                     </thead>
-                    <tbody>
-                        {isLoading ? <tr><td colSpan={6} style={{ textAlign: 'center' }}>Đang tải...</td></tr> :
+                    <tbody className="divide-y divide-slate-200">
+                        {isLoading ? (
+                            <tr>
+                                <td colSpan={6} className="px-6 py-8 text-center text-slate-500">Đang tải...</td>
+                            </tr>
+                        ) : (
                             courses.map((course: any) => (
-                                <tr key={course.id}>
-                                    <td>#{course.id}</td>
-                                    <td>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <img src={course.imageUrl || "https://via.placeholder.com/40"} alt="" className="table-img" />
+                                <tr key={course.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-6 py-4 text-sm text-slate-600">#{course.id}</td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <img src={course.imageUrl || "https://via.placeholder.com/40"} alt="" className="w-10 h-10 rounded object-cover" />
                                             <div>
-                                                <strong>{course.title}</strong>
-                                                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{course.target}</div>
+                                                <div className="font-semibold text-slate-900">{course.title}</div>
+                                                <div className="text-sm text-slate-500">{course.target}</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{course.teacher?.fullName || course.teacher?.full_name || 'Chưa phân công'}</td>
-                                    <td style={{ fontWeight: '600', color: 'var(--admin-primary)' }}>{course.price}</td>
-                                    <td>
-                                        {course.status === 'published' ? <span className="status-badge status-paid">Hiển thị</span> : <span className="status-badge" style={{ background: '#f1f5f9', color: '#475569' }}>Đang ẩn</span>}
+                                    <td className="px-6 py-4 text-sm text-slate-700">{course.teacher?.fullName || course.teacher?.full_name || 'Chưa phân công'}</td>
+                                    <td className="px-6 py-4 text-sm font-semibold text-blue-600">{course.price}</td>
+                                    <td className="px-6 py-4">
+                                        {course.status === 'published' ? (
+                                            <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Hiển thị</span>
+                                        ) : (
+                                            <span className="inline-flex px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">Đang ẩn</span>
+                                        )}
                                     </td>
-                                    <td>
-                                        <div className="action-buttons">
-                                            <button className="btn-edit" onClick={() => handleEdit(course)}><Edit size={16} /></button>
-                                            <button className="btn-delete" onClick={() => handleDelete(course.id)}><Trash2 size={16} /></button>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <button onClick={() => handleEdit(course)} className="p-2 hover:bg-blue-50 text-blue-600 rounded transition-colors" title="Chỉnh sửa">
+                                                <Edit size={16} />
+                                            </button>
+                                            <button onClick={() => handleDelete(course.id)} className="p-2 hover:bg-red-50 text-red-600 rounded transition-colors" title="Xóa">
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ))
+                        )}
                     </tbody>
                 </table>
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-slate-200 bg-slate-50">
+                    <span className="text-sm text-slate-600">
+                        Tổng {total} khóa học
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            ← Trước
+                        </button>
+
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button
+                                key={page}
+                                onClick={() => setCurrentPage(page)}
+                                className={`px-3 py-2 rounded-lg text-sm transition-colors ${
+                                    currentPage === page
+                                        ? 'bg-blue-600 text-white'
+                                        : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
+                                }`}
+                            >
+                                {page}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Tiếp →
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* POPUP MODAL MULTI-STEP WIZARD */}
             {isModalOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content" style={{ width: '700px' }}>
-                        <div className="modal-header">
-                            <h3>{isEditing ? 'Cập nhật Khóa học' : 'Thêm Khóa học mới'}</h3>
-                            <button className="btn-close" type="button" onClick={() => setIsModalOpen(false)}><X size={24} /></button>
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+                            <h3 className="text-lg font-bold text-slate-900">{isEditing ? 'Cập nhật Khóa học' : 'Thêm Khóa học mới'}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-200 rounded transition-colors">
+                                <X size={24} />
+                            </button>
                         </div>
 
                         {/* Thanh hiển thị tiến trình các bước nhập liệu */}
-                        <div style={{ display: 'flex', gap: '15px', padding: '15px 24px 0 24px', fontSize: '0.9rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '10px' }}>
-                            <span style={{ fontWeight: step === 1 ? 'bold' : 'normal', color: step === 1 ? 'var(--admin-primary)' : '#64748b' }}>
+                        <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-200 text-sm">
+                            <span className={`font-medium ${step === 1 ? 'text-blue-600 font-bold' : 'text-slate-600'}`}>
                                 1. Thông tin cơ bản {step === 2 && '✓'}
                             </span>
-                            <span style={{ color: '#cbd5e1' }}>➔</span>
-                            <span style={{ fontWeight: step === 2 ? 'bold' : 'normal', color: step === 2 ? 'var(--admin-primary)' : '#64748b' }}>
+                            <span className="text-slate-300">➔</span>
+                            <span className={`font-medium ${step === 2 ? 'text-blue-600 font-bold' : 'text-slate-600'}`}>
                                 2. Lộ trình học (Syllabus)
                             </span>
                         </div>
 
                         {/* BƯỚC 1: FORM THÔNG TIN CƠ BẢN */}
                         {step === 1 && (
-                            <form onSubmit={handleNextStep}>
-                                <div className="modal-body">
-                                    <div className="admin-form-group">
-                                        <label>Tên Khóa Học *</label>
-                                        <input type="text" className="admin-form-control" required value={formData.title} onChange={e => setFormData((prev: any) => ({ ...prev, title: e.target.value }))} />
+                            <form onSubmit={handleNextStep} className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Tên Khóa Học *</label>
+                                        <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required value={formData.title} onChange={e => setFormData((prev: any) => ({ ...prev, title: e.target.value }))} />
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '16px' }}>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Danh mục (Category) *</label>
-                                            <input type="text" className="admin-form-control" required placeholder="VD: Web Development" value={formData.category} onChange={e => setFormData((prev: any) => ({ ...prev, category: e.target.value }))} />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Danh mục (Category) *</label>
+                                            <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required placeholder="VD: Web Development" value={formData.category} onChange={e => setFormData((prev: any) => ({ ...prev, category: e.target.value }))} />
                                         </div>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Đối tượng (Target)</label>
-                                            <input type="text" className="admin-form-control" placeholder="VD: Sinh viên, Người đi làm..." value={formData.target} onChange={e => setFormData((prev: any) => ({ ...prev, target: e.target.value }))} />
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Đối tượng (Target)</label>
+                                            <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" placeholder="VD: Sinh viên, Người đi làm..." value={formData.target} onChange={e => setFormData((prev: any) => ({ ...prev, target: e.target.value }))} />
                                         </div>
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '16px' }}>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Thời lượng</label>
-                                            <input type="text" className="admin-form-control" value={formData.duration} onChange={e => setFormData((prev: any) => ({ ...prev, duration: e.target.value }))} />
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Thời lượng</label>
+                                            <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" value={formData.duration} onChange={e => setFormData((prev: any) => ({ ...prev, duration: e.target.value }))} />
                                         </div>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Hình thức</label>
-                                            <select className="admin-form-control" value={formData.format} onChange={e => setFormData((prev: any) => ({ ...prev, format: e.target.value }))}>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Hình thức</label>
+                                            <select className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" value={formData.format} onChange={e => setFormData((prev: any) => ({ ...prev, format: e.target.value }))}>
                                                 <option value="online">Online</option>
                                                 <option value="offline">Offline</option>
                                                 <option value="hybrid">Hybrid</option>
                                             </select>
                                         </div>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Học phí *</label>
-                                            <input type="text" className="admin-form-control" required placeholder="VD: 2500000" value={formData.price} onChange={e => setFormData((prev: any) => ({ ...prev, price: e.target.value }))} />
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Học phí *</label>
+                                            <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required placeholder="VD: 2500000" value={formData.price} onChange={e => setFormData((prev: any) => ({ ...prev, price: e.target.value }))} />
                                         </div>
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '16px' }}>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Chọn Giảng viên *</label>
-                                            <select className="admin-form-control" required value={formData.teacherId} onChange={e => setFormData((prev: any) => ({ ...prev, teacherId: e.target.value }))}>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Chọn Giảng viên *</label>
+                                            <select className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required value={formData.teacherId} onChange={e => setFormData((prev: any) => ({ ...prev, teacherId: e.target.value }))}>
                                                 <option value="">-- Chọn giảng viên --</option>
                                                 {teachers.map((t: any) => <option key={t.id} value={t.id}>{t.fullName || t.full_name}</option>)}
                                             </select>
                                         </div>
-                                        <div className="admin-form-group" style={{ flex: 1 }}>
-                                            <label>Trạng thái</label>
-                                            <select className="admin-form-control" value={formData.status} onChange={e => setFormData((prev: any) => ({ ...prev, status: e.target.value }))}>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Trạng thái</label>
+                                            <select className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" value={formData.status} onChange={e => setFormData((prev: any) => ({ ...prev, status: e.target.value }))}>
                                                 <option value="published">Hiển thị (Published)</option>
                                                 <option value="hidden">Đang ẩn (Hidden)</option>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <div className="admin-form-group">
-                                        <label>Mô tả ngắn</label>
-                                        <textarea className="admin-form-control" rows={2} value={formData.shortDesc} onChange={e => setFormData((prev: any) => ({ ...prev, shortDesc: e.target.value }))}></textarea>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Mô tả ngắn</label>
+                                        <textarea className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" rows={2} value={formData.shortDesc} onChange={e => setFormData((prev: any) => ({ ...prev, shortDesc: e.target.value }))}></textarea>
                                     </div>
 
-                                    <div className="admin-form-group">
-                                        <label>Ảnh Khóa Học</label>
-                                        <div className="image-upload-wrapper">
-                                            <input type="file" accept="image/*" className="image-upload-input" onChange={handleImageUpload} disabled={isUploading} />
-                                            {isUploading ? (
-                                                <div className="upload-loading"><Loader2 size={32} className="spin-anim" /><span>Đang tải...</span></div>
-                                            ) : formData.imageUrl ? (
-                                                <img src={formData.imageUrl} alt="Preview" className="image-upload-preview" />
-                                            ) : (
-                                                <div className="image-upload-placeholder"><UploadCloud size={32} /><span>Click hoặc kéo thả ảnh</span></div>
-                                            )}
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Ảnh Khóa Học</label>
+                                        <div className="relative border-2 border-dashed border-slate-300 rounded-lg overflow-hidden bg-slate-50 hover:border-blue-400 transition-colors cursor-pointer">
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} id="image-input" />
+                                            <label htmlFor="image-input" className="block w-full h-full cursor-pointer">
+                                                {isUploading ? (
+                                                    <div className="flex flex-col items-center justify-center h-40 gap-2">
+                                                        <Loader2 size={32} className="animate-spin text-blue-600" />
+                                                        <span className="text-sm text-slate-600">Đang tải...</span>
+                                                    </div>
+                                                ) : formData.imageUrl ? (
+                                                    <img src={formData.imageUrl} alt="Preview" className="w-full h-40 object-cover" />
+                                                ) : (
+                                                    <div className="flex flex-col items-center justify-center h-40 gap-2 text-slate-500">
+                                                        <UploadCloud size={32} />
+                                                        <span className="text-sm">Click hoặc kéo thả ảnh</span>
+                                                    </div>
+                                                )}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-outline" style={{ borderColor: '#cbd5e1', color: '#475569', padding: '8px 16px', borderRadius: '6px', background: 'white' }} onClick={() => setIsModalOpen(false)}>Hủy</button>
-                                    <button type="submit" className="btn btn-primary" style={{ padding: '8px 16px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
+                                    <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium">
+                                        Hủy
+                                    </button>
+                                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2">
                                         Tiếp theo <ArrowRight size={16} />
                                     </button>
                                 </div>
@@ -324,49 +399,50 @@ const AdminCourses: React.FC = () => {
 
                         {/* BƯỚC 2: GIAO DIỆN NHẬP LỘ TRÌNH (SYLLABUS) */}
                         {step === 2 && (
-                            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
-                                <div className="modal-body">
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                            <div className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+                                    <div className="flex items-start justify-between mb-4">
                                         <div>
-                                            <h4 style={{ margin: 0, color: 'var(--admin-primary)', fontSize: '1.05rem' }}>Lộ trình khóa học (Syllabus)</h4>
-                                            <p style={{ margin: '4px 0 0 0', fontSize: '0.8rem', color: '#64748b' }}>Khóa học ID: #{formData.id} đã được khởi tạo</p>
+                                            <h4 className="text-lg font-bold text-blue-600">Lộ trình khóa học (Syllabus)</h4>
+                                            <p className="text-xs text-slate-500 mt-1">Khóa học ID: #{formData.id} đã được khởi tạo</p>
                                         </div>
-                                        <button type="button" onClick={handleAddSyllabus} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--admin-primary)', color: 'var(--admin-primary)', background: '#eff6ff', cursor: 'pointer', fontWeight: 500 }}>
+                                        <button type="button" onClick={handleAddSyllabus} className="flex items-center gap-2 px-3 py-2 border border-blue-600 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors font-medium text-sm whitespace-nowrap">
                                             <Plus size={16} /> Thêm bài học
                                         </button>
                                     </div>
 
                                     {formData.syllabus.length === 0 ? (
-                                        <div style={{ textAlign: 'center', padding: '40px 20px', background: '#f8fafc', borderRadius: '8px', color: '#64748b', border: '1px dashed #cbd5e1' }}>
+                                        <div className="text-center py-10 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-slate-600">
                                             Chưa có lộ trình nào. Hãy bấm "Thêm bài học" để cập nhật giáo trình môn học!
                                         </div>
                                     ) : (
                                         formData.syllabus.map((item: any, index: number) => (
-                                            <div key={index} style={{ backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', marginBottom: '16px', border: '1px solid var(--admin-border)', position: 'relative' }}>
-                                                <button type="button" onClick={() => handleRemoveSyllabus(index)} style={{ position: 'absolute', top: '15px', right: '15px', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
+                                            <div key={index} className="relative bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                                <button type="button" onClick={() => handleRemoveSyllabus(index)} className="absolute top-4 right-4 p-2 hover:bg-red-100 text-red-600 rounded transition-colors">
                                                     <Trash2 size={16} />
                                                 </button>
 
-                                                <div className="admin-form-group">
-                                                    <label>Chương / Bài {index + 1}: Tiêu đề *</label>
-                                                    <input type="text" className="admin-form-control" required placeholder="VD: Khởi tạo dự án và cấu hình biến" value={item.title} onChange={e => handleSyllabusChange(index, 'title', e.target.value)} />
-                                                </div>
-                                                <div className="admin-form-group" style={{ marginBottom: 0 }}>
-                                                    <label>Nội dung chi tiết chương</label>
-                                                    <textarea className="admin-form-control" rows={2} placeholder="Mô tả nội dung..." value={item.description} onChange={e => handleSyllabusChange(index, 'description', e.target.value)}></textarea>
+                                                <div className="pr-10">
+                                                    <div className="mb-3">
+                                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Chương / Bài {index + 1}: Tiêu đề *</label>
+                                                        <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required placeholder="VD: Khởi tạo dự án và cấu hình biến" value={item.title} onChange={e => handleSyllabusChange(index, 'title', e.target.value)} />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Nội dung chi tiết chương</label>
+                                                        <textarea className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" rows={2} placeholder="Mô tả nội dung..." value={item.description} onChange={e => handleSyllabusChange(index, 'description', e.target.value)}></textarea>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))
                                     )}
                                 </div>
 
-                                <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
-                                    {/* Nút quay lại bước 1 chỉnh sửa thông tin cũ nếu cần */}
-                                    <button type="button" className="btn" style={{ borderColor: '#cbd5e1', color: '#475569', padding: '8px 16px', borderRadius: '6px', background: 'white', display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #cbd5e1' }} onClick={() => setStep(1)}>
+                                <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
+                                    <button type="button" onClick={() => setStep(1)} className="flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium">
                                         <ArrowLeft size={16} /> Sửa thông tin cơ bản
                                     </button>
 
-                                    <button type="button" className="btn btn-primary" onClick={handleSaveSyllabus} style={{ padding: '8px 16px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#16a34a' }}>
+                                    <button type="button" onClick={handleSaveSyllabus} className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
                                         <Check size={16} /> Hoàn tất & Lưu lộ trình
                                     </button>
                                 </div>

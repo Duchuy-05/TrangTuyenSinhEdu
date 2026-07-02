@@ -21,7 +21,7 @@ export default function CourseSidebar() {
   // --- HÀM THÊM CHƯƠNG MỚI ---
   const handleAddUnit = async () => {
     const { value: title } = await Swal.fire({
-      title: 'Thêm Chương mới (Unit)',
+      title: 'Thêm chương mới',
       input: 'text',
       inputPlaceholder: 'VD: Chương 1: Kiến thức nền tảng',
       showCancelButton: true,
@@ -52,7 +52,7 @@ export default function CourseSidebar() {
     e.stopPropagation(); // Ngăn hành vi trigger toggle đóng mở Unit
     
     const { value: title } = await Swal.fire({
-      title: 'Thêm Bài học mới',
+      title: 'Thêm bài học mới',
       input: 'text',
       inputPlaceholder: 'VD: Bài 1: Cài đặt môi trường',
       showCancelButton: true,
@@ -81,7 +81,7 @@ export default function CourseSidebar() {
   return (
     <div className="flex flex-col w-72 h-full bg-white border-r border-blue-100 shadow-sm shrink-0">
       
-      {/* Tiêu đề & Nút quay lại danh sách */}
+      {/* Tiêu đề và Nút quay lại danh sách */}
       <div className="flex items-center justify-between p-4 bg-slate-50 border-b border-blue-50">
         <button 
           onClick={() => navigate('/instructor/courses')}
@@ -91,7 +91,7 @@ export default function CourseSidebar() {
         </button>
         <button 
           onClick={handleAddUnit}
-          className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-600 hover:text-white transition-all"
+          className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-600 hover:text-white transition-all cursor-pointer"
         >
           <FolderPlus size={14} /> + Chương
         </button>

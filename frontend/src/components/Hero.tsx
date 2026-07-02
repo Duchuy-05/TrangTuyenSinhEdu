@@ -1,20 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+import banner2 from '../assets/banner2.png';
+// import banner2 from '../assets/banner2.png'; 
+// import banner3 from '../assets/banner3.png';
+
+const banners = [banner2, banner2, banner2];
 
 const Hero: React.FC = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const nextSlide = () => {
+        setCurrentIndex((prevIndex) =>
+            prevIndex === banners.length - 1 ? 0 : prevIndex + 1
+        );
+    };
+
+    const prevSlide = () => {
+        setCurrentIndex((prevIndex) =>
+            prevIndex === 0 ? banners.length - 1 : prevIndex - 1
+        );
+    };
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            nextSlide();
+        }, 5000);
+        return () => clearInterval(timer);
+    }, [currentIndex]);
+
     return (
-        <section className="hero" id="home">
-            <div className="container hero-content">
-                <div className="hero-text">
-                    <h1>Nâng Tầm Sự Nghiệp Với Các Khóa Học Chất Lượng Cao</h1>
-                    <p>Hệ thống đào tạo CNTT thực chiến hàng đầu. Đồng hành cùng bạn trên con đường trở thành chuyên gia công nghệ với giáo trình chuẩn doanh nghiệp.</p>
-                    <div className="hero-buttons">
-                        <button className="btn btn-secondary">Xem khóa học</button>
-                        <button className="btn btn-outline">Tư vấn miễn phí</button>
-                    </div>
+        <section className="hero-section" id="home">
+            <div className="hero-container">
+
+                {/* Khung chạy ảnh định danh riêng */}
+                <div
+                    className="hero-track"
+                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                >
+                    {banners.map((banner, index) => (
+                        <div className="hero-slide-item" key={index}>
+                            <img src={banner} alt={`Banner ${index + 1}`} />
+                        </div>
+                    ))}
                 </div>
-                <div className="hero-image">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="Học tập" />
+
+                {/* Đổi tên class nút bấm để không trùng với nút của Giảng viên */}
+                <button className="hero-ctrl-btn hero-ctrl-prev" onClick={prevSlide}>
+                    <ChevronLeft size={32} />
+                </button>
+                <button className="hero-ctrl-btn hero-ctrl-next" onClick={nextSlide}>
+                    <ChevronRight size={32} />
+                </button>
+
+                {/* Đổi tên chỉ báo dots */}
+                <div className="hero-indicator-dots">
+                    {banners.map((_, index) => (
+                        <button
+                            key={index}
+                            className={`hero-dot-item ${currentIndex === index ? 'is-active' : ''}`}
+                            onClick={() => setCurrentIndex(index)}
+                        ></button>
+                    ))}
                 </div>
+
             </div>
         </section>
     );

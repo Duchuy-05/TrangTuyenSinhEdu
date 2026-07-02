@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 export interface Teacher {
-    id: number,
-    fullName: string,
-    title: string,
-    experience: string;
-    company: string;
+    id: number;
+    fullName: string;
+    email: string;
+    phone: string;
+    specialization: string;
     bio: string;
-    avatarUrl: string;
+    avatarUrl?: string;
 }
 
 export interface Syllabus {
@@ -81,7 +81,7 @@ export interface Post {
 }
 
 // cau hinh axios
-const apiClient = axios.create({
+export const apiClient = axios.create({
     baseURL: 'http://localhost:3000/api',
     headers: {
         'Content-Type': 'application/json',
@@ -97,7 +97,35 @@ apiClient.interceptors.request.use(
         }
         return config;
     }, 
-    (error) => {
+    (error) =>  Promise.reject(error)
+);
+
+apiClient.interceptors.response.use(
+    (response) =>  response,
+    async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && error.response?.data?.message === 'TOKEN_EXPIRED' && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+                const refreshResponse = await axios.post(
+                    'http://localhost:3000/api/auth/refresh', 
+                    {},
+                    { withCredentials: true }
+                );
+                const newAccessToken = refreshResponse.data.accessToken;
+                localStorage.setItem('accessToken', newAccessToken);
+                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                return apiClient(originalRequest);
+            }
+            catch (refreshError) {
+                console.error('Phiên đăng nhập đã hết hạn.');
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+                return Promise.reject(refreshError);
+            }
+        }
         return Promise.reject(error);
     }
 );
@@ -106,6 +134,14 @@ export const courseApi = {
     getAllCourses: async (): Promise<Course[]> => {
         const response = await apiClient.get('/courses');
         return response.data.data;
+    },
+
+    // Lấy danh sách khóa học với phân trang
+    getCoursesPaginated: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/courses/pagination', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     // Lấy chi tiết 1 khóa học (cho trang chi tiết)
@@ -153,6 +189,13 @@ export const teacherApi = {
     getAllTeachers: async (): Promise<Teacher[]> => {
         const response = await apiClient.get('/teachers');
         return response.data.data
+    },  
+
+    getTeachersPaginated: async (page = 1, limit = 10, search = '') => {
+        const response = await apiClient.get('/teachers/pagination', {
+            params: { page, limit, search }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     getTeacherById: async (id: string | number): Promise<Teacher> => {
@@ -172,9 +215,11 @@ export const teacherApi = {
 };
 
 export const registrationApi = {
-    getAllRegistrations: async (): Promise<Registration[]> => {
-        const response = await apiClient.get('/registrations');
-        return response.data.data;
+    getAllRegistrations: async (page = 1, limit = 10, status = 'all') => {
+        const response = await apiClient.get('/registrations', {
+            params: { page, limit, ...(status !== 'all' && { status }) }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     registerForCourse: async (userData: RegistrationForm): Promise<void> => {
@@ -203,9 +248,23 @@ export const postApi = {
         return response.data.data;
     },
 
+    getAllPostsPaginated: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/posts', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
+    },
+
     getAllPublishedPosts: async (): Promise<Post[]> => {
         const response = await apiClient.get('/posts/published');
         return response.data.data;
+    },
+
+    getAllPublishedPostsPaginated: async (page = 1, limit = 10) => {
+        const response = await apiClient.get('/posts/published', {
+            params: { page, limit }
+        });
+        return response.data.data; // { data, total, page, limit, totalPages }
     },
 
     getPostBySlug: async (slug: string): Promise<Post> => {

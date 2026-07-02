@@ -10,6 +10,7 @@ import courseRouter from './routers/course.router';
 import syllabusRouter from './routers/syllabus.router';
 import registrationRouter from './routers/registration.router';
 import postRouter from './routers/post.router';
+import morgan from 'morgan';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true // Bật tính năng cho phép trao đổi Cookie giữa FE và BE
 }));
+app.use(morgan('dev'));
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(express.static('public'))

@@ -96,7 +96,7 @@ export const useInstructorCourses = () => {
       showCancelButton: true,
       confirmButtonColor: '#2563eb',
       cancelButtonColor: '#94a3b8',
-      confirmButtonText: 'Đồng ý xuất bản'
+      confirmButtonText: 'Xuất bản'
     });
 
     if (confirm.isConfirmed) {

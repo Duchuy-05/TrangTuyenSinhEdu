@@ -19,9 +19,6 @@ export default function CourseEditorPage() {
           <h2 className="text-xl font-bold text-blue-900">
             {activeLesson ? activeLesson.title : 'Vui lòng chọn bài học'}
           </h2>
-          <button className="px-6 py-2.5 font-bold text-white bg-orange-500 rounded-lg hover:bg-orange-600 transition-colors shadow-orange-500/30 shadow-lg">
-            Lưu bản nháp
-          </button>
         </div>
 
         <div className="flex-1 p-8 overflow-y-auto">
@@ -32,19 +29,18 @@ export default function CourseEditorPage() {
                 <BlockRenderer key={block.id} block={block} />
               ))}
 
-              <div className="flex items-center justify-center gap-4 p-6 mt-8 border-2 border-dashed rounded-xl border-blue-200 bg-blue-50/50">
-                <span className="text-sm font-semibold text-blue-800">Thêm nội dung:</span>
+              <div className="flex items-center justify-center gap-4 p-6 mt-8 border-3 rounded-xl border-blue-200 bg-blue-50/50">
                 
-                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-colors bg-white rounded-lg shadow-sm hover:bg-blue-600 hover:text-white">
+                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-colors bg-white rounded-lg shadow-sm hover:bg-blue-600 hover:text-white cursor-pointer">
                   <PlusCircle size={16} /> Văn bản
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-colors bg-white rounded-lg shadow-sm hover:bg-blue-600 hover:text-white">
+                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-colors bg-white rounded-lg shadow-sm hover:bg-blue-600 hover:text-white cursor-pointer">
                   <Play size={16} /> Video
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-colors bg-white rounded-lg shadow-sm hover:bg-blue-600 hover:text-white">
+                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-colors bg-white rounded-lg shadow-sm hover:bg-blue-600 hover:text-white cursor-pointer">
                   <ImageIcon size={16} /> Hình ảnh
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-orange-500 transition-colors bg-white rounded-lg shadow-sm hover:bg-orange-500 hover:text-white">
+                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-orange-500 transition-colors bg-white rounded-lg shadow-sm hover:bg-orange-500 hover:text-white cursor-pointer">
                   <HelpCircle size={16} /> Quiz
                 </button>
               </div>

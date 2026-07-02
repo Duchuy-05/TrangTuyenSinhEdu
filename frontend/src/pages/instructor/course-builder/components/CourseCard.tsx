@@ -18,9 +18,9 @@ export default function CourseCard({ course, onEdit, onPublish }: CourseCardProp
       {/* Huy hiệu Trạng thái */}
       <div className="absolute top-3 right-3 z-10">
         <span className={`px-3 py-1 text-xs font-bold rounded-full shadow-sm ${
-          isDraft ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'
+          isDraft ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-gray-600'
         }`}>
-          {isDraft ? 'Bản Nháp' : 'Đang chỉnh sửa'}
+          {isDraft ? 'Đang chỉnh sửa' : 'Bản Nháp'}
         </span>
       </div>
 
@@ -64,14 +64,14 @@ export default function CourseCard({ course, onEdit, onPublish }: CourseCardProp
       {/* Nút thao tác */}
       <div className="flex gap-2 p-4 pt-0">
         <button 
-          onClick={() => onEdit(course.courseGroupId)}
-          className="flex-1 py-2.5 text-sm font-bold text-blue-700 bg-blue-50 rounded-xl hover:bg-blue-600 hover:text-white transition-colors"
+          onClick={() => onEdit(course.id)}
+          className="flex-1 py-2.5 text-sm font-bold text-blue-700 bg-blue-50 rounded-xl hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"
         >
-          Sửa Nháp
+          Chỉnh sửa
         </button>
         <button 
           onClick={() => onPublish(course.courseGroupId)}
-          className="flex-1 py-2.5 text-sm font-bold text-white bg-orange-500 rounded-xl hover:bg-orange-600 transition-colors"
+          className="flex-1 py-2.5 text-sm font-bold text-white bg-orange-500 rounded-xl hover:bg-orange-600 transition-colors cursor-pointer"
         >
           Xuất bản
         </button>

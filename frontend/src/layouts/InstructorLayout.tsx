@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     Search, Bell, MessageSquare, Menu, X,
     LayoutDashboard, BookOpen, Presentation, Users,
-    FileText, CheckSquare, Award, DollarSign, Settings,
-    ArrowLeftRight, KeyRound,
-    LogOut
+    FileText, CheckSquare, Award, DollarSign, Settings, LogOut
 } from 'lucide-react';
+
 const InstructorLayout: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [user, setUser] = useState<any>({});
 
-    const userStr = localStorage.getItem('user');
-    let user: any = null;
-    try {
-        user = userStr ? JSON.parse(userStr) : null;
-    } catch {
-        user = null;
-    }
-    // xử lý đăng xuất
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
     const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('user');
-        navigate('/login');
+        if (window.confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('user');
+            setUser({});
+            navigate('/login');
+        }
     };
 
-    // Hàm lấy chữ cái đầu tiên của tên để làm Avatar
     const getInitial = (full_name: string) => {
-        if (!full_name) return 'U';
-        // Tách lấy từ cuối cùng (Tên) và lấy chữ cái đầu
+        if (!full_name) return 'G';
         const nameArray = full_name.trim().split(' ');
         const lastName = nameArray[nameArray.length - 1];
         return lastName.charAt(0).toUpperCase();
@@ -72,7 +72,7 @@ const InstructorLayout: React.FC = () => {
                     </button>
                 </div>
 
-                <div className="py-6 px-4 overflow-y-auto h-full scrollbar-hide">
+                <div className="py-6 px-4 overflow-y-auto flex-1 scrollbar-hide">
                     <h2 className="text-xs font-bold text-gray-400 tracking-wider mb-4 px-4 uppercase">
                         Giảng Viên
                     </h2>
@@ -106,6 +106,19 @@ const InstructorLayout: React.FC = () => {
                             );
                         })}
                     </nav>
+                </div>
+                
+                {/* Nút Đăng xuất ở đáy Sidebar */}
+                <div className="p-4 border-t border-[#E5E7EB]">
+                    <button 
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 px-4 py-3 w-full rounded-xl transition-all duration-200 text-gray-600 hover:bg-red-50 hover:text-red-600 font-medium text-sm group"
+                    >
+                        <div className="text-gray-400 group-hover:text-red-600">
+                            <LogOut size={20} />
+                        </div>
+                        Đăng xuất
+                    </button>
                 </div>
             </aside>
 
@@ -151,48 +164,62 @@ const InstructorLayout: React.FC = () => {
                             </button>
                         </div>
 
-                    {/* KHU VỰC HIỂN THỊ TÀI KHOẢN */}
-                
-                        <div className="relative group cursor-pointer ml-2">
-                            {/* Nút Avatar tròn */}
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-white hover:shadow-lg transition-shadow">
-                                {getInitial(user.name || user.fullName)}
-                            </div>
+                    {/* User Avatar & Info */}
+                    <div className="pl-2 sm:pl-4 flex items-center">
+                        {user ? (
+                            <div className="relative group cursor-pointer ml-2">
+                                {/* Nút Avatar */}
+                                <div className="flex items-center gap-3">
+                                    <div className="hidden lg:block text-right">
+                                        <p className="text-sm font-bold text-[#1F2937]">{user.name || user.fullName || "Giảng viên"}</p>
+                                        <p className="text-xs text-gray-500">Giảng viên</p>
+                                    </div>
+                                    
+                                    {user.avatarUrl || user.avatar ? (
+                                        <img
+                                            src={user.avatarUrl || user.avatar}
+                                            alt={user.name || user.fullName}
+                                            className="w-10 h-10 rounded-full border-2 border-white shadow-md group-hover:shadow-lg group-hover:border-[#E5664B] transition-all object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-white group-hover:shadow-lg group-hover:border-[#E5664B] transition-all">
+                                            {getInitial(user.name || user.fullName)}
+                                        </div>
+                                    )}
+                                </div>
 
-                            {/* Vùng đệm vô hình nối liền avatar và menu - tránh mất hover khi rê chuột xuống */}
-                            <div className="absolute right-0 top-full w-56 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-[100]">
                                 {/* Dropdown Menu của User (Hiển thị khi Hover) */}
-                                <div className="bg-white rounded-2xl shadow-xl border border-orange-100 overflow-hidden">
-
+                                <div className="absolute right-0 mt-4 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden z-50">
+                                    {/* Lớp phủ an toàn để hover không bị ngắt quãng */}
+                                    <div className="absolute -top-4 left-0 w-full h-4 bg-transparent"></div>
+                                    
                                     {/* Thông tin cá nhân */}
                                     <div className="p-4 border-b border-gray-100 bg-orange-50/50">
                                         <p className="font-bold text-gray-800 truncate">
-                                            {user.name || user.fullName}
+                                            {user.name || user.fullName || "Giảng viên"}
                                         </p>
                                         <p className="text-xs text-gray-500 truncate mt-0.5">
-                                            {user.email}
+                                            {user.email || "Chưa cập nhật email"}
                                         </p>
                                     </div>
 
                                     {/* Các menu chức năng */}
                                     <div className="p-2">
                                         <Link
-                                            to="/change-password"
-                                            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
+                                            to="/instructor/profile"
+                                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
                                         >
-                                            <KeyRound size={16} />
-                                            Đổi mật khẩu
-                                        </Link>                                        
+                                            Hồ sơ cá nhân
+                                        </Link>
                                         <Link
-                                            to="/"
-                                            className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
+                                            to="/instructor/change_password"
+                                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
                                         >
-                                            <ArrowLeftRight size={16} />
-                                            Vào màn Học viên
+                                            Đổi mật khẩu
                                         </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="w-full flex items-center gap-2 text-left px-4 py-2.5 text-sm text-orange-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1 cursor-pointer"
+                                            className="w-full flex items-center gap-2 text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1 cursor-pointer"
                                         >
                                             <LogOut size={16} />
                                             Đăng xuất
@@ -200,7 +227,8 @@ const InstructorLayout: React.FC = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        ) : null}
+                    </div>
                     
                     </div>
                 </header>
