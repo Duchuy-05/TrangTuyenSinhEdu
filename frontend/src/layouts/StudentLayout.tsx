@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     Search, Bell, Heart, ShoppingCart, Menu, X,
     LayoutDashboard, BookOpen, MonitorPlay, Users,
-    Award, Clock, Settings, LogOut, MessageSquare
+    Award, Clock, Settings, LogOut, MessageSquare, CalendarDays
 } from 'lucide-react';
 
 const StudentLayout: React.FC = () => {
@@ -39,6 +39,8 @@ const StudentLayout: React.FC = () => {
         { name: 'Tổng quan', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
         { name: 'Khóa học', path: '/my-courses', icon: <BookOpen size={20} /> },
         { name: 'Lớp học', path: '/classes', icon: <MonitorPlay size={20} /> },
+        { name: 'Lịch học', path: '/schedule', icon: <CalendarDays size={20} /> },
+        { name: 'Thông báo', path: '/announcements', icon: <Bell size={20} /> },
         { name: 'Hội viên', path: '/membership', icon: <Users size={20} /> },
         { name: 'Chứng nhận', path: '/certificates', icon: <Award size={20} /> },
         { name: 'Hỏi đáp giáo viên', path: '/ask-teacher', icon: <MessageSquare size={20} /> },

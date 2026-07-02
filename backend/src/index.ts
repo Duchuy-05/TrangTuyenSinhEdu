@@ -15,6 +15,7 @@ import morgan from 'morgan';
 import classRouter from './routers/class.router';
 import scheduleRouter from './routers/schedule.router';
 import classEnrollmentRouter from './routers/classenrollment.router';
+import announcementRouter from './routers/announcement.router';
 
 
 const app = express();
@@ -36,6 +37,7 @@ app.set('view engine', 'ejs')
 app.use("/api", classRouter)
 app.use("/api", scheduleRouter)
 app.use("/api", classEnrollmentRouter)
+app.use("/api", announcementRouter)
 app.use("/api", postRouter)
 app.use("/api", userRouter)
 app.use("/api", teacherRouter)

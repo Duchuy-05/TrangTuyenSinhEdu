@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-    School, Users, Activity, GraduationCap,
+    School, Activity, GraduationCap,
     Search, ChevronDown, Calendar, Clock,
-    CheckCircle, PlayCircle, Send, User, MessageCircle
+    PlayCircle, Send, User, MessageCircle
 } from 'lucide-react';
 import { ClassSchedule, Enrollment, classApi } from '../../services/class.api';
 

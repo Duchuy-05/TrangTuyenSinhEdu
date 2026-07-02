@@ -33,6 +33,8 @@ import StudentOrdersCourses from './pages/student/StudentOrdersCourses';
 import StudentSetting from './pages/student/StudentSetting';
 import StudentClasses from './pages/student/StudentClasses';
 import StudentContactInstructor from './pages/student/StudentContactInstructor';
+import StudentSchedulePage from './pages/student/StudentSchedulePage';
+import StudentAnnouncementsPage from './pages/student/StudentAnnouncementsPage';
 import './styles/LandingPage.css';
 function App() {
   return (
@@ -100,6 +102,8 @@ function App() {
           <Route path="/orders" element={<StudentOrdersCourses />} />
           <Route path="/settings" element={<StudentSetting />} />
           <Route path="/classes" element={<StudentClasses />} />
+          <Route path="/schedule" element={<StudentSchedulePage />} />
+          <Route path="/announcements" element={<StudentAnnouncementsPage />} />
           <Route path="/ask-teacher" element={<StudentContactInstructor />} />
         </Route>
         {/* Các trang sau sẽ được phát triển sau */}
