@@ -94,23 +94,15 @@ export default function CourseSettings() {
           <label className="block mb-2 text-sm font-bold text-slate-600">Tên khóa học</label>
           <input 
             type="text" name="title" value={formData.title} onChange={handleChange}
-            className="w-full p-2.5 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
+            className="w-full p-2 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
           />
         </div>
 
         <div>
           <label className="block mb-2 text-sm font-bold text-slate-600">Mô tả ngắn</label>
           <textarea 
-            name="short_desc" value={formData.short_desc} onChange={handleChange} rows={3}
-            className="w-full p-2.5 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
-          />
-        </div>
-
-        <div>
-          <label className="block mb-2 text-sm font-bold text-slate-600">Mục tiêu khóa học</label>
-          <textarea 
-            name="target" value={formData.target} onChange={handleChange} rows={3}
-            className="w-full p-2.5 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
+            name="short_desc" value={formData.short_desc} onChange={handleChange} rows={1}
+            className="w-full p-2 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
           />
         </div>
 
@@ -118,7 +110,15 @@ export default function CourseSettings() {
           <label className="block mb-2 text-sm font-bold text-slate-600">URL Hình ảnh bìa</label>
           <input 
             type="text" name="image_url" value={formData.image_url} onChange={handleChange}
-            className="w-full p-2.5 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
+            className="w-full p-2 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
+          />
+        </div>
+
+        <div>
+          <label className="block mb-2 text-sm font-bold text-slate-600">Mục tiêu khóa học</label>
+          <textarea 
+            name="target" value={formData.target} onChange={handleChange} rows={1}
+            className="w-full p-2 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all" 
           />
         </div>
 
@@ -126,7 +126,7 @@ export default function CourseSettings() {
           <label className="block mb-2 text-sm font-bold text-slate-600">Định dạng học</label>
           <select 
             name="format" value={formData.format} onChange={handleChange}
-            className="w-full p-2.5 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+            className="w-full p-2 text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-orange-500 transition-all"
           >
             <option value="online">Online</option>
             <option value="offline">Offline</option>

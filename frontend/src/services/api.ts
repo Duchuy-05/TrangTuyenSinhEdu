@@ -91,7 +91,6 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('accessToken');
-        
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -108,10 +107,11 @@ apiClient.interceptors.response.use(
         if (error.response?.status === 401 && error.response?.data?.message === 'TOKEN_EXPIRED' && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
-                const refreshResponse = await axios.post(
+                const refreshResponse = await axios.get(
                     'http://localhost:3000/api/auth/refresh', 
-                    {},
-                    { withCredentials: true }
+                    {
+                        withCredentials: true
+                    }
                 );
                 const newAccessToken = refreshResponse.data.accessToken;
                 localStorage.setItem('accessToken', newAccessToken);
