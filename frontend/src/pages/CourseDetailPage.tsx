@@ -1,12 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import {
+    AlertCircle,
+    ArrowRight,
+    BookOpenCheck,
+    CalendarDays,
+    CheckCircle2,
+    Clock,
+    GraduationCap,
+    Laptop,
+    Target,
+    Users,
+    X,
+} from 'lucide-react';
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
 import { courseApi } from '../services/course.api';
-import type { Course } from '../services/course.api';
+import type { Course, Syllabus } from '../services/course.api';
 import { registrationApi } from '../services/registration.api';
-import { Clock, Laptop } from 'lucide-react';
 import type { RegistrationForm } from '../services/registration.api';
+
+const fallbackDifficulties = [
+    'Không biết bắt đầu từ đâu, học nhiều nguồn nhưng thiếu một lộ trình rõ ràng.',
+    'Dễ mất gốc khi kiến thức nền tảng chưa chắc và không có người sửa lỗi kịp thời.',
+    'Học trước quên sau vì thiếu hệ thống bài tập, thực hành và kiểm tra định kỳ.',
+    'Khó duy trì động lực khi không nhìn thấy tiến bộ qua từng giai đoạn học.',
+];
+
+const fallbackSolutions = [
+    'Lộ trình học được chia nhỏ theo từng buổi, giúp học viên biết chính xác hôm nay cần đạt gì.',
+    'Giảng viên hướng dẫn, sửa lỗi và củng cố kiến thức nền trước khi chuyển sang phần nâng cao.',
+    'Nội dung kết hợp lý thuyết, thực hành, bài tập và đánh giá để học viên nhớ lâu hơn.',
+    'Theo dõi tiến độ theo khóa học, lớp học và từng buổi để phụ huynh/học viên dễ nắm bắt.',
+];
 
 const CourseDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -20,7 +46,13 @@ const CourseDetailPage: React.FC = () => {
         contactPhone: '',
         note: '',
     });
-    
+
+    useEffect(() => {
+        setFormData((current) => ({
+            ...current,
+            courseId: Number(id),
+        }));
+    }, [id]);
 
     const handleSubmit = async () => {
         if (!formData.contactName || !formData.contactPhone || !formData.contactEmail) {
@@ -40,7 +72,7 @@ const CourseDetailPage: React.FC = () => {
     };
 
     useEffect(() => {
-        window.scrollTo(0, 0); // Cuộn lên đầu trang
+        window.scrollTo(0, 0);
 
         const fetchDetail = async () => {
             if (!id) return;
@@ -49,7 +81,7 @@ const CourseDetailPage: React.FC = () => {
                 const data = await courseApi.getCourseById(id);
                 setCourse(data);
             } catch (error) {
-                console.error("Lỗi tải chi tiết khóa học:", error);
+                console.error('Lỗi tải chi tiết khóa học:', error);
                 setCourse(null);
             } finally {
                 setIsLoading(false);
@@ -58,6 +90,52 @@ const CourseDetailPage: React.FC = () => {
 
         fetchDetail();
     }, [id]);
+
+    const sortedSyllabus = useMemo<Syllabus[]>(() => {
+        return [...(course?.syllabus || [])].sort((a, b) => a.orderIndex - b.orderIndex);
+    }, [course?.syllabus]);
+
+    const overviewItems = useMemo(() => {
+        if (!course) return [];
+
+        return [
+            {
+                label: 'Đối tượng',
+                value: course.target || 'Cập nhật theo năng lực học viên',
+                icon: <Target size={22} />,
+            },
+            {
+                label: 'Số lượng',
+                value:
+                    course.sessionCount && Number(course.sessionCount) > 0
+                        ? `${course.sessionCount} buổi`
+                        : sortedSyllabus.length > 0
+                            ? `${sortedSyllabus.length} buổi`
+                            : 'Theo lộ trình',
+                icon: <BookOpenCheck size={22} />,
+            },
+            {
+                label: 'Tần suất',
+                value: course.frequency || 'Theo lịch khai giảng',
+                icon: <Clock size={22} />,
+            },
+            {
+                label: 'Hình thức',
+                value: course.format || 'Online/Offline',
+                icon: <Laptop size={22} />,
+            },
+            {
+                label: 'Thời lượng/buổi',
+                value: course.lessonDuration || course.duration || 'Đang cập nhật',
+                icon: <Clock size={22} />,
+            },
+            {
+                label: 'Sĩ số',
+                value: course.classSize || 'Lớp nhỏ, dễ tương tác',
+                icon: <Users size={22} />,
+            },
+        ];
+    }, [course, sortedSyllabus.length]);
 
     if (isLoading) {
         return (
@@ -86,53 +164,252 @@ const CourseDetailPage: React.FC = () => {
         <div className="page-wrapper">
             <Navbar />
 
-            {/* Course Header Banner */}
-            <section className="course-banner" style={{ background: 'var(--primary-color)', color: 'white', paddingTop: '150px', paddingBottom: '60px' }}>
-                <div className="container" style={{ textAlign: 'center' }}>
-                    <span className="meta-badge" style={{ color: '#000', background: '#fbbf24', border: 'none', fontWeight: 'bold' }}>
-                        {course.target}
-                    </span>
-                    <h1 style={{ fontSize: '3rem', margin: '20px 0' }}>{course.title}</h1>
-                    <p style={{ fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto', opacity: 0.9 }}>{course.shortDesc}</p>
+            <section
+                style={{
+                    background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 48%, #E5664B 100%)',
+                    color: 'white',
+                    paddingTop: '140px',
+                    paddingBottom: '70px',
+                    overflow: 'hidden',
+                }}
+            >
+                <div className="container">
+                    <div
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'minmax(0, 1.1fr) minmax(280px, 0.9fr)',
+                            gap: '44px',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <div>
+                            <div style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.72)', marginBottom: '22px' }}>
+                                <Link to="/" style={{ color: 'rgba(255,255,255,0.78)' }}>Trang chủ</Link>
+                                <span style={{ margin: '0 10px' }}>/</span>
+                                <span>Khóa học</span>
+                            </div>
+
+                            <span
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    background: 'rgba(255,255,255,0.14)',
+                                    border: '1px solid rgba(255,255,255,0.22)',
+                                    borderRadius: '999px',
+                                    padding: '9px 14px',
+                                    fontWeight: 700,
+                                    fontSize: '0.85rem',
+                                    textTransform: 'uppercase',
+                                }}
+                            >
+                                <GraduationCap size={16} />
+                                Khóa học
+                            </span>
+
+                            <h1
+                                style={{
+                                    fontSize: 'clamp(2.3rem, 5vw, 4.4rem)',
+                                    lineHeight: 1.05,
+                                    margin: '24px 0 18px',
+                                    maxWidth: '760px',
+                                }}
+                            >
+                                {course.title}
+                            </h1>
+                            <p style={{ fontSize: '1.15rem', lineHeight: 1.8, color: 'rgba(255,255,255,0.84)', maxWidth: '720px' }}>
+                                {course.shortDesc}
+                            </p>
+
+                            <a
+                                href="#course-registration"
+                                className="btn btn-primary"
+                                style={{
+                                    marginTop: '30px',
+                                    background: '#fff',
+                                    color: '#E5664B',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '10px',
+                                }}
+                            >
+                                Nhận tư vấn lộ trình
+                                <ArrowRight size={18} />
+                            </a>
+                        </div>
+
+                        <div
+                            style={{
+                                borderRadius: '28px',
+                                overflow: 'hidden',
+                                border: '1px solid rgba(255,255,255,0.18)',
+                                boxShadow: '0 28px 80px rgba(0,0,0,0.28)',
+                                background: 'rgba(255,255,255,0.08)',
+                            }}
+                        >
+                            <img
+                                src={course.imageUrl}
+                                alt={course.title}
+                                style={{ width: '100%', aspectRatio: '4 / 3', objectFit: 'cover', display: 'block' }}
+                            />
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* Course Info & Form Container */}
-            <section className="course-detail-section" style={{ padding: '80px 0', background: 'var(--bg-light)' }}>
+            <section style={{ padding: '72px 0', background: '#F5F7FA' }}>
                 <div className="container">
-                    <div className="course-detail-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '40px' }}>
+                    <div className="course-detail-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(320px, 0.9fr)', gap: '40px', alignItems: 'start' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '34px' }}>
+                            <section style={{ background: 'white', padding: '34px', borderRadius: '24px', boxShadow: 'var(--shadow-sm)', border: '1px solid #E5E7EB' }}>
+                                <p style={{ color: '#E5664B', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.82rem', letterSpacing: '0.08em', marginBottom: '10px' }}>
+                                    Overview
+                                </p>
+                                <h2 style={{ fontSize: '2rem', color: '#1F2937', marginBottom: '10px' }}>
+                                    Đi đúng đường, học đúng hướng
+                                </h2>
+                                <p style={{ color: '#6B7280', lineHeight: 1.75, marginBottom: '28px' }}>
+                                    Các thông tin cốt lõi giúp học viên và phụ huynh nắm nhanh mục tiêu, hình thức học và nhịp học của khóa.
+                                </p>
 
-                        {/* Cột trái */}
-                        <div className="course-main-content" style={{ background: 'white', padding: '40px', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow-sm)' }}>
-                            <img src={course.imageUrl} alt={course.title} style={{ width: '100%', borderRadius: 'var(--radius)', marginBottom: '30px' }} />
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+                                    {overviewItems.map((item) => (
+                                        <div
+                                            key={item.label}
+                                            style={{
+                                                display: 'flex',
+                                                gap: '14px',
+                                                alignItems: 'flex-start',
+                                                padding: '18px',
+                                                borderRadius: '18px',
+                                                background: '#F9FAFB',
+                                                border: '1px solid #EEF0F3',
+                                            }}
+                                        >
+                                            <div style={{ color: '#E5664B', background: '#FFF1ED', borderRadius: '14px', padding: '10px', display: 'flex' }}>
+                                                {item.icon}
+                                            </div>
+                                            <div>
+                                                <p style={{ color: '#6B7280', fontSize: '0.82rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '5px' }}>
+                                                    {item.label}
+                                                </p>
+                                                <p style={{ color: '#1F2937', fontWeight: 800, lineHeight: 1.35 }}>
+                                                    {item.value}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
 
-                            <h2 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Nội dung chương trình</h2>
-                            <ul className="course-syllabus" style={{ marginBottom: '40px' }}>
-                                {/* Map qua bảng course_syllabus (sắp xếp theo order_index nếu cần) */}
-                                {course.syllabus?.sort((a, b) => a.orderIndex - b.orderIndex).map((item) => (
-                                    <li key={item.id} style={{ padding: '15px 0', borderBottom: '1px solid var(--border-color)' }}>
-                                        <strong style={{ fontSize: '1.1rem' }}>{item.title}</strong>
-                                        {item.description && <p style={{ marginTop: '5px', color: 'var(--text-light)' }}>{item.description}</p>}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <h2 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Giảng viên hướng dẫn</h2>
-                            {course.teacher && (
-                                <div className="teacher-mini" style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'var(--bg-light)', padding: '20px', borderRadius: 'var(--radius)' }}>
-                                    <img src={course.teacher.avatarUrl} alt={course.teacher.fullName} style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }} />
-                                    <div>
-                                        <h4 style={{ fontSize: '1.2rem' }}>{course.teacher.fullName}</h4>
-                                        <p style={{ color: 'var(--text-light)' }}>{course.teacher.title} tại {course.teacher.company}</p>
-                                        <p style={{ fontWeight: '500', marginTop: '5px' }}>{course.teacher.experience}</p>
-                                        <p style={{ marginTop: '10px', fontSize: '0.9rem' }}>{course.teacher.bio}</p>
+                            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '22px' }}>
+                                <div style={{ background: '#111827', color: 'white', padding: '30px', borderRadius: '24px' }}>
+                                    <p style={{ color: '#FCA5A5', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.82rem', letterSpacing: '0.08em', marginBottom: '10px' }}>
+                                        Khó khăn thường gặp
+                                    </p>
+                                    <h2 style={{ fontSize: '1.8rem', marginBottom: '22px' }}>Trước khi có lộ trình rõ ràng</h2>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        {fallbackDifficulties.map((item) => (
+                                            <div key={item} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                                                <span style={{ width: '26px', height: '26px', borderRadius: '999px', background: 'rgba(239,68,68,0.14)', color: '#FCA5A5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                    <X size={15} />
+                                                </span>
+                                                <p style={{ lineHeight: 1.65, color: 'rgba(255,255,255,0.82)' }}>{item}</p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
+
+                                <div style={{ background: 'white', padding: '30px', borderRadius: '24px', border: '1px solid #E5E7EB', boxShadow: 'var(--shadow-sm)' }}>
+                                    <p style={{ color: '#E5664B', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.82rem', letterSpacing: '0.08em', marginBottom: '10px' }}>
+                                        Giải pháp từ khóa học
+                                    </p>
+                                    <h2 style={{ fontSize: '1.8rem', color: '#1F2937', marginBottom: '22px' }}>Học theo hệ thống, tiến bộ theo từng buổi</h2>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                        {fallbackSolutions.map((item) => (
+                                            <div key={item} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                                                <span style={{ width: '26px', height: '26px', borderRadius: '999px', background: '#ECFDF3', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                    <CheckCircle2 size={16} />
+                                                </span>
+                                                <p style={{ lineHeight: 1.65, color: '#4B5563' }}>{item}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section style={{ background: 'white', padding: '34px', borderRadius: '24px', boxShadow: 'var(--shadow-sm)', border: '1px solid #E5E7EB' }}>
+                                <p style={{ color: '#E5664B', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.82rem', letterSpacing: '0.08em', marginBottom: '10px' }}>
+                                    Educational Roadmap
+                                </p>
+                                <h2 style={{ fontSize: '2rem', color: '#1F2937', marginBottom: '10px' }}>
+                                    Lộ trình đào tạo
+                                </h2>
+                                <p style={{ color: '#6B7280', lineHeight: 1.75, marginBottom: '24px' }}>
+                                    Nội dung được sắp xếp theo thứ tự học để học viên dễ theo dõi mục tiêu của từng buổi.
+                                </p>
+
+                                {sortedSyllabus.length > 0 ? (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        {sortedSyllabus.map((item, index) => (
+                                            <div
+                                                key={item.id}
+                                                style={{
+                                                    display: 'grid',
+                                                    gridTemplateColumns: '64px minmax(0, 1fr) 28px',
+                                                    gap: '16px',
+                                                    alignItems: 'center',
+                                                    padding: '18px',
+                                                    borderRadius: '18px',
+                                                    border: '1px solid #E5E7EB',
+                                                    background: index % 2 === 0 ? '#FFFFFF' : '#FAFAFA',
+                                                }}
+                                            >
+                                                <div style={{ color: '#E5664B', fontWeight: 900, fontSize: '1.35rem' }}>
+                                                    {String(index + 1).padStart(2, '0')}
+                                                </div>
+                                                <div>
+                                                    <h3 style={{ color: '#1F2937', fontSize: '1.05rem', lineHeight: 1.45, marginBottom: item.description ? '6px' : 0 }}>
+                                                        {item.title}
+                                                    </h3>
+                                                    {item.description && (
+                                                        <p style={{ color: '#6B7280', lineHeight: 1.6 }}>
+                                                            {item.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                <ArrowRight size={20} color="#E5664B" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div style={{ padding: '22px', borderRadius: '18px', background: '#F9FAFB', color: '#6B7280', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                        <AlertCircle size={20} color="#E5664B" />
+                                        Lộ trình khóa học đang được cập nhật.
+                                    </div>
+                                )}
+                            </section>
+
+                            {course.teacher && (
+                                <section style={{ background: 'white', padding: '30px', borderRadius: '24px', border: '1px solid #E5E7EB', boxShadow: 'var(--shadow-sm)' }}>
+                                    <h2 style={{ color: '#1F2937', marginBottom: '20px' }}>Giảng viên hướng dẫn</h2>
+                                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', background: '#F9FAFB', padding: '20px', borderRadius: '18px' }}>
+                                        <img src={course.teacher.avatarUrl} alt={course.teacher.fullName} style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', background: '#E5E7EB' }} />
+                                        <div>
+                                            <h4 style={{ fontSize: '1.2rem', color: '#1F2937' }}>{course.teacher.fullName}</h4>
+                                            {course.teacher.specialization && (
+                                                <p style={{ color: '#E5664B', fontWeight: 700, marginTop: '4px' }}>{course.teacher.specialization}</p>
+                                            )}
+                                            {course.teacher.bio && (
+                                                <p style={{ marginTop: '10px', color: '#4B5563', lineHeight: 1.65 }}>{course.teacher.bio}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </section>
                             )}
                         </div>
 
-                        {/* Cột phải: Form Đăng ký */}
-                        <div className="course-sidebar">
+                        <div className="course-sidebar" id="course-registration">
                             <div className="registration-box" style={{ background: 'white', padding: '30px', borderRadius: 'var(--radius)', position: 'sticky', top: '100px', boxShadow: 'var(--shadow-lg)' }}>
                                 <h3 style={{ fontSize: '1.8rem', color: 'var(--secondary-color)', marginBottom: '10px' }}>{course.price}</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '30px', color: 'var(--text-light)' }}>
@@ -163,7 +440,7 @@ const CourseDetailPage: React.FC = () => {
                                         onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
                                         style={{ padding: '12px', borderRadius: '4px', border: '1px solid var(--border-color)', outline: 'none' }}
                                     />
-                                    
+
                                     <button
                                         type="button"
                                         className="btn btn-primary"
@@ -179,7 +456,6 @@ const CourseDetailPage: React.FC = () => {
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>

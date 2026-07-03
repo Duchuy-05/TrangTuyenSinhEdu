@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
     AlertCircle,
     Bell,
-    BookOpen,
     ChevronDown,
     Clock,
     Megaphone,
@@ -95,10 +94,6 @@ const StudentAnnouncementsPage: React.FC = () => {
         });
     }, [announcements, searchTerm, selectedClass, selectedType, showPinnedOnly]);
 
-    const pinnedCount = announcements.filter((announcement) => announcement.isPinned).length;
-    const urgentCount = announcements.filter((announcement) => announcement.type === 'urgent').length;
-    const homeworkCount = announcements.filter((announcement) => announcement.type === 'homework').length;
-
     const formatDateTime = (date: string) =>
         new Date(date).toLocaleString('vi-VN', {
             hour: '2-digit',
@@ -132,37 +127,6 @@ const StudentAnnouncementsPage: React.FC = () => {
         }
     };
 
-    const statCards = [
-        {
-            title: 'Tổng thông báo',
-            value: announcements.length,
-            icon: <Bell size={24} />,
-            bg: 'bg-orange-50',
-            color: 'text-[#E5664B]',
-        },
-        {
-            title: 'Đã ghim',
-            value: pinnedCount,
-            icon: <Pin size={24} />,
-            bg: 'bg-amber-50',
-            color: 'text-amber-600',
-        },
-        {
-            title: 'Quan trọng',
-            value: urgentCount,
-            icon: <AlertCircle size={24} />,
-            bg: 'bg-red-50',
-            color: 'text-red-600',
-        },
-        {
-            title: 'Bài tập',
-            value: homeworkCount,
-            icon: <BookOpen size={24} />,
-            bg: 'bg-blue-50',
-            color: 'text-blue-600',
-        },
-    ];
-
     if (isLoading) {
         return (
             <div className="p-8 text-center text-gray-500">
@@ -188,27 +152,6 @@ const StudentAnnouncementsPage: React.FC = () => {
                     <span className="text-sm font-medium">{error}</span>
                 </div>
             )}
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {statCards.map((stat) => (
-                    <div
-                        key={stat.title}
-                        className="bg-white rounded-2xl p-5 shadow-sm border border-[#E5E7EB] flex flex-col justify-center gap-3"
-                    >
-                        <div className={`p-3 rounded-xl w-fit ${stat.bg} ${stat.color}`}>
-                            {stat.icon}
-                        </div>
-                        <div>
-                            <h3 className="text-2xl font-bold text-[#1F2937] leading-tight">
-                                {stat.value}
-                            </h3>
-                            <p className="text-sm text-gray-500 font-medium mt-1">
-                                {stat.title}
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
 
             <div className="bg-white p-4 rounded-xl shadow-sm border border-[#E5E7EB] flex flex-col xl:flex-row gap-4 justify-between xl:items-center">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full xl:w-auto">
@@ -292,6 +235,15 @@ const StudentAnnouncementsPage: React.FC = () => {
                                 </div>
 
                                 <div className="flex-1 min-w-0">
+                                    <div className="mb-3">
+                                        <p className="text-xs font-bold uppercase tracking-wide text-[#E5664B]">
+                                            {announcement.class?.className || 'Lớp học'}
+                                        </p>
+                                        <p className="text-sm text-gray-500 mt-1">
+                                            {announcement.class?.course?.title || 'Khóa học'}
+                                        </p>
+                                    </div>
+
                                     <div className="flex flex-wrap items-center gap-2 mb-3">
                                         {announcement.isPinned && (
                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100 text-xs font-bold">
@@ -311,11 +263,6 @@ const StudentAnnouncementsPage: React.FC = () => {
                                     <h2 className="text-lg lg:text-xl font-bold text-[#1F2937] leading-snug">
                                         {announcement.title}
                                     </h2>
-
-                                    <p className="text-sm text-gray-500 mt-2">
-                                        {announcement.class?.className || 'Lớp học'} ·{' '}
-                                        {announcement.class?.course?.title || 'Khóa học'}
-                                    </p>
 
                                     <p className="text-gray-700 mt-4 leading-relaxed whitespace-pre-line">
                                         {announcement.content}

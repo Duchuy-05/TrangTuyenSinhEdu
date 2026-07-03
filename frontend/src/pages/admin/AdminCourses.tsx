@@ -24,7 +24,8 @@ const AdminCourses: React.FC = () => {
     const [formData, setFormData] = useState<any>({
         id: null,
         teacherId: '', category: '', title: '', shortDesc: '', target: '',
-        imageUrl: '', duration: '', format: 'online', price: '', status: 'published',
+        imageUrl: '', duration: '', sessionCount: '', frequency: '',
+        lessonDuration: '', classSize: '', format: 'online', price: '', status: 'published',
         syllabus: []
     });
 
@@ -53,7 +54,8 @@ const AdminCourses: React.FC = () => {
         setStep(1); // Luôn bắt đầu từ bước 1
         setFormData({
             id: null, teacherId: '', category: '', title: '', shortDesc: '', target: '',
-            imageUrl: '', duration: '', format: 'online', price: '', status: 'published',
+            imageUrl: '', duration: '', sessionCount: '', frequency: '',
+            lessonDuration: '', classSize: '', format: 'online', price: '', status: 'published',
             syllabus: []
         });
         setIsModalOpen(true);
@@ -120,6 +122,10 @@ const AdminCourses: React.FC = () => {
                 target: formData.target,
                 imageUrl: formData.imageUrl,
                 duration: formData.duration,
+                sessionCount: formData.sessionCount ? Number(formData.sessionCount) : null,
+                frequency: formData.frequency,
+                lessonDuration: formData.lessonDuration,
+                classSize: formData.classSize,
                 format: formData.format,
                 price: formData.price,
                 status: formData.status
@@ -343,6 +349,26 @@ const AdminCourses: React.FC = () => {
                                             <label className="block text-sm font-semibold text-slate-700 mb-2">Học phí *</label>
                                             <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" required placeholder="VD: 2500000" value={formData.price} onChange={e => setFormData((prev: any) => ({ ...prev, price: e.target.value }))} />
                                         </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Số buổi</label>
+                                            <input type="number" min="0" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" placeholder="VD: 24" value={formData.sessionCount || ''} onChange={e => setFormData((prev: any) => ({ ...prev, sessionCount: e.target.value }))} />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Tần suất</label>
+                                            <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" placeholder="VD: 2 buổi/tuần" value={formData.frequency || ''} onChange={e => setFormData((prev: any) => ({ ...prev, frequency: e.target.value }))} />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-slate-700 mb-2">Thời lượng/buổi</label>
+                                            <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" placeholder="VD: 2h/buổi" value={formData.lessonDuration || ''} onChange={e => setFormData((prev: any) => ({ ...prev, lessonDuration: e.target.value }))} />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Sĩ số</label>
+                                        <input type="text" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none" placeholder="VD: 12-15 học viên" value={formData.classSize || ''} onChange={e => setFormData((prev: any) => ({ ...prev, classSize: e.target.value }))} />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">

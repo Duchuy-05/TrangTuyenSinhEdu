@@ -16,6 +16,10 @@ export interface Course {
     target: string;
     imageUrl: string;
     duration: string;
+    sessionCount?: number;
+    frequency?: string;
+    lessonDuration?: string;
+    classSize?: string;
     format: string;
     price: string;
     status: string;

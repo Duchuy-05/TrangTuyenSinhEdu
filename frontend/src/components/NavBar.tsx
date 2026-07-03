@@ -79,7 +79,7 @@ const Navbar: React.FC = () => {
 
                 <ul className="nav-links">
                     <li><Link to="/">Trang chủ</Link></li>
-                    <li><a href="/#about">Giới thiệu</a></li>
+                    {/* <li><a href="/#about">Giới thiệu</a></li> */}
 
                     {/* Dropdown Cấp 1: Hover vào "Khóa học" */}
                     {/* Dropdown Menu Khóa Học */}

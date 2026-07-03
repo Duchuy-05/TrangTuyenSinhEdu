@@ -37,14 +37,13 @@ const StudentLayout: React.FC = () => {
 
     const navItems = [
         { name: 'Tổng quan', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-        { name: 'Khóa học', path: '/my-courses', icon: <BookOpen size={20} /> },
         { name: 'Lớp học', path: '/classes', icon: <MonitorPlay size={20} /> },
         { name: 'Lịch học', path: '/schedule', icon: <CalendarDays size={20} /> },
         { name: 'Thông báo', path: '/announcements', icon: <Bell size={20} /> },
-        { name: 'Hội viên', path: '/membership', icon: <Users size={20} /> },
-        { name: 'Chứng nhận', path: '/certificates', icon: <Award size={20} /> },
-        { name: 'Hỏi đáp giáo viên', path: '/ask-teacher', icon: <MessageSquare size={20} /> },
-        { name: 'Lịch sử đơn hàng', path: '/orders', icon: <Clock size={20} /> },
+        // { name: 'Hội viên', path: '/membership', icon: <Users size={20} /> },
+        // { name: 'Chứng nhận', path: '/certificates', icon: <Award size={20} /> },
+        // { name: 'Hỏi đáp giáo viên', path: '/ask-teacher', icon: <MessageSquare size={20} /> },
+        // { name: 'Lịch sử đơn hàng', path: '/orders', icon: <Clock size={20} /> },
         { name: 'Cài đặt tài khoản', path: '/settings', icon: <Settings size={20} /> },
     ];
 

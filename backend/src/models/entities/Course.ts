@@ -51,6 +51,18 @@ export class Course {
   @Column({ nullable: true })
   duration: string;
 
+  @Column({ name: 'session_count', nullable: true })
+  sessionCount: number;
+
+  @Column({ nullable: true })
+  frequency: string;
+
+  @Column({ name: 'lesson_duration', nullable: true })
+  lessonDuration: string;
+
+  @Column({ name: 'class_size', nullable: true })
+  classSize: string;
+
   @Column({
     type: 'enum',
     enum: CourseFormat,

@@ -2,12 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
     AlertCircle,
     CalendarDays,
-    CheckCircle2,
     ChevronDown,
-    Clock,
+    ChevronLeft,
+    ChevronRight,
     MapPin,
     Search,
-    School,
     UserRound,
 } from 'lucide-react';
 import { ClassSchedule, Enrollment, classApi } from '../../services/class.api';
@@ -25,12 +24,38 @@ const statusOptions = [
     { value: 'completed', label: 'Đã hoàn thành' },
 ];
 
+const getStartOfWeek = (date: Date) => {
+    const start = new Date(date);
+    const day = start.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+
+    start.setDate(start.getDate() + diff);
+    start.setHours(0, 0, 0, 0);
+    return start;
+};
+
+const addDays = (date: Date, days: number) => {
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + days);
+    return nextDate;
+};
+
+const getDateKey = (date: string) => {
+    const value = new Date(date);
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+};
+
 const StudentSchedulePage: React.FC = () => {
     const [myClasses, setMyClasses] = useState<Enrollment[]>([]);
     const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedClass, setSelectedClass] = useState('all');
     const [selectedStatus, setSelectedStatus] = useState('all');
+    const [weekStart, setWeekStart] = useState(() => getStartOfWeek(new Date()));
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -154,9 +179,22 @@ const StudentSchedulePage: React.FC = () => {
         });
     }, [schedules, searchTerm, selectedClass, selectedStatus]);
 
+    const weekEnd = useMemo(() => {
+        const end = addDays(weekStart, 6);
+        end.setHours(23, 59, 59, 999);
+        return end;
+    }, [weekStart]);
+
+    const weekSchedules = useMemo(() => {
+        return filteredSchedules.filter((schedule) => {
+            const startTime = new Date(schedule.startTime);
+            return startTime >= weekStart && startTime <= weekEnd;
+        });
+    }, [filteredSchedules, weekStart, weekEnd]);
+
     const groupedSchedules = useMemo(() => {
-        return filteredSchedules.reduce<Record<string, ScheduleItem[]>>((groups, schedule) => {
-            const dateKey = new Date(schedule.startTime).toISOString().split('T')[0];
+        return weekSchedules.reduce<Record<string, ScheduleItem[]>>((groups, schedule) => {
+            const dateKey = getDateKey(schedule.startTime);
 
             if (!groups[dateKey]) {
                 groups[dateKey] = [];
@@ -165,42 +203,7 @@ const StudentSchedulePage: React.FC = () => {
             groups[dateKey].push(schedule);
             return groups;
         }, {});
-    }, [filteredSchedules]);
-
-    const upcomingCount = schedules.filter((schedule) => schedule.status === 'upcoming').length;
-    const ongoingCount = schedules.filter((schedule) => schedule.status === 'ongoing').length;
-    const completedCount = schedules.filter((schedule) => schedule.status === 'completed').length;
-
-    const statCards = [
-        {
-            title: 'Tổng buổi học',
-            value: schedules.length,
-            icon: <CalendarDays size={24} />,
-            bg: 'bg-orange-50',
-            color: 'text-[#E5664B]',
-        },
-        {
-            title: 'Đang học',
-            value: ongoingCount,
-            icon: <Clock size={24} />,
-            bg: 'bg-blue-50',
-            color: 'text-blue-600',
-        },
-        {
-            title: 'Sắp diễn ra',
-            value: upcomingCount,
-            icon: <School size={24} />,
-            bg: 'bg-amber-50',
-            color: 'text-amber-600',
-        },
-        {
-            title: 'Đã hoàn thành',
-            value: completedCount,
-            icon: <CheckCircle2 size={24} />,
-            bg: 'bg-emerald-50',
-            color: 'text-emerald-600',
-        },
-    ];
+    }, [weekSchedules]);
 
     if (isLoading) {
         return (
@@ -227,27 +230,6 @@ const StudentSchedulePage: React.FC = () => {
                     <span className="text-sm font-medium">{error}</span>
                 </div>
             )}
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {statCards.map((stat) => (
-                    <div
-                        key={stat.title}
-                        className="bg-white rounded-2xl p-5 shadow-sm border border-[#E5E7EB] flex flex-col justify-center gap-3"
-                    >
-                        <div className={`p-3 rounded-xl w-fit ${stat.bg} ${stat.color}`}>
-                            {stat.icon}
-                        </div>
-                        <div>
-                            <h3 className="text-2xl font-bold text-[#1F2937] leading-tight">
-                                {stat.value}
-                            </h3>
-                            <p className="text-sm text-gray-500 font-medium mt-1">
-                                {stat.title}
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
 
             <div className="bg-white p-4 rounded-xl shadow-sm border border-[#E5E7EB] flex flex-col lg:flex-row gap-4 justify-between lg:items-center">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full lg:w-auto">
@@ -304,7 +286,45 @@ const StudentSchedulePage: React.FC = () => {
                 </div>
             </div>
 
-            {filteredSchedules.length > 0 ? (
+            <div className="bg-white border border-[#E5E7EB] rounded-xl p-4 shadow-sm flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">
+                <div>
+                    <p className="text-sm font-medium text-gray-500">Tuần đang xem</p>
+                    <h2 className="text-lg font-bold text-[#1F2937] mt-1">
+                        {formatDate(weekStart.toISOString())} - {formatDate(weekEnd.toISOString())}
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1">
+                        {weekSchedules.length} buổi học trong tuần này
+                    </p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        onClick={() => setWeekStart(addDays(weekStart, -7))}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                        <ChevronLeft size={16} />
+                        Tuần trước
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setWeekStart(getStartOfWeek(new Date()))}
+                        className="px-4 py-2 bg-orange-50 text-[#E5664B] rounded-xl text-sm font-bold hover:bg-orange-100"
+                    >
+                        Tuần này
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setWeekStart(addDays(weekStart, 7))}
+                        className="inline-flex items-center gap-2 px-4 py-2 border border-[#E5E7EB] rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                        Tuần sau
+                        <ChevronRight size={16} />
+                    </button>
+                </div>
+            </div>
+
+            {weekSchedules.length > 0 ? (
                 <div className="space-y-6">
                     {Object.entries(groupedSchedules).map(([date, daySchedules]) => (
                         <section key={date} className="space-y-3">
@@ -392,10 +412,10 @@ const StudentSchedulePage: React.FC = () => {
                         <CalendarDays size={42} className="text-[#E5664B]" />
                     </div>
                     <h3 className="text-xl font-bold text-[#1F2937] mb-2">
-                        Chưa có lịch học phù hợp
+                        Tuần này chưa có lịch học phù hợp
                     </h3>
                     <p className="text-gray-500 max-w-md">
-                        Lịch học sẽ hiển thị khi các lớp bạn đăng ký có buổi học được tạo.
+                        Hãy chuyển tuần hoặc thay đổi bộ lọc để xem các buổi học khác.
                     </p>
                 </div>
             )}

@@ -305,7 +305,6 @@ const StudentClasses: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredClasses.map(({ class: cls }) => {
                         const schedules = classSchedules[cls.id] || [];
-                        console.log(`${cls.className} : `, schedules);
 
                         const nextSession =
                             schedules.find((s) => s.status === "ongoing") ??
@@ -436,103 +435,7 @@ const StudentClasses: React.FC = () => {
                 </div>
             )}
 
-            {/* Bottom Widgets Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
-
-                {/* 1. Lịch học sắp tới */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-[#E5E7EB] flex flex-col h-[450px]">
-                    <h3 className="text-lg font-bold text-[#1F2937] mb-4 flex items-center gap-2">
-                        <Clock size={20} className="text-[#E5664B]" /> Lịch học sắp tới
-                    </h3>
-                    <div className="flex-1 overflow-y-auto pr-2 space-y-4 scrollbar-thin scrollbar-thumb-gray-200">
-                        {mockData.upcomingSessions.map(session => (
-                            <div key={session.id} className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-orange-200 transition-colors group">
-                                <div className="flex justify-between items-start mb-2">
-                                    <span className="text-xs font-bold text-[#E5664B] bg-orange-100 px-2.5 py-1 rounded-md">
-                                        {session.className.split(' - ')[0]}
-                                    </span>
-                                    <span className="text-sm font-bold text-gray-800 flex items-center gap-1.5">
-                                        <Clock size={14} className="text-gray-400" /> {session.time}
-                                    </span>
-                                </div>
-                                <h4 className="font-bold text-gray-800 mb-1">{session.topic}</h4>
-                                <p className="text-sm text-gray-500">{session.className}</p>
-                                <button className="mt-4 w-full py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 group-hover:border-[#E5664B] group-hover:text-[#E5664B] transition-colors">
-                                    Mở Zoom / Meet
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* 2. Khung Chat Hội thoại */}
-                <div className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] flex flex-col h-[450px] overflow-hidden relative">
-                    {/* Chat Header */}
-                    <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between z-10">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
-                                <MessageCircle size={20} />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-gray-800">Thảo luận chung (K14)</h3>
-                                <p className="text-xs text-green-600 font-medium flex items-center gap-1">
-                                    <span className="w-2 h-2 rounded-full bg-green-500"></span> Trực tuyến
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50 scrollbar-thin scrollbar-thumb-gray-200">
-                        {messages.map(msg => (
-                            <div key={msg.id} className={`flex gap-3 ${msg.sender === 'student' ? 'flex-row-reverse' : 'flex-row'}`}>
-                                {/* Avatar */}
-                                <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden border border-white shadow-sm">
-                                    {msg.sender === 'instructor'
-                                        ? <img src="https://ui-avatars.com/api/?name=Tuan+Anh&background=1F2937&color=fff" alt="GV" />
-                                        : <User size={16} className="text-gray-500" />
-                                    }
-                                </div>
-
-                                {/* Message Bubble */}
-                                <div className={`flex flex-col max-w-[75%] ${msg.sender === 'student' ? 'items-end' : 'items-start'}`}>
-                                    <div className="flex items-baseline gap-2 mb-1">
-                                        <span className="text-xs font-bold text-gray-700">{msg.name}</span>
-                                        <span className="text-[10px] text-gray-400">{msg.time}</span>
-                                    </div>
-                                    <div className={`p-3 rounded-2xl text-sm shadow-sm ${msg.sender === 'student'
-                                        ? 'bg-[#E5664B] text-white rounded-tr-sm'
-                                        : 'bg-white border border-gray-100 text-gray-800 rounded-tl-sm'
-                                        }`}>
-                                        {msg.message}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Chat Input */}
-                    <div className="p-4 bg-white border-t border-gray-100 z-10">
-                        <form onSubmit={handleSendMessage} className="flex gap-2">
-                            <input
-                                type="text"
-                                value={chatInput}
-                                onChange={(e) => setChatInput(e.target.value)}
-                                placeholder="Nhập tin nhắn..."
-                                className="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:bg-white focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all"
-                            />
-                            <button
-                                type="submit"
-                                disabled={!chatInput.trim()}
-                                className="w-10 h-10 rounded-full bg-[#E5664B] text-white flex items-center justify-center flex-shrink-0 hover:bg-[#d6553a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                <Send size={16} className="ml-1" />
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-            </div>
+            
 
         </div>
     );

@@ -28,7 +28,6 @@ import InstructorClassesPage from './pages/instructor/InstructorClassesPage';
 import InstructorCreateClassPage from './pages/instructor/InstructorCreateClassPage';
 import InstructorStudentsPage from './pages/instructor/InstructorStudentsPage';
 import StudentDashboard from './pages/student/StudentDashboard';
-import StudentCoursesDetailPage from './pages/student/StudentCoursesDetailPage';
 import StudentOrdersCourses from './pages/student/StudentOrdersCourses';
 import StudentSetting from './pages/student/StudentSetting';
 import StudentClasses from './pages/student/StudentClasses';
@@ -97,7 +96,7 @@ function App() {
         }>
           {/* Dashboard học viên / My Courses */}
           <Route path="/my-courses" element={<MyCoursesPage />} />
-          <Route path="/my-courses/:id" element={<StudentCoursesDetailPage />} />
+          {/* <Route path="/my-courses/:id" element={<StudentCoursesDetailPage />} /> */}
           <Route path="/dashboard" element={<StudentDashboard />} />
           <Route path="/orders" element={<StudentOrdersCourses />} />
           <Route path="/settings" element={<StudentSetting />} />
