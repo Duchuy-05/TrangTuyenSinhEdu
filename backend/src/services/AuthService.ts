@@ -1,8 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import axios from "axios";
+import { OAuth2Client } from "google-auth-library";
 import { AppDataSource } from "../models/DataSource";
 import { User, UserRole } from "../models/entities/User";
 import { EmailService } from "./EmailService";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export class AuthService {
   private static userRepository = AppDataSource.getRepository(User);
@@ -134,5 +138,72 @@ export class AuthService {
     } catch (error) {
       throw new Error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!");
     }
+  }
+  // ==============================
+  // LOGIC ĐĂNG NHẬP VỚI GOOGLE
+  // ==============================
+  static async loginWithGoogle(accessTokenFromClient: string) {
+    // 1. Dùng access_token để lấy thông tin user từ Google
+    let payload: any;
+    try {
+      const response = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: {
+          Authorization: `Bearer ${accessTokenFromClient}`,
+        },
+      });
+      payload = response.data;
+    } catch (error) {
+      throw new Error("Token Google không hợp lệ hoặc đã hết hạn!");
+    }
+
+    const { sub: googleId, email, name, picture } = payload;
+
+    if (!email) {
+      throw new Error("Không thể lấy email từ tài khoản Google!");
+    }
+
+    // 2. Tìm user theo googleId trước (đã từng đăng nhập Google)
+    let user = await this.userRepository.findOneBy({ googleId });
+
+    if (!user) {
+      // 3. Tìm theo email (Phương án A: liên kết tài khoản cũ)
+      user = await this.userRepository.findOneBy({ email });
+
+      if (user) {
+        // Email tồn tại → Liên kết Google ID vào tài khoản cũ
+        user.googleId = googleId!;
+        if (picture && !user.avatarUrl) user.avatarUrl = picture;
+        user.isVerified = true; // Đảm bảo tài khoản được xác thực
+        await this.userRepository.save(user);
+      } else {
+        // 4. Email hoàn toàn mới → Tạo tài khoản mới từ Google
+        const newUser = new User();
+        newUser.fullName = name || "Người dùng Google";
+        newUser.email = email;
+        newUser.googleId = googleId!;
+        newUser.avatarUrl = picture || "";
+        newUser.role = UserRole.STUDENT;
+        newUser.isVerified = true; // Google đã xác thực email rồi
+        newUser.otp = "";
+        newUser.otpExpiresAt = new Date();
+
+        user = await this.userRepository.save(newUser);
+      }
+    }
+
+    // 5. Tạo JWT nội bộ như flow đăng nhập thường
+    const accessToken = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.ACCESS_TOKEN_SECRET!,
+      { expiresIn: "15m" }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.REFRESH_TOKEN_SECRET!,
+      { expiresIn: "7d" }
+    );
+
+    return { user, accessToken, refreshToken };
   }
 }

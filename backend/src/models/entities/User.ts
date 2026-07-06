@@ -30,11 +30,14 @@ export class User {
   @Column({ nullable: true })
   phone: string;
 
-  @Column({ name: 'password_hash' })
+  @Column({ name: 'password_hash', nullable: true })
   passwordHash: string;
 
   @Column({ name: 'avatar_url', nullable: true })
   avatarUrl: string;
+
+  @Column({ name: 'google_id', unique: true, nullable: true })
+  googleId: string;
 
   @Column({
     type: 'enum',
