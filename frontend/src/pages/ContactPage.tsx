@@ -107,7 +107,7 @@ const ContactPage: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>Khóa học quan tâm</label>
                                     <select className="form-control" value={formData.courseId}
                                         onChange={(e) => setFormData({ ...formData, courseId: Number(e.target.value) })}>
@@ -117,7 +117,7 @@ const ContactPage: React.FC = () => {
                                         ))}
                                     </select>
 
-                                </div>
+                                </div> */}
 
 
                                 <div className="form-group">
