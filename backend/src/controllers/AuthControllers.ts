@@ -88,4 +88,40 @@ export class AuthController {
       return res.status(403).json({ message: error.message || "Lỗi Server!" });
     }
   }
+
+  // ==============================
+  // 5. API GOOGLE LOGIN
+  // ==============================
+  static async googleLogin(req: Request, res: Response) {
+    try {
+      const { credential } = req.body;
+
+      if (!credential) {
+        return res.status(400).json({ message: "Thiếu Google credential!" });
+      }
+
+      const { user, accessToken, refreshToken } = await AuthService.loginWithGoogle(credential);
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      return res.status(200).json({
+        message: "Đăng nhập với Google thành công!",
+        accessToken,
+        user: {
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          avatarUrl: user.avatarUrl,
+        },
+      });
+    } catch (error: any) {
+      return res.status(401).json({ message: error.message || "Lỗi Server!" });
+    }
+  }
 }

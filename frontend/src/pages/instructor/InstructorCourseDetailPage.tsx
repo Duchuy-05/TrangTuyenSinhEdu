@@ -127,11 +127,11 @@ const InstructorCourseDetailPage: React.FC = () => {
    };
 
    return (
-      <div className="p-4 lg:p-8 max-w-5xl mx-auto min-h-[calc(100vh-72px)] bg-[#F5F7FA]">
-         
+      <div className="p-4 lg:p-8 mx-auto min-h-[calc(100vh-72px)] bg-[#F5F7FA]">
+
          {/* Top Navigation */}
          <div className="mb-6">
-            <button 
+            <button
                onClick={() => navigate('/instructor/courses')}
                className="flex items-center gap-2 text-gray-500 hover:text-[#E5664B] transition-colors text-sm font-medium"
             >
@@ -148,9 +148,8 @@ const InstructorCourseDetailPage: React.FC = () => {
                   <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500">
                      <span className="flex items-center gap-1.5"><LayoutDashboard size={16} /> {course.chapters.length} Chương</span>
                      <span className="flex items-center gap-1.5"><Video size={16} /> {course.chapters.reduce((a: any, c: any) => a + c.lessons.length, 0)} Bài học</span>
-                     <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                        course.status === 'Published' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'
-                     }`}>
+                     <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${course.status === 'Published' ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
                         {course.status === 'Published' ? 'Đã xuất bản' : 'Bản nháp'}
                      </span>
                   </div>
