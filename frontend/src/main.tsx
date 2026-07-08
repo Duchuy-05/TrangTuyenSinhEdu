@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import LandingPage from './pages/LandingPage';
 import CourseDetailPage from './pages/CourseDetailPage';
+import CourseCategoryPage from './pages/CourseCatelogPage';
 import ScratchCoursePage from './pages/ScratchCoursePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -62,6 +63,7 @@ function App() {
         <Route path="/posts/:slug" element={<PostDetail />} />
 
         <Route path="/hehe" element={<CreatePost />} />
+        <Route path="/khoa-hoc-truc-tuyen" element={<CourseCategoryPage />} />
 
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin']}>
