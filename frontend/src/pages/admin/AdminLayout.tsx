@@ -47,6 +47,9 @@ const AdminLayout: React.FC = () => {
                     <NavLink to="/admin/teachers" className={navLinkClass}>
                         <Users size={20} /> Quản lý Giảng viên
                     </NavLink>
+                    <NavLink to="/admin/class-students" className={navLinkClass}>
+                        <Users size={20} /> Học viên trong lớp
+                    </NavLink>
 
                     {/* User Management Dropdown */}
                     <div className={`flex flex-col ${usersDropdownOpen ? 'bg-slate-700/30' : ''}`}>
