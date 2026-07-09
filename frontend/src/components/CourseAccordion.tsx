@@ -143,13 +143,13 @@ const CourseGrid: React.FC = () => {
                                                     <p className="text-xs text-slate-500 mb-1.5">
                                                         Giảng viên:{' '}
                                                         <span className="font-semibold text-blue-600">
-                                                            {course.teacher?.fullName || 'Đang cập nhật'}
+                                                            {course.user?.fullName ||course.teacher?.fullName || 'Đang cập nhật'}
                                                         </span>
                                                     </p>
 
                                                     <p className="flex items-center gap-1.5 text-xs text-slate-500 mb-3">
                                                         <Layers size={13} className="text-orange-500" />
-                                                        {course.syllabus?.length ?? 0} chương
+                                                        { course.courseData?.length ?? course.syllabus?.length ?? 0} chương
                                                     </p>
                                                 </div>
 

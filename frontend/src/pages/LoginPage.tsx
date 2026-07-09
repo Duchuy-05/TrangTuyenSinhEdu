@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useGoogleLogin } from '@react-oauth/google';
+import { apiClient } from '../services/apiClient';
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
@@ -16,9 +16,8 @@ const LoginPage = () => {
   const navigate = useNavigate(); // khai bao bien navigate
   // kiem tra neu da co token thi chuyen huong ve trang chu
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
     const userStr = localStorage.getItem('user');
-    if (token && userStr) {
+    if (userStr) {
       try {
         const user = JSON.parse(userStr);
         if (user.role === 'admin') navigate('/admin');
@@ -43,15 +42,10 @@ const LoginPage = () => {
     setErrorMessage('');
     setIsLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
+      const response = await apiClient.post('/auth/login', {
         email: formData.email,
         password: formData.password
-      },
-        {
-          withCredentials: true // Cho phép gửi cookie từ server về client
-        }
-      );
-      localStorage.setItem('accessToken', response.data.accessToken); // Lưu token vào localStorage
+      });
       localStorage.setItem('user', JSON.stringify(response.data.user)); // Lưu thông tin user vào localStorage
       alert(response.data.message || 'Đăng nhập thành công!');
       const userRole = response.data.user?.role;
@@ -72,14 +66,9 @@ const LoginPage = () => {
 
     try {
       // Bây giờ credentialResponse trả về access_token
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
+      const response = await apiClient.post('/auth/google', {
         credential: tokenResponse.access_token
-      },
-        {
-          withCredentials: true
-        }
-      );
-      localStorage.setItem('accessToken', response.data.accessToken);
+      });
       localStorage.setItem('user', JSON.stringify(response.data.user));
       alert(response.data.message || 'Đăng nhập thành công!');
       const userRole = response.data.user?.role;

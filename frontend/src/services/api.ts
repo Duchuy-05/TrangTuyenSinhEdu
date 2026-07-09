@@ -1,4 +1,5 @@
 export { apiClient } from './apiClient';
+export { authApi } from './auth.api';
 export { courseApi } from './course.api';
 export type { Course, Syllabus } from './course.api';
 export { teacherApi } from './teacher.api';

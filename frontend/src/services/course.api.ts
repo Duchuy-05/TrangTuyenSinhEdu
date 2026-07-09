@@ -1,59 +1,24 @@
 import { apiClient } from './apiClient';
 import type { Teacher } from './teacher.api';
-import axios from 'axios';
 
-// cau hinh axios để xử lý token hết hạn và refresh token của giảng viên
-apiClient.defaults.baseURL = 'http://localhost:3000/api';
-apiClient.defaults.withCredentials = true;
-apiClient.defaults.headers.common['Content-Type'] = 'application/json';
-
-apiClient.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    }, 
-    (error) =>  Promise.reject(error)
-);
-
-apiClient.interceptors.response.use(
-    (response) =>  response,
-    async (error) => {
-        const originalRequest = error.config;
-
-        if (error.response?.status === 401 && error.response?.data?.message === 'TOKEN_EXPIRED' && !originalRequest._retry) {
-            originalRequest._retry = true;
-            try {
-                const refreshResponse = await axios.get(
-                    'http://localhost:3000/api/auth/refresh', 
-                    {
-                        withCredentials: true
-                    }
-                );
-                const newAccessToken = refreshResponse.data.accessToken;
-                localStorage.setItem('accessToken', newAccessToken);
-                originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-                return apiClient(originalRequest);
-            }
-            catch (refreshError) {
-                console.error('Phiên đăng nhập đã hết hạn.');
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
-                return Promise.reject(refreshError);
-            }
-        }
-        return Promise.reject(error);
-    }
-);
 
 export interface Syllabus {
     id: number;
     orderIndex: number;
     title: string;
     description: string;
+}
+
+export interface SubCategory {
+    name: string;
+    slug: string;
+}
+
+export interface MainCategory {
+    id: string;
+    name: string;
+    icon: React.ReactNode;
+    subCategories: SubCategory[];
 }
 
 export interface Course {
@@ -69,11 +34,17 @@ export interface Course {
     lessonDuration?: string;
     classSize?: string;
     format: string;
-    price: string;
-    discountPrice?: string;
+    price: number;
+    discountPrice?: number | null;
     status: string;
-    teacher: Teacher;
-    syllabus: Syllabus[];
+    teacher?: {fullName: string};
+    user?: {
+        id: number;
+        fullName: string;
+        avatarUrl?: string;
+    };
+    syllabus: any[];
+    courseData: any;
 }
 
 export const courseApi = {

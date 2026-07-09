@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { CourseController } from '../controllers/CourseController';
 import { upload } from '../middlewares/upload.middleware';
-import { verifyToken } from '../middlewares/auth.middleware';
+import { verifyToken, isAdmin } from '../middlewares/auth.middleware';
 const courseRouter: Router = Router();
 
 // =======================================================================
@@ -25,9 +25,8 @@ courseRouter.post('/courses/:courseGroupId/publish', verifyToken, CourseControll
 courseRouter.get('/courses', CourseController.getAllCourses);
 courseRouter.get('/courses/pagination', CourseController.getAllCoursesPagination);
 courseRouter.get('/courses/:id', CourseController.getCourseById);
-courseRouter.post('/courses', upload.single('image'), CourseController.createCourse);
-// API lấy chi tiết 1 khóa học bằng ID 
-courseRouter.get('/courses/:id', CourseController.getCourseById);
-courseRouter.put('/courses/:id', upload.single('image'), CourseController.updateCourse);
+courseRouter.post('/courses', verifyToken, isAdmin, upload.single('image'), CourseController.createCourse);
+courseRouter.put('/courses/:id', verifyToken, isAdmin, upload.single('image'), CourseController.updateCourse);
+courseRouter.delete('/courses/:id', verifyToken, isAdmin, CourseController.deleteCourse);
 
 export default courseRouter;

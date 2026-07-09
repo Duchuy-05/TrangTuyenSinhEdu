@@ -14,7 +14,7 @@ export class ClassEnrollmentController {
   }
 
   static async getMyClasses(request: Request, response: Response) {
-    const userId = Number(request.query.userId); // hoặc lấy từ req.user nếu có middleware auth
+    const userId = Number((request as any).user?.id);
     try {
       const enrollments = await ClassEnrollmentService.getByUserId(userId);
       return response.json(successHandler(200, 'Lấy danh sách lớp học thành công', enrollments));

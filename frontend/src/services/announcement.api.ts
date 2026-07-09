@@ -29,8 +29,8 @@ export interface Announcement {
 }
 
 export const announcementApi = {
-    getMyAnnouncements: async (userId: number): Promise<Announcement[]> => {
-        const response = await apiClient.get(`/announcements/my?userId=${userId}`);
+    getMyAnnouncements: async (_userId?: number): Promise<Announcement[]> => {
+        const response = await apiClient.get('/announcements/my');
         return response.data.data;
     },
 };

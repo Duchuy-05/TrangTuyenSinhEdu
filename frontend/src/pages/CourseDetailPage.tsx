@@ -110,7 +110,7 @@ const CourseDetailPage: React.FC = () => {
                     course.sessionCount && Number(course.sessionCount) > 0
                         ? `${course.sessionCount} buổi`
                         : sortedSyllabus.length > 0
-                            ? `${sortedSyllabus.length} buổi`
+                            ? `${sortedSyllabus.length} chương`
                             : 'Theo lộ trình',
                 icon: <BookOpenCheck size={22} />,
             },
@@ -125,7 +125,7 @@ const CourseDetailPage: React.FC = () => {
                 icon: <Laptop size={22} />,
             },
             {
-                label: 'Thời lượng/buổi',
+                label: 'Thời lượng',
                 value: course.lessonDuration || course.duration || 'Đang cập nhật',
                 icon: <Clock size={22} />,
             },
@@ -266,7 +266,7 @@ const CourseDetailPage: React.FC = () => {
                                     Overview
                                 </p>
                                 <h2 style={{ fontSize: '2rem', color: '#1F2937', marginBottom: '10px' }}>
-                                    Đi đúng đường, học đúng hướng
+                                    Thông tin khóa học
                                 </h2>
                                 <p style={{ color: '#6B7280', lineHeight: 1.75, marginBottom: '28px' }}>
                                     Các thông tin cốt lõi giúp học viên và phụ huynh nắm nhanh mục tiêu, hình thức học và nhịp học của khóa.

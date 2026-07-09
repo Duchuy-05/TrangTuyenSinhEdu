@@ -7,6 +7,15 @@ export interface Teacher {
     phone: string;
     specialization: string;
     bio: string;
+    experience: string;
+    title: string;
+    company: string;
+    // socialLinks: {
+    //     facebook?: string;
+    //     twitter?: string;
+    //     linkedin?: string;
+    //     github?: string;
+    // };
     avatarUrl?: string;
 }
 

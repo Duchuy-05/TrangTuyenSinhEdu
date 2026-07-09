@@ -5,6 +5,7 @@ import {
     LayoutDashboard, BookOpen, Presentation, Users,
     FileText, CheckSquare, Award, DollarSign, Settings, LogOut
 } from 'lucide-react';
+import { authApi } from '../services/api';
 
 const InstructorLayout: React.FC = () => {
     const location = useLocation();
@@ -19,9 +20,13 @@ const InstructorLayout: React.FC = () => {
         }
     }, []);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         if (window.confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
-            localStorage.removeItem('accessToken');
+            try {
+                await authApi.logout();
+            } catch (error) {
+                console.error('Không thể gọi API đăng xuất:', error);
+            }
             localStorage.removeItem('user');
             setUser({});
             navigate('/login');
