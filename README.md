@@ -8,7 +8,7 @@
 
 ## 1. Tổng quan
 
-**TrangTuyenSinhEdu** là hệ thống website tuyển sinh kết hợp LMS (Learning Management System) thu nhỏ, được xây dựng theo mô hình **client-server tách biệt (SPA + REST API)**. Dự án mô phỏng đầy đủ vòng đời của một trung tâm đào tạo trực tuyến: từ trang giới thiệu (landing page) thu hút học viên, đến quy trình đăng ký, giảng viên tạo khóa học bằng công cụ kéo-thả, mở lớp, quản lý lịch học, điểm danh và thông báo.
+**TRI ANH EDUCATION** là hệ thống website tuyển sinh kết hợp LMS (Learning Management System) thu nhỏ, được xây dựng theo mô hình **client-server tách biệt (SPA + REST API)**. Dự án mô phỏng đầy đủ vòng đời của một trung tâm đào tạo trực tuyến: từ trang giới thiệu (landing page) thu hút học viên, đến quy trình đăng ký, giảng viên tạo khóa học bằng công cụ kéo-thả, mở lớp, quản lý lịch học, điểm danh và thông báo.
 
 **Điểm nổi bật kỹ thuật:**
 - Kiến trúc **phân lớp rõ ràng** (Router → Controller → Service → Entity) ở backend, dễ bảo trì và mở rộng.
