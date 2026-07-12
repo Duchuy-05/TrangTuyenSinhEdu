@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Edit3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { postApi } from '../../services/post.api';
 import type { Post } from '../../services/post.api';
@@ -31,6 +31,10 @@ const AdminPost: React.FC = () => {
 
     const handleAdd = () => {
         navigate('/admin/posts/create');
+    };
+
+    const handleEdit = (id: number) => {
+        navigate(`/admin/posts/edit/${id}`);
     };
 
     const handleDelete = async (id: number) => {
@@ -76,18 +80,22 @@ const AdminPost: React.FC = () => {
                                     <td className="px-6 py-4 text-sm font-semibold text-slate-900">{post.title}</td>
                                     <td className="px-6 py-4 text-sm text-slate-700">{post.authorName}</td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                                            post.status === 'published'
+                                        <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${post.status === 'published'
                                                 ? 'bg-green-100 text-green-800'
                                                 : 'bg-amber-100 text-amber-800'
-                                        }`}>
+                                            }`}>
                                             {post.status === 'published' ? 'Đã đăng' : 'Nháp'}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-sm text-slate-700">{new Date(post.createdAt).toLocaleDateString('vi-VN')}</td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
-                                            <button onClick={() => handleDelete(post.id)} className="p-2 hover:bg-red-50 text-red-600 rounded transition-colors" title="Xóa"><Trash2 size={16} /></button>
+                                            <button onClick={() => handleEdit(post.id)} className="p-2 hover:bg-blue-50 text-blue-600 rounded transition-colors" title="Chỉnh sửa">
+                                                <Edit3 size={16} />
+                                            </button>
+                                            <button onClick={() => handleDelete(post.id)} className="p-2 hover:bg-red-50 text-red-600 rounded transition-colors" title="Xóa">
+                                                <Trash2 size={16} />
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -112,11 +120,10 @@ const AdminPost: React.FC = () => {
                             <button
                                 key={page}
                                 onClick={() => setCurrentPage(page)}
-                                className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                                    currentPage === page
+                                className={`px-3 py-2 rounded-lg text-sm transition-colors ${currentPage === page
                                         ? 'bg-blue-600 text-white'
                                         : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-                                }`}
+                                    }`}
                             >
                                 {page}
                             </button>

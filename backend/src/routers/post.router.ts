@@ -7,7 +7,7 @@ const postRouter: Router = Router();
 
 postRouter.get('/posts', PostController.getAllPostPagination);
 postRouter.get('/posts/published', PostController.getAllPublishedPost);
-postRouter.get('/posts/:slug', PostController.getBySlug);
+postRouter.get('/posts/:slugOrId', PostController.getPost);
 
 
 postRouter.post('/posts', verifyToken, isAdmin, upload.single('thumbnail'), PostController.createPost);

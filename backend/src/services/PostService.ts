@@ -49,7 +49,7 @@ export class PostService {
     return postRepo.findOne({ where: { slug } });
   }
 
-  static async getById(id: number) {
+  static async getPostById(id: number) {
     return postRepo.findOne({ where: { id } });
   }
 

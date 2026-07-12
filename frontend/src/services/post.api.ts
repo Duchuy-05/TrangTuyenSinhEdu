@@ -38,24 +38,31 @@ export const postApi = {
         return response.data.data;
     },
 
+    getPostById: async (id: number): Promise<Post> => {
+        const response = await apiClient.get(`/posts/${id}`);
+        return response.data.data;
+    },
+
     getPostBySlug: async (slug: string): Promise<Post> => {
         const response = await apiClient.get(`/posts/${slug}`);
         return response.data.data;
     },
 
-    createPost: async (data: FormData) => {
-        return apiClient.post('/posts', data, {
+    createPost: async (data: FormData): Promise<Post> => {
+        const response = await apiClient.post('/posts', data, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
+        return response.data.data;
     },
 
-    updatePost: async (id: number, data: FormData) => {
-        return apiClient.put(`/posts/${id}`, data, {
+    updatePost: async (id: number, data: FormData): Promise<Post> => {
+        const response = await apiClient.put(`/posts/${id}`, data, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
+        return response.data.data;
     },
 
-    deletePost: async (id: number) => {
-        return apiClient.delete(`/posts/${id}`);
+    deletePost: async (id: number): Promise<void> => {
+        await apiClient.delete(`/posts/${id}`);
     },
 };

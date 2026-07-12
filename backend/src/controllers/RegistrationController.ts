@@ -48,6 +48,28 @@ export class RegistrationController {
         }
     }
 
+    static async updateRegistrationStatus(request: Request, response: Response) {
+        const registrationId = Number(request.params.id);
+        const { status } = request.body;
+
+        const validStatuses = ['pending', 'contacted', 'confirmed', 'cancelled'];
+        if (!status || !validStatuses.includes(status)) {
+            return response.json(errorHandler(400, 'Trạng thái không hợp lệ'));
+        }
+
+        try {
+            const registration = await RegistrationService.getRegistrationById(registrationId);
+            if (!registration) {
+                return response.json(errorHandler(404, 'Đăng ký không tồn tại'));
+            }
+
+            const updated = await RegistrationService.updateRegistrationStatus(registrationId, status);
+            return response.json(successHandler(200, 'Cập nhật trạng thái thành công', updated));
+        } catch (error) {
+            return response.json(errorHandler(500, 'Lỗi khi cập nhật trạng thái'));
+        }
+    }
+    
     static async deleteRegistration(request: Request, response: Response) {
         const registrationId = Number(request.params.id);
         try {

@@ -6,7 +6,7 @@ export class RegistrationService {
 
     static async getAllRegistrations(page: number = 1, limit: number = 10, status?: string) {
         const [registrations, total] = await this.registrationRepository.findAndCount({
-            where: status ? { status : status as RegistrationStatus } : {},
+            where: status ? { status: status as RegistrationStatus } : {},
             relations: { user: true, course: true },
             order: { registeredAt: 'DESC' },
             take: limit,
@@ -48,17 +48,18 @@ export class RegistrationService {
         if (!registration) {
             throw new Error('Registration not found');
         }
-        registration.userId = registrationData.userId ?? registration.userId;
-        registration.courseId = registrationData.courseId ?? registration.courseId;
-        registration.contactName = registrationData.contactName ?? registration.contactName;
-        registration.contactEmail = registrationData.contactEmail ?? registration.contactEmail;
-        registration.contactPhone = registrationData.contactPhone ?? registration.contactPhone;
-        registration.note = registrationData.note ?? registration.note;
-        registration.status = registrationData.status ?? registration.status;
-        registration.handledBy = registrationData.handledBy ?? registration.handledBy;
-        registration.contactedAt = registrationData.contactedAt ?? registration.contactedAt;
+        Object.assign(registration, registrationData);
         return this.registrationRepository.save(registration);
     }
+
+    static async updateRegistrationStatus(id: number, status: string) {
+        await this.registrationRepository.update(id, {
+            status: status as RegistrationStatus,
+            ...(status === 'contacted' && { contactedAt: new Date() }), //tu dong set date khi status la contacted
+        });
+        return this.registrationRepository.findOne({ where: { id }, relations: { course: true, user: true } });
+    }
+
 
     static async deleteRegistration(id: number) {
         const registration = await this.registrationRepository.findOneBy({ id });
