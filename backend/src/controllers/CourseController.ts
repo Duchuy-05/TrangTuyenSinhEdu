@@ -70,16 +70,16 @@ export class CourseController {
         }
     }
 
-    // static async deleteCourse( request: Request, response: Response) {
-    //     const courseId = Number(request.params.id);
-    //     try {
-    //         await CourseService.deleteCourse(courseId);
-    //         return response.json(successHandler(200, 'Xóa khóa học thành công'));
-    //     }
-    //     catch (error) {
-    //         return response.json(errorHandler(500, 'Lỗi khi xóa khóa học'));
-    //     }
-    // }
+    static async deleteCourse( request: Request, response: Response) {
+        const courseId = Number(request.params.id);
+        try {
+            await CourseService.deleteCourse(courseId);
+            return response.json(successHandler(200, 'Xóa khóa học thành công'));
+        }
+        catch (error) {
+            return response.json(errorHandler(500, 'Lỗi khi xóa khóa học'));
+        }
+    }
 
     // Khởi tạo khóa học cho Giảng viên
     // 1. Tạo bản nháp mới
@@ -120,7 +120,7 @@ export class CourseController {
     // 2. Lấy chi tiết bản nháp đổ vào UI Builder kéo thả
     static async getDraft(request: Request, response: Response) {
         try {
-            const courseGroupId = request.params.id as string; // Lấy courseGroupId từ URL params
+            const courseGroupId = request.params.courseGroupId as string;
             const teacherId = (request as any).user?.id || request.body.teacherId || 1;
 
             const draft = await CourseServiceGV.getDraft(courseGroupId, Number(teacherId));
@@ -133,7 +133,7 @@ export class CourseController {
     // 3. Lưu/Cập nhật cấu trúc JSON liên tục khi kéo thả
     static async updateDraft(request: Request, response: Response) {
         try {
-            const courseGroupId = request.params.id as string;
+            const courseGroupId = request.params.courseGroupId as string;
             const teacherId = (request as any).user?.id || request.body.teacherId || 1;
             const courseDataInput = request.body; // Toàn bộ mảng JSON cấu trúc Units/Lessons/Blocks gửi từ FE lên
 
@@ -147,7 +147,7 @@ export class CourseController {
     // publish từ bản nháp thành công
     static async publishCourse(request: Request, response: Response) {
         try {
-            const courseGroupId = request.params.id as string;
+            const courseGroupId = request.params.courseGroupId as string;
             const teacherId = (request as any).user?.id || request.body.teacherId || 1;
 
             const published = await CourseServiceGV.publishCourse(courseGroupId, Number(teacherId));

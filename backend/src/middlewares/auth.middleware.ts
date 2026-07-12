@@ -8,29 +8,19 @@ export interface AuthRequest extends Request {
 }
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
-    // 1. Lấy Token từ Header
-    const authHeader = req.headers.authorization;
-    let tokenFromHeader;
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        tokenFromHeader = authHeader.split(' ')[1];
-    }
-
-    // 2. Lấy Token từ Cookie
-    const tokenFromCookie = req.cookies?.access_token; 
-
-    // 3. Ưu tiên lấy từ Header, nếu không có thì lấy từ Cookie
-    const token = tokenFromHeader || tokenFromCookie;
+    const token = req.cookies?.access_token;
 
     if (!token) {
         return res.status(401).json(errorHandler(401, 'Không tìm thấy Token. Vui lòng đăng nhập!'));
     }
 
     try {
-        // 4. Giải mã Token
-        const secretKey = process.env.ACCESS_TOKEN_SECRET || 'YOUR_SECRET_KEY'; 
+        const secretKey = process.env.ACCESS_TOKEN_SECRET;
+        if (!secretKey) {
+            return res.status(500).json(errorHandler(500, 'Server chưa cấu hình ACCESS_TOKEN_SECRET.'));
+        }
         const decoded = jwt.verify(token, secretKey);
 
-        // 5. Gắn thông tin user vào request qua interface AuthRequest
         req.user = decoded;
         next();
     } catch (error: any) {
@@ -47,4 +37,14 @@ export const isAdmin = (req: AuthRequest, res: Response, next: NextFunction) => 
     } else {
         return res.status(403).json(errorHandler(403, 'Không có quyền truy cập. Yêu cầu quyền Admin.'));
     }
+};
+
+export const requireRoles = (...roles: UserRole[]) => {
+    return (req: AuthRequest, res: Response, next: NextFunction) => {
+        if (req.user && roles.includes(req.user.role)) {
+            return next();
+        }
+
+        return res.status(403).json(errorHandler(403, 'Không có quyền truy cập.'));
+    };
 };

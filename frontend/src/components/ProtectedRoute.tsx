@@ -7,10 +7,9 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children }) => {
-  const token = localStorage.getItem('accessToken');
   const userStr = localStorage.getItem('user');
   
-  if (!token || !userStr) {
+  if (!userStr) {
     return <Navigate to="/login" replace />;
   }
 
@@ -31,7 +30,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles, children 
     return children ? <>{children}</> : <Outlet />;
   } catch (error) {
     // If parsing fails or something goes wrong, force re-login
-    localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
     return <Navigate to="/login" replace />;
   }

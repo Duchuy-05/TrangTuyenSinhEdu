@@ -1,6 +1,22 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/AuthService";
 
+const isProduction = process.env.NODE_ENV === "production";
+
+const accessTokenCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: "strict" as const,
+  maxAge: 15 * 60 * 1000,
+};
+
+const refreshTokenCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: "strict" as const,
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
 export class AuthController {
 
   // ==============================
@@ -42,17 +58,11 @@ export class AuthController {
       // Gọi service xử lý
       const { user, accessToken, refreshToken } = await AuthService.loginUser(email, password);
 
-      // Xử lý logic HTTP: Set cookie
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false, // true nếu deploy lên production với HTTPS
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000 
-      });
+      res.cookie("access_token", accessToken, accessTokenCookieOptions);
+      res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
       return res.status(200).json({
         message: "Đăng nhập thành công!",
-        accessToken,
         user: {
           id: user.id,
           fullName: user.fullName,
@@ -78,10 +88,10 @@ export class AuthController {
 
       // Gọi service xử lý
       const newAccessToken = await AuthService.verifyAndRefreshToken(refreshToken);
+      res.cookie("access_token", newAccessToken, accessTokenCookieOptions);
 
       return res.status(200).json({ 
-          message: "Cấp lại Token thành công!",
-          accessToken: newAccessToken 
+          message: "Cấp lại Token thành công!"
       });
     } catch (error: any) {
       // khi Token sai hoặc hết hạn từ Service
@@ -102,16 +112,11 @@ export class AuthController {
 
       const { user, accessToken, refreshToken } = await AuthService.loginWithGoogle(credential);
 
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      res.cookie("access_token", accessToken, accessTokenCookieOptions);
+      res.cookie("refreshToken", refreshToken, refreshTokenCookieOptions);
 
       return res.status(200).json({
         message: "Đăng nhập với Google thành công!",
-        accessToken,
         user: {
           id: user.id,
           fullName: user.fullName,
@@ -123,5 +128,20 @@ export class AuthController {
     } catch (error: any) {
       return res.status(401).json({ message: error.message || "Lỗi Server!" });
     }
+  }
+
+  static async logout(req: Request, res: Response) {
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "strict",
+    });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({ message: "Đăng xuất thành công!" });
   }
 }

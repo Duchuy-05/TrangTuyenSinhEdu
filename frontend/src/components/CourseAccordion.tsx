@@ -51,7 +51,7 @@ const CourseGrid: React.FC = () => {
                         <Link to={`/khoa-hoc/${course.id}`} className="course-card" key={course.id}>
 
                             <div className="course-card-image">
-                                <img src={course.imageUrl} alt={course.title} />
+                                <img src={course.imageUrl || 'https://unsplash.com/photos/photo-of-turn-off-macbook-air-on-table-tAKXap853rY'} alt={course.title} />
                             </div>
 
                             <div className="course-card-content">

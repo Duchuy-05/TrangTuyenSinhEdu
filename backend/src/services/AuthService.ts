@@ -103,7 +103,7 @@ export class AuthService {
     }
 
     const accessToken = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, role: user.role, fullName: user.fullName },
       process.env.ACCESS_TOKEN_SECRET!,
       { expiresIn: "15m" }
     );
@@ -129,7 +129,7 @@ export class AuthService {
       }
 
       const newAccessToken = jwt.sign(
-        { id: user.id, role: user.role },
+        { id: user.id, role: user.role, fullName: user.fullName },
         process.env.ACCESS_TOKEN_SECRET!,
         { expiresIn: "15m" }
       );
@@ -193,7 +193,7 @@ export class AuthService {
 
     // 5. Tạo JWT nội bộ như flow đăng nhập thường
     const accessToken = jwt.sign(
-      { id: user.id, role: user.role },
+      { id: user.id, role: user.role, fullName: user.fullName },
       process.env.ACCESS_TOKEN_SECRET!,
       { expiresIn: "15m" }
     );

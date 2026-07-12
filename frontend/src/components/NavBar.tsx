@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { courseApi } from '../services/api';
+import { authApi, courseApi } from '../services/api';
 import { Course } from '../services/api';
 import { ArrowLeftRight, LogOut } from 'lucide-react';
 
@@ -48,8 +48,12 @@ const Navbar: React.FC = () => {
     }, []);
 
     // xử lý đăng xuất
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
+    const handleLogout = async () => {
+        try {
+            await authApi.logout();
+        } catch (error) {
+            console.error('Không thể gọi API đăng xuất:', error);
+        }
         localStorage.removeItem('user');
         setUser(null);
         navigate('/login');

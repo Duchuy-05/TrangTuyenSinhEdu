@@ -46,8 +46,8 @@ export interface ClassSchedule {
 }
 
 export const classApi = {
-    getMyClasses : async (userId: number): Promise<Enrollment[]> => {
-        const response = await apiClient.get(`/class-enrollments/myclasses?userId=${userId}`);
+    getMyClasses : async (_userId?: number): Promise<Enrollment[]> => {
+        const response = await apiClient.get('/class-enrollments/myclasses');
         return response.data.data;
     },
 

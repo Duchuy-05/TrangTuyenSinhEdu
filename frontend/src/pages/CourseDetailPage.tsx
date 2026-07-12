@@ -266,7 +266,7 @@ const CourseDetailPage: React.FC = () => {
                                     Overview
                                 </p>
                                 <h2 style={{ fontSize: '2rem', color: '#1F2937', marginBottom: '10px' }}>
-                                    Đi đúng đường, học đúng hướng
+                                    Thông tin khóa học
                                 </h2>
                                 <p style={{ color: '#6B7280', lineHeight: 1.75, marginBottom: '28px' }}>
                                     Các thông tin cốt lõi giúp học viên và phụ huynh nắm nhanh mục tiêu, hình thức học và nhịp học của khóa.

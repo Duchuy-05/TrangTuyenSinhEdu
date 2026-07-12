@@ -1,16 +1,18 @@
 import { Router } from 'express';
 import { ScheduleController } from '../controllers/ScheduleController';
+import { verifyToken, requireRoles } from '../middlewares/auth.middleware';
+import { UserRole } from '../models/entities/User';
 
 const scheduleRouter: Router = Router();
 
-scheduleRouter.get('/schedules/my-upcoming', ScheduleController.getMyUpcoming);
-scheduleRouter.get('/schedules', ScheduleController.getByClassId);
+scheduleRouter.get('/schedules/my-upcoming', verifyToken, ScheduleController.getMyUpcoming);
+scheduleRouter.get('/schedules', verifyToken, ScheduleController.getByClassId);
 scheduleRouter.get('/schedules/:id', ScheduleController.getById);
 
-scheduleRouter.post('/schedules', ScheduleController.create);
-scheduleRouter.post('/schedules/bulk', ScheduleController.bulkCreate);
+scheduleRouter.post('/schedules', verifyToken, requireRoles(UserRole.ADMIN, UserRole.TEACHER), ScheduleController.create);
+scheduleRouter.post('/schedules/bulk', verifyToken, requireRoles(UserRole.ADMIN, UserRole.TEACHER), ScheduleController.bulkCreate);
 
-scheduleRouter.put('/schedules/:id', ScheduleController.update);
-scheduleRouter.delete('/schedules/:id', ScheduleController.remove);
+scheduleRouter.put('/schedules/:id', verifyToken, requireRoles(UserRole.ADMIN, UserRole.TEACHER), ScheduleController.update);
+scheduleRouter.delete('/schedules/:id', verifyToken, requireRoles(UserRole.ADMIN, UserRole.TEACHER), ScheduleController.remove);
 
 export default scheduleRouter;

@@ -15,7 +15,7 @@ export class AnnouncementController {
 
   //student xem tất cả thông báo từ các lớp đang học
   static async getMyAnnouncements(request: Request, response: Response) {
-    const userId = Number(request.query.userId);
+    const userId = Number((request as any).user?.id);
     try {
       const announcements = await AnnouncementService.getMyAnnouncements(userId);
       return response.json(successHandler(200, 'Lấy danh sách thông báo thành công', announcements));

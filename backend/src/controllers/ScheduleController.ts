@@ -14,7 +14,7 @@ export class ScheduleController {
   }
 
   static async getMyUpcoming(request: Request, response: Response) {
-    const userId = Number(request.query.userId);
+    const userId = Number((request as any).user?.id);
     try {
       const schedules = await ScheduleService.getUpcomingByUserId(userId);
       return response.json(successHandler(200, 'Lấy lịch học sắp tới thành công', schedules));

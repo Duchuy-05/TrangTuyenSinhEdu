@@ -53,4 +53,12 @@ export class CourseService {
         return this.courseRepository.save(course);
 
     }
+
+    static async deleteCourse(id: number) {
+        const course = await this.courseRepository.findOneBy({ id });
+        if (!course) {
+            throw new Error('Course not found');
+        }
+        return this.courseRepository.remove(course);
+    }
 }

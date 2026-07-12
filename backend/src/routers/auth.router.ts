@@ -13,5 +13,7 @@ authRouter.get('/refresh', AuthController.refreshToken);
 authRouter.post("/verify-otp", AuthController.verifyOtp);
 // Đăng nhập bằng Google
 authRouter.post("/google", AuthController.googleLogin);
+// Đăng xuất
+authRouter.post("/logout", AuthController.logout);
 
 export default authRouter;

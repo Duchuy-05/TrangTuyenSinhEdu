@@ -9,7 +9,6 @@ interface RequireRoleProps {
 const RequireRole: React.FC<RequireRoleProps> = ({ allowedRoles, children }) => {
     const location = useLocation();
 
-    const token = localStorage.getItem('accessToken');
     const userStr = localStorage.getItem('user');
 
     let user: any = null;
@@ -20,7 +19,7 @@ const RequireRole: React.FC<RequireRoleProps> = ({ allowedRoles, children }) => 
     }
 
     // Chưa đăng nhập hoặc dữ liệu user bị hỏng -> bắt đăng nhập lại
-    if (!token || !user) {
+    if (!user) {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 

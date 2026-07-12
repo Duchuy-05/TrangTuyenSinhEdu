@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, Users, Phone, LogOut, Bell, User, Lock, ChevronDown } from 'lucide-react';
+import { authApi } from '../../services/api';
 
 const AdminLayout: React.FC = () => {
     const navigate = useNavigate();
     const [usersDropdownOpen, setUsersDropdownOpen] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem('accessToken');
+    const handleLogout = async () => {
+        try {
+            await authApi.logout();
+        } catch (error) {
+            console.error('Không thể gọi API đăng xuất:', error);
+        }
         localStorage.removeItem('user');
         navigate('/login');
     };
