@@ -70,8 +70,15 @@ const AdminTeachers: React.FC = () => {
         try {
             if (isEditing && formData.id) {
                 await teacherApi.updateTeacher(formData.id, formData);
+                alert("Cập nhật giảng viên thành công!");
             } else {
-                await teacherApi.createTeacher(formData);
+                const response = await teacherApi.createTeacher(formData);
+                const result = response.data.data;
+                if (result.generatedPassword) {
+                    alert(`Tạo giảng viên thành công!\n\nMật khẩu đăng nhập mặc định: ${result.generatedPassword}\n\nVui lòng copy và gửi cho giảng viên để họ đăng nhập.`);
+                } else {
+                    alert("Tạo giảng viên thành công!");
+                }
             }
             setIsModalOpen(false);
             fetchTeachers(currentPage);
@@ -80,7 +87,7 @@ const AdminTeachers: React.FC = () => {
             if (error.response?.status === 403 || error.response?.status === 401) {
                 alert("Bạn không có quyền thực hiện thao tác này!");
             } else {
-                alert("Đã xảy ra lỗi khi lưu giảng viên!");
+                alert(error.response?.data?.message || "Đã xảy ra lỗi khi lưu giảng viên!");
             }
         }
     };

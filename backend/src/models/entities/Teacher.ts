@@ -5,10 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  OneToOne  ,
+  JoinColumn
 } from 'typeorm';
 import { Course } from './Course';
 import { Class } from './Class';
 import { Announcement } from './Announcement';
+import { User } from './User';
 
 @Entity('teachers')
 export class Teacher {
@@ -41,6 +44,10 @@ export class Teacher {
 
   @Column({ name: 'avatar_url', nullable: true })
   avatarUrl: string;
+
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
