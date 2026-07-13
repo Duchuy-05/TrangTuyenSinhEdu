@@ -9,7 +9,7 @@ interface CourseCardProps {
     formatPriceOrFree: (price: number) => string;
 }
 
-export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
+export const CourseCard: React.FC<CourseCardProps> = ({ course, formatVND, formatPriceOrFree }) => {
     return (
         <Link
             to={`/khoa-hoc/${course.id}`}

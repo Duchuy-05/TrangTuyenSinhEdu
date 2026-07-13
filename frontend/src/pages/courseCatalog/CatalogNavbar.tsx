@@ -75,10 +75,7 @@ export const CatalogNavbar: React.FC<CatalogNavbarProps> = ({
 
                             {isCategoryHovered && (
                             <div className="absolute left-1/2 -translate-x-1/2 top-full mt-0.5 z-50">
-                                {/* Wrapper relative chỉ ôm đúng Cấp 1 (w-72) -> vị trí canh giữa
-                                    luôn được tính dựa trên chiều rộng CỐ ĐỊNH này, không đổi khi Cấp 2 xuất hiện */}
                                 <div className="relative w-72">
-                                    {/* Cấp 1 - đứng yên tuyệt đối */}
                                     <div className="w-72 bg-white border border-gray-200 shadow-2xl rounded-xl py-2">
                                         {Object.keys(coursesByCategory).map((category) => (
                                             <div
@@ -95,15 +92,14 @@ export const CatalogNavbar: React.FC<CatalogNavbarProps> = ({
                                         ))}
                                     </div>
 
-                                    {/* Cấp 2 - absolute neo vào cạnh phải của Cấp 1, KHÔNG ảnh hưởng vị trí Cấp 1 */}
                                     {activeHoverCategory && (
-                                        <div className="absolute left-full top-0 ml-1.5 w-64 bg-gray-50 border border-gray-200 rounded-xl shadow-2xl py-2">
-                                            <div className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-400">Chi tiết</div>
+                                        <div className="absolute left-full top-0 ml-0.5 h-full w-64 bg-gray-50 border border-gray-200 rounded-xl shadow-2xl py-2">
+                                            <div className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-black-400">Chi tiết</div>
                                             {coursesByCategory[activeHoverCategory].map((course) => (
                                                 <button
                                                     key={course.id}
                                                     onClick={() => handleCourseClick(course.title)}
-                                                    className="font-bold block w-full text-left px-4 py-2.5 hover:bg-orange-100 text-gray-600 hover:text-[#e15f41] text-sm transition-colors cursor-pointer"
+                                                    className="block w-full text-left px-4 py-2.5 hover:bg-orange-100 text-gray-600 hover:text-[#e15f41] text-sm transition-colors cursor-pointer"
                                                 >
                                                     {course.title}
                                                 </button>
