@@ -46,11 +46,11 @@ export class TeacherController {
             image: request.file?.path
         };
         try {
-            const newTeacher = await TeacherService.createTeacher(teacherData);
-            return response.json(successHandler(201, 'Tạo giáo viên thành công', newTeacher));
+            const result = await TeacherService.createTeacher(teacherData);
+            return response.json(successHandler(201, 'Tạo giáo viên thành công', result));
         }
-        catch (error) {
-            return response.json(errorHandler(500, 'Lỗi khi tạo giáo viên'));
+        catch (error: any) {
+            return response.json(errorHandler(500, error.message || 'Lỗi khi tạo giáo viên'));
         }
     }
 
