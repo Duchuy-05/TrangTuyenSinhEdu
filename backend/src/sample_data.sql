@@ -30,6 +30,23 @@ INSERT INTO courses (course_group_id, teacher_id, category, title, short_desc, t
 ('GROUP_04', 4, 'DevOps', 'Kubernetes & Docker Essentials', 'Container orchestration và deployment', 'DevOps Engineer, Backend Developer', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '8 weeks', 'online', 2500000, NULL, 'draft', NOW(), NOW()),
 ('GROUP_05', 1, 'Web Development', 'Node.js Backend Development', 'Xây dựng backend với Node.js', 'Lập trình viên JavaScript', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '12 weeks', 'hybrid', 3999000, NULL, 'published', NOW(), NOW());
 
+('GROUP_06', 1, 'Lập trình C/C++', 'C++ Cơ bản đến Nâng cao', 'Chinh phục tư duy thuật toán và cấu trúc dữ liệu', 'Học sinh, Sinh viên CNTT', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '10 weeks', 'online', 1500000, NULL, 'published', NOW(), NOW()),
+('GROUP_07', 2, 'Lập trình Python', 'Cày nát thuật toán Python', 'Tối ưu mã nguồn và giải các bài toán kinh điển', 'Học sinh thi HSG, sinh viên', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '8 weeks', 'online', 1800000, 1500000, 'published', NOW(), NOW()),
+-- 2. DANH MỤC: Ôn thi Tin học trẻ
+('GROUP_08', 3, 'Ôn thi Tin học trẻ', 'Luyện thi Tin học trẻ - Bảng A (Tiểu học)', 'Tư duy lập trình Scratch và Python cơ bản', 'Học sinh Tiểu học', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '12 weeks', 'hybrid', 2200000, NULL, 'published', NOW(), NOW()),
+('GROUP_09', 3, 'Ôn thi Tin học trẻ', 'Bồi dưỡng Tin học trẻ - Bảng B (THCS)', 'Giải đề Pascal/C++/Python nâng cao', 'Học sinh THCS', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '16 weeks', 'offline', 2800000, 2500000, 'published', NOW(), NOW()),
+-- 3. DANH MỤC: Ôn thi đại học
+('GROUP_10', 4, 'Ôn thi đại học', 'Luyện Đề Đánh Giá Tư Duy (TSA) - Bách Khoa', 'Trọn bộ phương pháp toán, đọc hiểu và khoa học', 'Học sinh lớp 12', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '15 weeks', 'online', 2500000, NULL, 'published', NOW(), NOW()),
+('GROUP_11', 4, 'Ôn thi đại học', 'Bứt phá điểm số HSA - ĐHQG Hà Nội', 'Định lượng, định tính giải nhanh đề thi ĐGNL', 'Học sinh lớp 11, 12', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '15 weeks', 'hybrid', 2400000, 2000000, 'published', NOW(), NOW()),
+('GROUP_12', 1, 'Ôn thi đại học', 'Tổng ôn Nền tảng Tốt nghiệp THPT', 'Chống liệt và lấy chắc 8 điểm các môn khối A', 'Học sinh lớp 12 mất gốc', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '20 weeks', 'online', 1900000, NULL, 'draft', NOW(), NOW()),
+-- 4. DANH MỤC: Lớp 6 - Lớp 9
+('GROUP_13', 2, 'Lớp 6 - Lớp 9', 'Toán học 9 - Chinh phục điểm 10 thi vào 10', 'Hệ thống hóa toàn bộ kiến thức đại số, hình học', 'Học sinh lớp 9', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '24 weeks', 'offline', 1200000, NULL, 'published', NOW(), NOW()),
+('GROUP_14', 2, 'Lớp 6 - Lớp 9', 'Ngữ Văn 8 - Bí quyết viết văn nghị luận', 'Phân tích tác phẩm và nghị luận xã hội sâu sắc', 'Học sinh lớp 8', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '16 weeks', 'online', 1100000, 900000, 'published', NOW(), NOW()),
+('GROUP_15', 3, 'Lớp 6 - Lớp 9', 'Tiếng Anh 6 - Bám sát Global Success', 'Ngữ pháp, từ vựng và giao tiếp cơ bản', 'Học sinh lớp 6', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '12 weeks', 'online', 950000, NULL, 'published', NOW(), NOW()),
+-- 5. DANH MỤC: Lớp 10 - Lớp 12
+('GROUP_16', 4, 'Lớp 10 - Lớp 12', 'Vật Lý 11 - Nền tảng Điện học và Quang học', 'Bản chất vật lý sinh động, bài tập chia dạng', 'Học sinh lớp 11', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '16 weeks', 'hybrid', 1300000, NULL, 'published', NOW(), NOW()),
+('GROUP_17', 1, 'Lớp 10 - Lớp 12', 'Hóa Học 12 - Trọn gói Hóa Hữu Cơ', 'Tư duy giải nhanh đồ thị, peptit, este', 'Học sinh lớp 12', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '18 weeks', 'online', 1400000, 1200000, 'published', NOW(), NOW()),
+('GROUP_18', 3, 'Lớp 10 - Lớp 12', 'Sinh Học 10 - Trọng tâm Sinh học tế bào', 'Khám phá thế giới vi mô và di truyền học', 'Học sinh lớp 10', 'https://res.cloudinary.com/dirjsggep/image/upload/v1780888831/cld-sample-2.jpg', '12 weeks', 'offline', 1150000, NULL, 'draft', NOW(), NOW());
 
 -- ========================================
 -- INSERT DATA INTO course_syllabus TABLE

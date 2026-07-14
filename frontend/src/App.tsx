@@ -35,6 +35,7 @@ import StudentContactInstructor from './pages/student/StudentContactInstructor';
 import StudentSchedulePage from './pages/student/StudentSchedulePage';
 import StudentAnnouncementsPage from './pages/student/StudentAnnouncementsPage';
 import './styles/LandingPage.css';
+import CourseCatalogPage from './pages/courseCatalog/CourseCatalogPage';
 import EditPost from './pages/admin/EditPost';
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
         <Route path="/posts/:slug" element={<PostDetail />} />
 
         <Route path="/hehe" element={<CreatePost />} />
+        <Route path="/danh-muc-khoa-hoc" element={<CourseCatalogPage />} />
 
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin']}>
