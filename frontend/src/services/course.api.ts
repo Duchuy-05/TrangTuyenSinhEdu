@@ -1,11 +1,24 @@
 import { apiClient } from './apiClient';
 import type { Teacher } from './teacher.api';
 
+
 export interface Syllabus {
     id: number;
     orderIndex: number;
     title: string;
     description: string;
+}
+
+export interface SubCategory {
+    name: string;
+    slug: string;
+}
+
+export interface MainCategory {
+    id: string;
+    name: string;
+    icon: React.ReactNode;
+    subCategories: SubCategory[];
 }
 
 export interface Course {
@@ -21,10 +34,17 @@ export interface Course {
     lessonDuration?: string;
     classSize?: string;
     format: string;
-    price: string;
+    price: number;
+    discountPrice?: number | null;
     status: string;
-    teacher: Teacher;
-    syllabus: Syllabus[];
+    teacher?: {fullName: string};
+    user?: {
+        id: number;
+        fullName: string;
+        avatarUrl?: string;
+    };
+    syllabus: any[];
+    courseData: any;
 }
 
 export const courseApi = {

@@ -33,7 +33,7 @@ export class ClassController {
             return response.json(errorHandler(500, 'Lỗi khi tạo lớp học'));
         }
     }
-
+    
     static async updateClass(request: Request, response: Response) {
         const classId = Number(request.params.id);
         const classData = request.body;

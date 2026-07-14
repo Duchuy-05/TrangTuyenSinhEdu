@@ -130,7 +130,7 @@ export default function CourseSidebar() {
                   </button>
                 </div>
 
-                {/* Danh sách các bài học thuộc chương */}
+                {/* Danh sách thêm các bài học thuộc chương */}
                 {isExpanded && (
                   <div className="bg-white border-t border-blue-50 divide-y divide-blue-50/30">
                     {unit.items?.map((lesson: Lesson) => {

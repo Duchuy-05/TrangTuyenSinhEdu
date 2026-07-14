@@ -110,7 +110,7 @@ const CourseDetailPage: React.FC = () => {
                     course.sessionCount && Number(course.sessionCount) > 0
                         ? `${course.sessionCount} buổi`
                         : sortedSyllabus.length > 0
-                            ? `${sortedSyllabus.length} buổi`
+                            ? `${sortedSyllabus.length} chương`
                             : 'Theo lộ trình',
                 icon: <BookOpenCheck size={22} />,
             },
@@ -125,7 +125,7 @@ const CourseDetailPage: React.FC = () => {
                 icon: <Laptop size={22} />,
             },
             {
-                label: 'Thời lượng/buổi',
+                label: 'Thời lượng',
                 value: course.lessonDuration || course.duration || 'Đang cập nhật',
                 icon: <Clock size={22} />,
             },

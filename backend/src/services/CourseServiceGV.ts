@@ -110,8 +110,9 @@ export class CourseServiceGV {
         draft.title = courseDataInput.title ?? draft.title;
         draft.shortDesc = courseDataInput.shortDesc ?? draft.shortDesc;
         draft.target = courseDataInput.target ?? draft.target;
-        draft.imageUrl = courseDataInput.thumbnail ?? draft.imageUrl; // Thumbnail
+        draft.imageUrl = courseDataInput.imageUrl ?? draft.imageUrl; // Thumbnail
         draft.category = courseDataInput.category ?? draft.category;
+        draft.format = courseDataInput.format ?? draft.format;
         draft.price = courseDataInput.price ?? draft.price;
         // Cập nhật cấu trúc Kéo thả Builder
         draft.courseData = courseDataInput.courseData ?? draft.courseData;
