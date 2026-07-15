@@ -6,6 +6,7 @@ import {
     Award, Clock, Settings, LogOut, MessageSquare, CalendarDays
 } from 'lucide-react';
 import { authApi } from '../services/api';
+import { USER_UPDATED_EVENT } from '../utils/authEvents';
 
 const StudentLayout: React.FC = () => {
     const location = useLocation();
@@ -14,11 +15,16 @@ const StudentLayout: React.FC = () => {
     const [user, setUser] = useState<any>({});
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) setUser(JSON.parse(storedUser));
+
+    // Lắng nghe khi user được cập nhật ở nơi khác (VD: trang Settings)
+    const handleUserUpdated = (e: Event) => {
+        setUser((e as CustomEvent).detail);
+    };
+    window.addEventListener(USER_UPDATED_EVENT, handleUserUpdated);
+    return () => window.removeEventListener(USER_UPDATED_EVENT, handleUserUpdated);
+}, []);
 
     const handleLogout = async () => {
         if (window.confirm("Bạn có chắc chắn muốn đăng xuất không?")) {
@@ -172,24 +178,72 @@ const StudentLayout: React.FC = () => {
                             </button>
                         </div>
 
-                        {/* User Avatar Dropdown (Simple visual representation for now) */}
-                        <div className="pl-2 sm:pl-4 flex items-center cursor-pointer group">
-                            <div className="hidden lg:block text-right mr-3">
-                                <p className="text-sm font-bold text-[#1F2937]">{user.name || user.fullName || "Học viên"}</p>
-                                <p className="text-xs text-gray-500">Hồ sơ cá nhân</p>
-                            </div>
-                            {user.avatarUrl || user.avatar ? (
-                                <img
-                                    src={user.avatarUrl || user.avatar}
-                                    alt={user.name || user.fullName}
-                                    className="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-[#E5664B] transition-all object-cover"
-                                />
-                            ) : (
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-transparent group-hover:border-[#E5664B] transition-all">
-                                    {getInitial(user.name || user.fullName)}
+                        {/* User Avatar & Info */}
+                        <div className="pl-2 sm:pl-4 flex items-center">
+                            {user ? (
+                                <div className="relative group cursor-pointer ml-2">
+                                    {/* Nút Avatar */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="hidden lg:block text-right">
+                                            <p className="text-sm font-bold text-[#1F2937]">{user.name || user.fullName || "Giảng viên"}</p>
+                                            <p className="text-xs text-gray-500">Học viên</p>
+                                        </div>
+                                                            
+                                        {user.avatarUrl || user.avatar ? (
+                                            <img
+                                                src={user.avatarUrl || user.avatar}
+                                                alt={user.name || user.fullName}
+                                                className="w-10 h-10 rounded-full border-2 border-white shadow-md group-hover:shadow-lg group-hover:border-[#E5664B] transition-all object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-white group-hover:shadow-lg group-hover:border-[#E5664B] transition-all">
+                                                {getInitial(user.name || user.fullName)}
+                                            </div>
+                                        )}
+                                    </div>
+                        
+                                    {/* Dropdown Menu của User (Hiển thị khi Hover) */}
+                                    <div className="absolute right-0 mt-4 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 overflow-hidden z-50">
+                                        {/* Lớp phủ an toàn để hover không bị ngắt quãng */}
+                                        <div className="absolute -top-4 left-0 w-full h-4 bg-transparent"></div>
+                                                            
+                                        {/* Thông tin cá nhân */}
+                                        <div className="p-4 border-b border-gray-100 bg-orange-50/50">
+                                            <p className="font-bold text-gray-800 truncate">
+                                                {user.name || user.fullName || "Giảng viên"}
+                                            </p>
+                                            <p className="text-xs text-gray-500 truncate mt-0.5">
+                                                {user.email || "Chưa cập nhật email"}
+                                            </p>
+                                        </div>
+                        
+                                        {/* Các menu chức năng */}
+                                        <div className="p-2">
+                                            <Link
+                                                to="/settings"
+                                                className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
+                                            >
+                                                Hồ sơ cá nhân
+                                            </Link>
+                                            <Link
+                                                to="/settings"
+                                                className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
+                                            >
+                                                Đổi mật khẩu
+                                            </Link>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full flex items-center gap-2 text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-xl transition-colors font-bold mt-1 cursor-pointer"
+                                            >
+                                                <LogOut size={16} />
+                                                Đăng xuất
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                            )}
+                            ) : null}
                         </div>
+
                     </div>
                 </header>
 
