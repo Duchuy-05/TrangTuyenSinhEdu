@@ -55,4 +55,25 @@ export class UserController {
             return response.json(errorHandler(500, error.message || 'Lỗi khi cập nhật hồ sơ'));
         }
     }
+
+    // Đổi mật khẩu người dùng
+    static async changePassword(request: Request, response: Response) {
+        try {
+            const currentUser = (request as any).user;
+            if (!currentUser) {
+                return response.json(errorHandler(401, 'Vui lòng đăng nhập'));
+            }
+
+            const { currentPassword, newPassword } = request.body;
+            if (!currentPassword || !newPassword) {
+                return response.json(errorHandler(400, 'Vui lòng nhập đầy đủ mật khẩu'));
+            }
+
+            const result = await UserService.changePassword(Number(currentUser.id), currentPassword, newPassword);
+            return response.json(successHandler(200, result.message));
+        } catch (error: any) {
+            // Lỗi sai mật khẩu hiện tại nên trả 400, không phải 500
+            return response.json(errorHandler(400, error.message || 'Lỗi khi đổi mật khẩu'));
+        }
+    }
 }

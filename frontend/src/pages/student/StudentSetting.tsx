@@ -1,12 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Lock, Camera, Save, ShieldAlert, Mail, Phone, FileText, Loader2 } from 'lucide-react';
+import { User, Lock, Camera, Save, ShieldAlert, Mail, Phone, FileText, Loader2, Eye, EyeOff } from 'lucide-react';
 import { uploadApi } from '../../services/upload.api';
 import { userApi } from '../../services/user.api';
 import { emitUserUpdated } from '../../utils/authEvents';
 
+interface PasswordInputProps {
+    label: string;
+    name: 'current' | 'new' | 'confirm';
+    placeholder: string;
+    value: string;
+    show: boolean;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onToggleShow: () => void;
+}
+
+const PasswordInput: React.FC<PasswordInputProps> = ({ label, name, placeholder, value, show, onChange, onToggleShow }) => (
+    <div className="space-y-2">
+        <label className="text-sm font-bold text-gray-700">{label}</label>
+        <div className="relative">
+            <input
+                type={show ? 'text' : 'password'}
+                name={name}
+                value={value}
+                onChange={onChange}
+                className="w-full px-4 py-3 pr-11 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all font-medium"
+                placeholder={placeholder}
+                required
+            />
+            <button
+                type="button"
+                onClick={onToggleShow}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#E5664B] transition-colors cursor-pointer"
+                tabIndex={-1}
+            >
+                {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+        </div>
+    </div>
+);
+
 const StudentSetting: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'profile' | 'security'>('profile');
     const [isSaving, setIsSaving] = useState(false);
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [profileData, setProfileData] = useState({
@@ -16,11 +52,13 @@ const StudentSetting: React.FC = () => {
         bio: '',
         avatar: 'https://ui-avatars.com/api/?name=User&background=E5664B&color=fff'
     });
-
-    // File ảnh mới người dùng chọn (chưa upload), và preview tạm thời
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
     const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
+    const [showPassword, setShowPassword] = useState({ current: false, new: false, confirm: false });
+
+    const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
+        setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
+    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -46,7 +84,6 @@ const StudentSetting: React.FC = () => {
         setPasswords(prev => ({ ...prev, [name]: value }));
     };
 
-    // chọn ảnh mới, chưa upload lên Cloudinary
     const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -66,8 +103,6 @@ const StudentSetting: React.FC = () => {
         try {
             let avatarUrl = profileData.avatar;
 
-            // Chỉ upload lên Cloudinary khi thực sự có ảnh mới được chọn
-            //
             if (selectedFile) {
                 avatarUrl = await uploadApi.uploadAvatar(selectedFile);
             }
@@ -88,14 +123,29 @@ const StudentSetting: React.FC = () => {
         }
     };
 
-    const handleSavePassword = (e: React.FormEvent) => {
+    const handleSavePassword = async (e: React.FormEvent) => {
         e.preventDefault();
+
         if (passwords.new !== passwords.confirm) {
             alert('Mật khẩu xác nhận không khớp!');
             return;
         }
-        alert('Đã đổi mật khẩu thành công! (Mô phỏng)');
-        setPasswords({ current: '', new: '', confirm: '' });
+        if (passwords.new.length < 6) {
+            alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
+            return;
+        }
+
+        setIsChangingPassword(true);
+        try {
+            await userApi.changePassword(passwords.current, passwords.new);
+            alert('Đã đổi mật khẩu thành công!');
+            setPasswords({ current: '', new: '', confirm: '' });
+            setShowPassword({ current: false, new: false, confirm: false });
+        } catch (error: any) {
+            alert(error?.response?.data?.message || 'Có lỗi xảy ra khi đổi mật khẩu.');
+        } finally {
+            setIsChangingPassword(false);
+        }
     };
 
     return (
@@ -107,7 +157,7 @@ const StudentSetting: React.FC = () => {
             <div className="bg-white rounded-3xl shadow-sm border border-[#E5E7EB] overflow-hidden flex flex-col md:flex-row">
                 <div className="w-full md:w-64 bg-gray-50 border-r border-gray-100 flex-shrink-0">
                     <div className="p-4 md:p-6 space-y-2 flex md:flex-col overflow-x-auto scrollbar-hide">
-                        <button 
+                        <button
                             onClick={() => setActiveTab('profile')}
                             className={`cursor-pointer flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors w-full ${
                                 activeTab === 'profile' ? 'bg-white text-[#E5664B] shadow-sm border border-gray-100' : 'text-gray-500 hover:bg-gray-200/50 hover:text-gray-700'
@@ -115,7 +165,7 @@ const StudentSetting: React.FC = () => {
                         >
                             <User size={18} /> Hồ sơ cá nhân
                         </button>
-                        <button 
+                        <button
                             onClick={() => setActiveTab('security')}
                             className={`cursor-pointer flex-shrink-0 flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-colors w-full ${
                                 activeTab === 'security' ? 'bg-white text-[#E5664B] shadow-sm border border-gray-100' : 'text-gray-500 hover:bg-gray-200/50 hover:text-gray-700'
@@ -163,8 +213,8 @@ const StudentSetting: React.FC = () => {
                                         <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                                             <User size={16} className="text-gray-400" /> Họ và tên
                                         </label>
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             name="name"
                                             value={profileData.name}
                                             onChange={handleProfileChange}
@@ -177,8 +227,8 @@ const StudentSetting: React.FC = () => {
                                         <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                                             <Mail size={16} className="text-gray-400" /> Email đăng nhập
                                         </label>
-                                        <input 
-                                            type="email" 
+                                        <input
+                                            type="email"
                                             value={profileData.email}
                                             className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed font-medium"
                                             disabled
@@ -191,8 +241,8 @@ const StudentSetting: React.FC = () => {
                                         <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                                             <Phone size={16} className="text-gray-400" /> Số điện thoại
                                         </label>
-                                        <input 
-                                            type="tel" 
+                                        <input
+                                            type="tel"
                                             name="phone"
                                             value={profileData.phone}
                                             onChange={handleProfileChange}
@@ -204,7 +254,7 @@ const StudentSetting: React.FC = () => {
                                         <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                                             <FileText size={16} className="text-gray-400" /> Giới thiệu bản thân
                                         </label>
-                                        <textarea 
+                                        <textarea
                                             name="bio"
                                             value={profileData.bio}
                                             onChange={handleProfileChange}
@@ -215,10 +265,10 @@ const StudentSetting: React.FC = () => {
                                 </div>
 
                                 <div className="pt-4 flex justify-end">
-                                    <button 
+                                    <button
                                         type="submit"
                                         disabled={isSaving}
-                                        className="bg-[#E5664B] hover:bg-[#d6553a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                                        className="cursor-pointer bg-[#E5664B] hover:bg-[#d6553a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
                                         {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                                         {isSaving ? 'Đang lưu...' : 'Cập nhật hồ sơ'}
@@ -242,48 +292,42 @@ const StudentSetting: React.FC = () => {
                             </div>
 
                             <form onSubmit={handleSavePassword} className="space-y-6 max-w-md">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Mật khẩu hiện tại</label>
-                                    <input 
-                                        type="password" 
-                                        name="current"
-                                        value={passwords.current}
-                                        onChange={handlePasswordChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all font-medium"
-                                        placeholder="••••••••"
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Mật khẩu mới</label>
-                                    <input 
-                                        type="password" 
-                                        name="new"
-                                        value={passwords.new}
-                                        onChange={handlePasswordChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all font-medium"
-                                        placeholder="Nhập mật khẩu mới"
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-gray-700">Xác nhận mật khẩu mới</label>
-                                    <input 
-                                        type="password" 
-                                        name="confirm"
-                                        value={passwords.confirm}
-                                        onChange={handlePasswordChange}
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all font-medium"
-                                        placeholder="Nhập lại mật khẩu mới"
-                                        required
-                                    />
-                                </div>
+                                <PasswordInput
+                                    label="Mật khẩu hiện tại"
+                                    name="current"
+                                    placeholder="••••••••"
+                                    value={passwords.current}
+                                    show={showPassword.current}
+                                    onChange={handlePasswordChange}
+                                    onToggleShow={() => togglePasswordVisibility('current')}
+                                />
+                                <PasswordInput
+                                    label="Mật khẩu mới"
+                                    name="new"
+                                    placeholder="Nhập mật khẩu mới"
+                                    value={passwords.new}
+                                    show={showPassword.new}
+                                    onChange={handlePasswordChange}
+                                    onToggleShow={() => togglePasswordVisibility('new')}
+                                />
+                                <PasswordInput
+                                    label="Xác nhận mật khẩu mới"
+                                    name="confirm"
+                                    placeholder="Nhập lại mật khẩu mới"
+                                    value={passwords.confirm}
+                                    show={showPassword.confirm}
+                                    onChange={handlePasswordChange}
+                                    onToggleShow={() => togglePasswordVisibility('confirm')}
+                                />
+
                                 <div className="pt-4">
-                                    <button 
+                                    <button
                                         type="submit"
-                                        className="bg-[#E5664B] hover:bg-[#d6553a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
+                                        disabled={isChangingPassword}
+                                        className="bg-[#E5664B] hover:bg-[#d6553a] text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
-                                        <Lock size={18} /> Cập nhật mật khẩu
+                                        {isChangingPassword ? <Loader2 size={18} className="animate-spin" /> : <Lock size={18} />}
+                                        {isChangingPassword ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
                                     </button>
                                 </div>
                             </form>

@@ -20,4 +20,10 @@ export const userApi = {
         const response = await apiClient.put('/users/me', data);
         return response.data.data;
     },
+
+    changePassword: async (currentPassword: string, newPassword: string): Promise<{ message: string }> => {
+        const response = await apiClient.put('/users/me/password', { currentPassword, newPassword });
+        return response.data;
+    },
 };
+

@@ -67,8 +67,9 @@ export class AuthController {
           id: user.id,
           fullName: user.fullName,
           email: user.email,
-          role: user.role
-        }
+          role: user.role,
+          avatarUrl: user.avatarUrl,
+        },
       });
     } catch (error: any) {
       return res.status(401).json({ message: error.message || "Lỗi Server!" });
@@ -122,8 +123,8 @@ export class AuthController {
           fullName: user.fullName,
           email: user.email,
           role: user.role,
-          avatarUrl: user.avatarUrl,
-        },
+          avatarUrl: user.avatarUrl
+        }
       });
     } catch (error: any) {
       return res.status(401).json({ message: error.message || "Lỗi Server!" });
