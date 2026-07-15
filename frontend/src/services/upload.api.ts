@@ -1,16 +1,24 @@
+// upload.api.ts
 import { apiClient } from './apiClient';
 
 export const uploadApi = {
-    uploadImage: async (file: File): Promise<string> => {
+    uploadAvatar: async (file: File): Promise<string> => {
         const formData = new FormData();
         formData.append('image', file);
 
-        const response = await apiClient.post('/upload', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+        const response = await apiClient.post('/upload/avatar', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
         });
+        return response.data.data.url;
+    },
 
-        return response.data.url;
-    }
+    uploadCourseImage: async (file: File): Promise<string> => {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await apiClient.post('/upload/course-image', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return response.data.data.url;
+    },
 };

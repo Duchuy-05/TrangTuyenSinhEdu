@@ -82,7 +82,7 @@ export class TeacherController {
         }
     }
 
-    public static async uploadImage(req: Request, res: Response): Promise<Response> {
+    public static async uploadAvatar(req: Request, res: Response): Promise<Response> {
         try {
             if (!req.file) {
                 return res.status(400).json({ message: "Vui lòng chọn một file ảnh!" });
@@ -90,7 +90,7 @@ export class TeacherController {
 
             return res.json({ url: req.file.path });
         } catch (error: any) {
-            console.error("Lỗi tại TeacherController.uploadImage:", error);
+            console.error("Lỗi tại TeacherController.uploadAvatar:", error);
 
             return res.status(500).json({
                 message: "Lỗi hệ thống khi tải ảnh lên Cloudinary",
