@@ -57,18 +57,22 @@ export class CourseServiceGV {
         return Array.from(latestByGroup.values());
     }
     static async getOrCreateTeacherProfile(userId: number, fullName?: string): Promise<Teacher> {
-        let teacherProfile = await this.teacherRepository.findOneBy({ id: userId });
+        let teacherProfile = await this.teacherRepository.findOne({
+            where: { user: { id: userId } }
+        });
 
         if (!teacherProfile) {
             console.log(`[Auto-Fix Service] Đang tự động tạo hồ sơ Giảng viên cho User ID: ${userId}`);
             
             const newTeacherData: Partial<Teacher> = {
-                id: userId,
                 fullName: fullName || 'Giảng viên mới',
                 bio: 'Thông tin đang cập nhật...'
             };
 
-            const newTeacher = this.teacherRepository.create(newTeacherData);
+            const newTeacher = this.teacherRepository.create({
+                ...newTeacherData,
+                user: { id: userId } as any // Nối với User hiện tại
+            });
             teacherProfile = await this.teacherRepository.save(newTeacher);
         }
 
@@ -106,8 +110,9 @@ export class CourseServiceGV {
         draft.title = courseDataInput.title ?? draft.title;
         draft.shortDesc = courseDataInput.shortDesc ?? draft.shortDesc;
         draft.target = courseDataInput.target ?? draft.target;
-        draft.imageUrl = courseDataInput.thumbnail ?? draft.imageUrl; // Thumbnail
+        draft.imageUrl = courseDataInput.imageUrl ?? draft.imageUrl; // Thumbnail
         draft.category = courseDataInput.category ?? draft.category;
+        draft.format = courseDataInput.format ?? draft.format;
         draft.price = courseDataInput.price ?? draft.price;
         // Cập nhật cấu trúc Kéo thả Builder
         draft.courseData = courseDataInput.courseData ?? draft.courseData;

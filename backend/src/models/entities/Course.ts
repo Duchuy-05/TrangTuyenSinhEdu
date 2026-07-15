@@ -12,6 +12,7 @@ import { CourseSyllabus } from './CourseSyllabus';
 import { Registration } from './Registration';
 import { Teacher} from './Teacher';
 import { Class } from './Class';
+import { User } from './User';
 
 export enum CourseFormat {
   ONLINE = 'online',
@@ -34,7 +35,7 @@ export class Course {
   @Column({ name: 'course_group_id', type: 'varchar', length: 255, nullable: true})
   courseGroupId: string;
 
-  @Column({ name: 'teacher_id' })
+  @Column({ name: 'teacher_id', nullable: true })
   teacherId: number;
 
   @Column({ nullable: true })
@@ -74,10 +75,10 @@ export class Course {
   })
   format: CourseFormat;
 
-  @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
+  @Column({ type: 'decimal', default: 0 })
   price: number;
 
-  @Column({ name: 'discount_price', type: 'decimal', precision: 12, scale: 2, nullable: true})
+  @Column({ name: 'discount_price', type: 'int', nullable: true})
   discountPrice: number;
 
   @Column({
@@ -98,10 +99,14 @@ export class Course {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-  
-  @ManyToOne(() => Teacher, (teacher) => teacher.courses)
+
+  @ManyToOne(() => Teacher)
   @JoinColumn({ name : 'teacher_id'})
   teacher: Teacher;
+  
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'full_name' }) 
+  user: User;
 
   @OneToMany(() => CourseSyllabus, (syllabus) => syllabus.course, {
     cascade: true,

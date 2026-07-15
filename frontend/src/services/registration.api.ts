@@ -43,5 +43,9 @@ export const registrationApi = {
 
     registerForCourse: async (userData: RegistrationForm): Promise<void> => {
         await apiClient.post('/registrations', userData);
+    },
+
+    updateRegistrationStatus: async (id: number, status: string): Promise<void> => {
+        await apiClient.patch(`/registrations/${id}/status`, { status });
     }
 };

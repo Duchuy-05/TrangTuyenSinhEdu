@@ -14,7 +14,7 @@ export class PostController {
       return response.json(errorHandler(500, 'Lỗi khi lấy danh sách bài viết'));
     }
   }
-  
+
 
   // GET /posts/admin — danh sách tất cả bài (dành cho admin)
   static async getAllPostPagination(request: Request, response: Response) {
@@ -29,20 +29,21 @@ export class PostController {
     }
   }
 
-  // GET /posts/:slug — chi tiết bài viết theo slug (dành cho frontend)
-  static async getBySlug(request: Request, response: Response) {
-    const slug = request.params.slug as string;
+  static async getPost(request: Request, response: Response) {
+    const param = String(request.params.slugOrId);
+    const isId = /^\d+$/.test(param); // toàn số → là id
+
     try {
-      const post = await PostService.getBySlug(slug);
-      if (!post) {
-        return response.json(errorHandler(404, 'Bài viết không tồn tại'));
-      }
-      return response.json(successHandler(200, 'Lấy bài viết thành công', post));
+        const post = isId
+            ? await PostService.getPostById(Number(param))
+            : await PostService.getBySlug(param);
+
+        if (!post) return response.json(errorHandler(404, 'Bài viết không tồn tại'));
+        return response.json(successHandler(200, 'Lấy bài viết thành công', post));
     } catch (error) {
-      console.error('Lỗi khi lấy bài viết theo slug:', error);
-      return response.json(errorHandler(500, 'Lỗi khi lấy bài viết'));
+        return response.json(errorHandler(500, 'Lỗi khi lấy bài viết'));
     }
-  }
+}
 
   static async createPost(request: Request, response: Response) {
     const postData = {

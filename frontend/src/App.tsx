@@ -11,6 +11,7 @@ import AdminTeachers from './pages/admin/AdminTeachers';
 import AdminCourses from './pages/admin/AdminCourses';
 import AdminRegistrations from './pages/admin/AdminRegistrations';
 import AdminPost from './pages/admin/AdminPost';
+import AdminClassStudents from './pages/admin/AdminClassStudents';
 import VerifyEmail from './pages/VerifyEmail';
 import CourseEditorPage from './pages/instructor/course-builder/CourseEditorPage';
 import PostList from './pages/Post/PostList';
@@ -34,6 +35,8 @@ import StudentContactInstructor from './pages/student/StudentContactInstructor';
 import StudentSchedulePage from './pages/student/StudentSchedulePage';
 import StudentAnnouncementsPage from './pages/student/StudentAnnouncementsPage';
 import './styles/LandingPage.css';
+import CourseCatalogPage from './pages/courseCatalog/CourseCatalogPage';
+import EditPost from './pages/admin/EditPost';
 function App() {
   return (
     <BrowserRouter>
@@ -59,6 +62,7 @@ function App() {
         <Route path="/posts/:slug" element={<PostDetail />} />
 
         <Route path="/hehe" element={<CreatePost />} />
+        <Route path="/danh-muc-khoa-hoc" element={<CourseCatalogPage />} />
 
         <Route path="/admin" element={
           <ProtectedRoute allowedRoles={['admin']}>
@@ -80,6 +84,10 @@ function App() {
           <Route path="posts" element={<AdminPost />} />
 
           <Route path="posts/create" element={<CreatePost />} />
+
+          <Route path="posts/edit/:id" element={<EditPost />} />
+
+          <Route path="class-students" element={<AdminClassStudents />} />
 
         </Route>
         {/* Trang xác thực email */}

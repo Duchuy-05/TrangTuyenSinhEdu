@@ -47,6 +47,9 @@ const AdminLayout: React.FC = () => {
                     <NavLink to="/admin/teachers" className={navLinkClass}>
                         <Users size={20} /> Quản lý Giảng viên
                     </NavLink>
+                    <NavLink to="/admin/class-students" className={navLinkClass}>
+                        <Users size={20} /> Học viên trong lớp
+                    </NavLink>
 
                     {/* User Management Dropdown */}
                     <div className={`flex flex-col ${usersDropdownOpen ? 'bg-slate-700/30' : ''}`}>
@@ -106,7 +109,7 @@ const AdminLayout: React.FC = () => {
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
                     <div className="flex-1">
-                        <p>Con tim anh nhu dang no tung nhung ma lai chang biet noi gi voi em</p>
+                        <p>Trang quản lý</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600">

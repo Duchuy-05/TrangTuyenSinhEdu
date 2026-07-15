@@ -85,49 +85,7 @@ const Navbar: React.FC = () => {
                 <ul className="nav-links">
                     <li><Link to="/">Trang chủ</Link></li>
                     {/* <li><a href="/#about">Giới thiệu</a></li> */}
-
-                    {/* Dropdown Cấp 1: Hover vào "Khóa học" */}
-                    {/* Dropdown Menu Khóa Học */}
-                    <li className="nav-dropdown">
-                        <span className="dropdown-trigger">
-                            Khóa học
-                            <svg className="dropdown-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </span>
-
-                        {/* Dropdown Cặp 1: Danh sách các Category */}
-                        <ul className="dropdown-menu-c1">
-
-                            {/* Cầu nối tàng hình giữ hover giữa nav và dropdown */}
-                            <div className="invisible-bridge"></div>
-
-                            {Object.keys(coursesByCategory).map((category) => (
-                                <li key={category} className="category-item">
-                                    <div className="category-content">
-                                        {category}
-                                    </div>
-                                    <span className="category-chevron">
-                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                                        </svg>
-                                    </span>
-
-                                    {/* Dropdown Cấp 2: Danh sách Khóa học con */}
-                                    <ul className="dropdown-menu-c2">
-                                        {coursesByCategory[category].map((course) => (
-                                            <li key={course.id}>
-                                                <Link to={`/khoa-hoc/${course.id}`} className="course-link-item">
-                                                    <span className="course-arrow-indicator">▸</span>
-                                                    <span className="course-title">{course.title}</span>
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </li>
-                            ))}
-                        </ul>
-                    </li>
+                    <li><Link to="/danh-muc-khoa-hoc">Khóa học</Link></li>
                     <li><Link to="/posts">Tin tức</Link></li>
                     <li><Link to="/lien-he">Liên hệ</Link></li>
                 </ul>
