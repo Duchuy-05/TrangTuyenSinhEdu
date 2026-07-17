@@ -112,7 +112,7 @@ export default function BlockRenderer({ block, onUpdateBlock, onDeleteBlock }: B
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={onDeleteBlock}
-          className="text-slate-400 hover:text-orange-500"
+          className="text-slate-400 hover:text-orange-500 cursor-pointer transition-colors p-1 rounded-lg hover:bg-slate-100"
           title="Xóa khối này"
         >
           🗑️

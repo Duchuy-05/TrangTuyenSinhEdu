@@ -19,6 +19,7 @@ import { courseApi } from '../services/course.api';
 import type { Course, Syllabus } from '../services/course.api';
 import { registrationApi } from '../services/registration.api';
 import type { RegistrationForm } from '../services/registration.api';
+import FloatingContact from '../components/FloatingContact';
 
 const fallbackDifficulties = [
     'Không biết bắt đầu từ đâu, học nhiều nguồn nhưng thiếu một lộ trình rõ ràng.',
@@ -459,7 +460,7 @@ const CourseDetailPage: React.FC = () => {
                     </div>
                 </div>
             </section>
-
+            <FloatingContact />
             <Footer />
         </div>
     );

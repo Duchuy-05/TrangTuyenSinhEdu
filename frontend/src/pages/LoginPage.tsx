@@ -46,9 +46,14 @@ const LoginPage = () => {
         email: formData.email,
         password: formData.password
       });
-      localStorage.setItem('user', JSON.stringify(response.data.user)); // Lưu thông tin user vào localStorage
+      const user = response.data.user; // Lưu thông tin user vào localStorage
+      if (!user) {
+          throw new Error('Không nhận được thông tin người dùng từ server');
+      }
+      localStorage.setItem('user', JSON.stringify(user));
       alert(response.data.message || 'Đăng nhập thành công!');
-      const userRole = response.data.user?.role;
+      const userRole = user?.role;
+
       if (userRole === 'admin') navigate('/admin');
       else if (userRole === 'teacher') navigate('/instructor');
       else if (userRole === 'student') navigate('/my-courses');
@@ -69,9 +74,13 @@ const LoginPage = () => {
       const response = await apiClient.post('/auth/google', {
         credential: tokenResponse.access_token
       });
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      const user = response.data.user;
+      if (!user) {
+          throw new Error('Không nhận được thông tin người dùng từ server');
+      }
+      localStorage.setItem('user', JSON.stringify(user));
       alert(response.data.message || 'Đăng nhập thành công!');
-      const userRole = response.data.user?.role;
+      const userRole = user?.role;
       if (userRole === 'admin') navigate('/admin');
       else if (userRole === 'teacher') navigate('/instructor');
       else if (userRole === 'student') navigate('/my-courses');

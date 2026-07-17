@@ -221,12 +221,14 @@ const StudentLayout: React.FC = () => {
                                         <div className="p-2">
                                             <Link
                                                 to="/settings"
+                                                state ={{tab: 'profile'}}
                                                 className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
                                             >
                                                 Hồ sơ cá nhân
                                             </Link>
                                             <Link
                                                 to="/settings"
+                                                state={{ tab: 'security' }}
                                                 className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-xl transition-colors font-medium"
                                             >
                                                 Đổi mật khẩu

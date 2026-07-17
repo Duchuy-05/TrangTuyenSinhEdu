@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authApi, courseApi } from '../services/api';
-import { Course } from '../services/api';
-import { ArrowLeftRight, LogOut } from 'lucide-react';
+import { authApi } from '../services/api';
+// import { Course } from '../services/api';
+import { LogOut } from 'lucide-react';
 
 const Navbar: React.FC = () => {
     const [scrolled, setScrolled] = useState(false);
-    const [courses, setCourses] = useState<Course[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    // const [courses, setCourses] = useState<Course[]>([]);
+    // const [isLoading, setIsLoading] = useState<boolean>(true);
+    // const [error, setError] = useState<string | null>(null);
 
     // quản lý trạng thái người dùng
     const [user, setUser] = useState<any>(null);
@@ -27,25 +27,25 @@ const Navbar: React.FC = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                setIsLoading(true);
-                const data = await courseApi.getAllCourses();
+    // useEffect(() => {
+    //     const fetchCourses = async () => {
+    //         try {
+    //             setIsLoading(true);
+    //             const data = await courseApi.getAllCourses();
 
-                const activeCourses = data.filter(c => c.status !== 'hidden');
-                setCourses(activeCourses);
+    //             const activeCourses = data.filter(c => c.status !== 'hidden');
+    //             setCourses(activeCourses);
 
-            } catch (err) {
-                console.error("Lỗi khi tải khóa học:", err);
-                setError("Không thể tải dữ liệu khóa học lúc này.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    //         } catch (err) {
+    //             console.error("Lỗi khi tải khóa học:", err);
+    //             setError("Không thể tải dữ liệu khóa học lúc này.");
+    //         } finally {
+    //             setIsLoading(false);
+    //         }
+    //     };
 
-        fetchCourses();
-    }, []);
+    //     fetchCourses();
+    // }, []);
 
     // xử lý đăng xuất
     const handleLogout = async () => {
@@ -69,13 +69,13 @@ const Navbar: React.FC = () => {
     };
 
     // Gom nhóm khóa học theo danh mục (Category)
-    const coursesByCategory = courses?.reduce((acc: { [key: string]: any[] }, course) => {
-        if (!acc[course.category]) {
-            acc[course.category] = [];
-        }
-        acc[course.category].push(course);
-        return acc;
-    }, {}) || {};
+    // const coursesByCategory = courses?.reduce((acc: { [key: string]: any[] }, course) => {
+    //     if (!acc[course.category]) {
+    //         acc[course.category] = [];
+    //     }
+    //     acc[course.category].push(course);
+    //     return acc;
+    // }, {}) || {};
 
     return (
         <nav className={`navbar ${scrolled ? 'shadow-md bg-white' : ''}`}>

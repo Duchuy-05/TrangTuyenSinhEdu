@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Course } from '../../services/course.api';
-import { formatVND, formatPriceOrFree } from '../../utils/format.util';
 
 interface CourseCardProps {
     course: Course;

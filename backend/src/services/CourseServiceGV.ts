@@ -110,9 +110,11 @@ export class CourseServiceGV {
         draft.title = courseDataInput.title ?? draft.title;
         draft.shortDesc = courseDataInput.shortDesc ?? draft.shortDesc;
         draft.target = courseDataInput.target ?? draft.target;
-        draft.imageUrl = courseDataInput.imageUrl ?? draft.imageUrl; // Thumbnail
+        draft.imageUrl = courseDataInput.imageUrl ?? draft.imageUrl;
         draft.category = courseDataInput.category ?? draft.category;
         draft.format = courseDataInput.format ?? draft.format;
+        draft.frequency = courseDataInput.frequency ?? draft.frequency;
+        draft.lessonDuration = courseDataInput.lessonDuration ?? draft.lessonDuration;
         draft.price = courseDataInput.price ?? draft.price;
         // Cập nhật cấu trúc Kéo thả Builder
         draft.courseData = courseDataInput.courseData ?? draft.courseData;

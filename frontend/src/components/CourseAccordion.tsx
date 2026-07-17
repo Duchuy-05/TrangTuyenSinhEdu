@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Layers } from 'lucide-react';
 import { courseApi } from '../services/course.api';
 import type { Course } from '../services/course.api';
-import { formatVND, formatPriceOrFree } from '../utils/format.util';
 
 const CourseGrid: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);

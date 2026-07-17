@@ -10,6 +10,7 @@ import { courseApi } from '../../services/course.api';
 import Navbar from '../../components/NavBar';
 import { formatPriceOrFree, formatVND } from '../../utils/format.util';
 import { filterCourses } from '../../utils/search.util';
+import FloatingContact from '../../components/FloatingContact';
 
 const CourseCatalogPage: React.FC = () => {
     const navigate = useNavigate();
@@ -152,6 +153,7 @@ const CourseCatalogPage: React.FC = () => {
                     </div>
                 </main>
             </div>
+            <FloatingContact />
         </div>
 
     );

@@ -3,6 +3,7 @@ import { User, Lock, Camera, Save, ShieldAlert, Mail, Phone, FileText, Loader2, 
 import { uploadApi } from '../../services/upload.api';
 import { userApi } from '../../services/user.api';
 import { emitUserUpdated } from '../../utils/authEvents';
+import { useLocation } from 'react-router-dom';
 
 interface PasswordInputProps {
     label: string;
@@ -60,6 +61,14 @@ const StudentSetting: React.FC = () => {
         setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
     };
 
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state?.tab) {
+            setActiveTab(location.state.tab);
+        }
+    }, [location.state]);
+    
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
@@ -208,7 +217,7 @@ const StudentSetting: React.FC = () => {
                             </div>
 
                             <form onSubmit={handleSaveProfile} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
                                             <User size={16} className="text-gray-400" /> Họ và tên
@@ -258,7 +267,7 @@ const StudentSetting: React.FC = () => {
                                             name="bio"
                                             value={profileData.bio}
                                             onChange={handleProfileChange}
-                                            rows={2}
+                                            rows={1}
                                             className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:outline-none focus:border-[#E5664B] focus:ring-2 focus:ring-[#E5664B]/20 transition-all font-medium text-gray-800 resize-none"
                                         ></textarea>
                                     </div>

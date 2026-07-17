@@ -18,11 +18,13 @@ export interface Unit {
 export interface CourseDetails {
   title: string;
   shortDesc: string;
+  imageUrl: string;
   target: string;
   category: string;
-  imageUrl: string;
   format: string;
   price: number;
+  frequency: string;
+  lessonDuration: string;
 }
 
 interface CourseState {
@@ -51,6 +53,8 @@ export const useCourseStore = create<CourseState>((set, get) => ({
     imageUrl: '',
     format: 'online',
     price: 0,
+    frequency: '',
+    lessonDuration: '00:00',
   },
   courseData: [],
   blocksByLesson: {},
@@ -71,6 +75,8 @@ export const useCourseStore = create<CourseState>((set, get) => ({
           imageUrl: data.imageUrl || '',
           format: data.format || 'online',
           price: Number(data.price) || 0,
+          frequency: data.frequency || '',
+          lessonDuration: data.lessonDuration || '00:00',
         },
         courseData: data.courseData || [],
         blocksByLesson: data.blocks || {},
