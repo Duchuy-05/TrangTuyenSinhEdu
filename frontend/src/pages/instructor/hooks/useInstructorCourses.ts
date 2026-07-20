@@ -87,6 +87,8 @@ export const useInstructorCourses = () => {
             category: newDraft.category || '',
             imageUrl: newDraft.imageUrl || '',
             format: newDraft.format || 'online',
+            frequency: newDraft.frequency || '',
+            lessonDuration: newDraft.lessonDuration || '00:00',
             price: Number(newDraft.price) || 0,
           },
           courseData: newDraft.courseData || [],

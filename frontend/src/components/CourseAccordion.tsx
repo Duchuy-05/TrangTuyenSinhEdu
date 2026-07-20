@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Layers } from 'lucide-react';
 import { courseApi } from '../services/course.api';
 import type { Course } from '../services/course.api';
-import { formatVND, formatPriceOrFree } from '../utils/format.util';
 
 const CourseGrid: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
@@ -90,9 +89,8 @@ const CourseGrid: React.FC = () => {
                             type="button"
                             aria-label="Xem khóa học trước"
                             onClick={() => scrollByCard(-1)}
-                            className={`group absolute left-0 sm:-left-5 top-[42%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-orange-100 shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-orange-500 hover:border-orange-500 cursor-pointer ${
-                                canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                            }`}
+                            className={`group absolute left-0 sm:-left-5 top-[42%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-orange-100 shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-orange-500 hover:border-orange-500 cursor-pointer ${canScrollLeft ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                                }`}
                         >
                             <svg className="w-5 h-5 stroke-orange-500 group-hover:stroke-white transition-colors" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M15 6l-6 6 6 6" />
@@ -129,7 +127,7 @@ const CourseGrid: React.FC = () => {
                                                 {course.title}
                                             </h3>
                                             <p className="text-sm text-slate-500 line-clamp-2 flex-1">
-                                                    {course.shortDesc || 'Đang cập nhật mô tả...'}
+                                                {course.shortDesc || 'Đang cập nhật mô tả...'}
                                             </p>
 
                                             {/* chia thành 2 cột */}
@@ -137,18 +135,18 @@ const CourseGrid: React.FC = () => {
                                                 <div className="flex flex-col gap-1">
                                                     <p className="text-xs text-slate-500 mb-1.5">
                                                         Giảng viên:{' '}
-                                                        <span className="font-semibold text-blue-600">
-                                                            {course.user?.fullName ||course.teacher?.fullName || 'Đang cập nhật'}
+                                                        <span className="font-semibold text-black-600 text-sm">
+                                                            {course.user?.fullName || course.teacher?.fullName || 'Đang cập nhật'}
                                                         </span>
                                                     </p>
 
                                                     <p className="flex items-center gap-1.5 text-xs text-slate-500 mb-3">
                                                         <Layers size={13} className="text-orange-500" />
-                                                        { course.courseData?.length ?? course.syllabus?.length ?? 0} chương
+                                                        {course.courseData?.length ?? course.syllabus?.length ?? 0} chương
                                                     </p>
                                                 </div>
 
-                                                <div className="flex flex-col items-end shrink-0">
+                                                {/* <div className="flex flex-col items-end shrink-0">
                                                     {course.discountPrice ? (
                                                         <>
                                                             <span className="text-base font-extrabold text-orange-600 leading-tight whitespace-nowrap">
@@ -163,7 +161,7 @@ const CourseGrid: React.FC = () => {
                                                             {formatPriceOrFree(Number(course.price) || 0)}
                                                         </span>
                                                     )}
-                                                </div>
+                                                </div> */}
                                             </div>
 
                                             <div className="mt-auto flex items-center gap-2 text-orange-600 font-bold text-sm">
@@ -189,9 +187,8 @@ const CourseGrid: React.FC = () => {
                             type="button"
                             aria-label="Xem khóa học tiếp theo"
                             onClick={() => scrollByCard(1)}
-                            className={`group absolute right-0 sm:-right-5 top-[42%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-orange-100 shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-orange-500 hover:border-orange-500 cursor-pointer ${
-                                canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                            }`}
+                            className={`group absolute right-0 sm:-right-5 top-[42%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-white border border-orange-100 shadow-lg flex items-center justify-center transition-all duration-200 hover:bg-orange-500 hover:border-orange-500 cursor-pointer ${canScrollRight ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                                }`}
                         >
                             <svg className="w-5 h-5 stroke-orange-500 group-hover:stroke-white transition-colors" viewBox="0 0 24 24" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M9 6l6 6-6 6" />

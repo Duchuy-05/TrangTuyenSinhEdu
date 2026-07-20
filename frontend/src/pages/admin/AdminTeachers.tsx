@@ -111,12 +111,12 @@ const AdminTeachers: React.FC = () => {
     };
 
     // Hàm xử lý Upload File
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
         try {
             setIsUploading(true);
-            const imageUrl = await uploadApi.uploadImage(file);
+            const imageUrl = await uploadApi.uploadAvatar(file);
             setFormData({ ...formData, avatarUrl: imageUrl });
         } catch (error) {
             console.error("Lỗi upload:", error);
@@ -326,7 +326,7 @@ const AdminTeachers: React.FC = () => {
                                                 type="file"
                                                 accept="image/*"
                                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                                onChange={handleImageUpload}
+                                                onChange={handleAvatarUpload}
                                                 disabled={isUploading}
                                             />
                                             <div className="space-y-1 text-center">

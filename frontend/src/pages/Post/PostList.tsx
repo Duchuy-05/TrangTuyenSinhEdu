@@ -28,7 +28,7 @@ const PostList = () => {
         <div className="post-list-page">
         <div className="post-list-header">
             <h1>Post</h1>
-            <p>Kiến thức & chia sẻ từ đội ngũ giảng viên</p>
+            <p>Kiến thức và chia sẻ từ đội ngũ giảng viên</p>
         </div>
 
         <div className="post-list-container">

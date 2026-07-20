@@ -15,7 +15,6 @@ export class PostController {
     }
   }
 
-
   // GET /posts/admin — danh sách tất cả bài (dành cho admin)
   static async getAllPostPagination(request: Request, response: Response) {
     const page = Number(request.query.page) || 1;

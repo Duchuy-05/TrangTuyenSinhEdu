@@ -15,6 +15,7 @@ import classRouter from './routers/class.router';
 import scheduleRouter from './routers/schedule.router';
 import classEnrollmentRouter from './routers/classenrollment.router';
 import announcementRouter from './routers/announcement.router';
+import uploadRouter from './routers/upload.router';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -42,7 +43,8 @@ app.use("/api", teacherRouter)
 app.use("/api", courseRouter)
 app.use("/api", syllabusRouter)
 app.use("/api", registrationRouter)
-
+app.use('/api', userRouter);
+app.use('/api', uploadRouter);
 try {
     AppDataSource.initialize().then(() => {
         console.log("DataSource chay. !")

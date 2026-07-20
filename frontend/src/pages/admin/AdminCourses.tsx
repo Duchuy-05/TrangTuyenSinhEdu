@@ -72,13 +72,13 @@ const AdminCourses: React.FC = () => {
         setIsModalOpen(true);
     };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCourseImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         try {
             setIsUploading(true);
-            const uploadedUrl = await uploadApi.uploadImage(file);
+            const uploadedUrl = await uploadApi.uploadCourseImage(file);
             setFormData((prev: any) => ({ ...prev, imageUrl: uploadedUrl }));
         } catch (error) {
             alert("Tải ảnh lên thất bại!");
@@ -396,7 +396,7 @@ const AdminCourses: React.FC = () => {
                                     <div>
                                         <label className="block text-sm font-semibold text-slate-700 mb-2">Ảnh Khóa Học</label>
                                         <div className="relative border-2 border-dashed border-slate-300 rounded-lg overflow-hidden bg-slate-50 hover:border-blue-400 transition-colors cursor-pointer">
-                                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} id="image-input" />
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleCourseImageUpload} disabled={isUploading} id="image-input" />
                                             <label htmlFor="image-input" className="block w-full h-full cursor-pointer">
                                                 {isUploading ? (
                                                     <div className="flex flex-col items-center justify-center h-40 gap-2">

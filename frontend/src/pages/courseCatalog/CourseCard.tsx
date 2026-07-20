@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Course } from '../../services/course.api';
-import { formatVND, formatPriceOrFree } from '../../utils/format.util';
 
 interface CourseCardProps {
     course: Course;
@@ -16,8 +15,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, formatVND, forma
             className="bg-white rounded-2xl border border-gray-200/70 shadow-sm hover:shadow-xl hover:border-orange-200/50 transition-all duration-300 overflow-hidden flex flex-col group"
         >
             <div className="relative aspect-video w-full bg-gray-50 overflow-hidden">
-                <img 
-                    src={course.imageUrl || 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=500'} 
+                <img
+                    src={course.imageUrl || 'https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=500'}
                     alt={course.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -39,7 +38,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course, formatVND, forma
                 <div className="pt-3.5 border-t border-gray-100 flex items-center justify-between gap-2">
                     <div>
                         <div className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Giảng viên</div>
-                        <div className="text-xs font-bold text-orange-600 mt-0.5 truncate max-w-[120px]">
+                        <div className="text-xs font-bold text-black-600 mt-0.5 truncate max-w-[120px]">
                             {course.user?.fullName || course.teacher?.fullName || 'Đang cập nhật'}
                         </div>
                     </div>
